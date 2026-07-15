@@ -1,0 +1,97 @@
+<nav class="navbar">
+
+    <div class="max-w-7xl mx-auto px-6">
+
+        <div class="h-16 flex items-center justify-between">
+
+            <!-- Logo -->
+            <div class="flex items-center gap-3">
+
+                <i class="pi pi-globe text-2xl"></i>
+
+                <span class="font-semibold text-lg">
+                    Energy Risk Monitor
+                </span>
+
+            </div>
+
+
+            <!-- Menú Desktop -->
+            <div class="hidden lg:flex items-center gap-6">
+
+                <a routerLink="/" class="nav-link">Dashboard</a>
+                <a routerLink="/eventos" class="nav-link">Eventos</a>
+                <a routerLink="/heatmap" class="nav-link">Heatmap</a>
+                <a routerLink="/forecast" class="nav-link">Forecast</a>
+                <a routerLink="/alarmas" class="nav-link">Alarmas</a>
+                <a routerLink="/notificaciones" class="nav-link">Notificaciones</a>
+                <a routerLink="/admin" class="nav-link">Administración</a>
+
+            </div>
+
+
+            <!-- Botón modo oscuro SOLO escritorio -->
+            <button
+                class="theme-toggle hidden lg:flex"
+                (click)="toggleDarkMode()">
+
+                <i
+                    class="pi"
+                    [class.pi-moon]="!darkMode"
+                    [class.pi-sun]="darkMode">
+                </i>
+
+            </button>
+
+
+            <!-- Botón hamburguesa SOLO móvil -->
+            <button
+                class="mobile-menu lg:hidden"
+                (click)="menuOpen = !menuOpen">
+
+                <i
+                    class="pi"
+                    [class.pi-bars]="!menuOpen"
+                    [class.pi-times]="menuOpen">
+                </i>
+
+            </button>
+
+        </div>
+
+
+        <!-- Menú móvil -->
+        @if(menuOpen){
+
+            <div class="mobile-dropdown lg:hidden">
+
+                <!-- Modo oscuro dentro del menú -->
+                <button
+                    class="theme-toggle mobile-theme"
+                    (click)="toggleDarkMode()">
+
+                    <i
+                        class="pi"
+                        [class.pi-moon]="!darkMode"
+                        [class.pi-sun]="darkMode">
+                    </i>
+
+                    <span>Modo oscuro</span>
+
+                </button>
+
+                <a routerLink="/">Dashboard</a>
+                <a routerLink="/eventos">Eventos</a>
+                <a routerLink="/heatmap">Heatmap</a>
+                <a routerLink="/forecast">Forecast</a>
+                <a routerLink="/alarmas">Alarmas</a>
+                <a routerLink="/notificaciones">Notificaciones</a>
+                <a routerLink="/admin">Administración</a>
+
+            </div>
+
+        }
+
+    </div>
+
+</nav>

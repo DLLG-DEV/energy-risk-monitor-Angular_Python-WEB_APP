@@ -1,0 +1,119 @@
+.navbar{
+
+    background:#1E293B;
+    color:white;
+    border-bottom:1px solid #CBD5E1;
+
+}
+
+
+.nav-link{
+
+    color:#CBD5E1;
+    transition:.2s;
+
+}
+
+
+.nav-link:hover{
+
+    color:white;
+
+}
+
+
+/* boton oscuro */
+
+.theme-toggle{
+
+    width:40px;
+    height:40px;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    color:white;
+
+    cursor:pointer;
+
+}
+
+
+.theme-toggle:hover{
+
+    background:rgba(255,255,255,.1);
+
+}
+
+
+/* hamburguesa */
+
+.mobile-menu{
+
+    width:40px;
+
+    height:40px;
+
+    color:white;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+
+/* menu movil */
+
+.mobile-dropdown{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+    padding:20px 0;
+
+}
+
+
+.mobile-dropdown a{
+
+    color:#CBD5E1;
+
+    padding:10px;
+
+    border-radius:8px;
+
+}
+
+
+.mobile-dropdown a:hover{
+
+    background:#334155;
+
+    color:white;
+
+}
+
+
+/* boton dark dentro del menu */
+
+.mobile-theme{
+
+    width:100%;
+
+    justify-content:flex-start;
+
+    gap:12px;
+
+    border-radius:8px;
+
+    padding:10px;
+
+    display:flex; /* este sí puede quedarse */
+
+}
