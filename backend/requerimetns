@@ -1,0 +1,6 @@
+FastAPI → framework backend
+Uvicorn → servidor que ejecuta FastAPI
+
+python -m pip install fastapi uvicorn
+
+pip install python-dotenv

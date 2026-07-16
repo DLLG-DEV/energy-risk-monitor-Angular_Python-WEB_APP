@@ -15,39 +15,10 @@
 
             </div>
 
-
-            <!-- Menú Desktop -->
-            <div class="hidden lg:flex items-center gap-6">
-
-                <a routerLink="/" class="nav-link">Dashboard</a>
-                <a routerLink="/eventos" class="nav-link">Eventos</a>
-                <a routerLink="/heatmap" class="nav-link">Heatmap</a>
-                <a routerLink="/forecast" class="nav-link">Forecast</a>
-                <a routerLink="/alarmas" class="nav-link">Alarmas</a>
-                <a routerLink="/notificaciones" class="nav-link">Notificaciones</a>
-                <a routerLink="/admin" class="nav-link">Administración</a>
-
-            </div>
-
-
-            <!-- Botón modo oscuro SOLO escritorio -->
+            <!-- Botón menú -->
             <button
-                class="theme-toggle hidden lg:flex"
-                (click)="toggleDarkMode()">
-
-                <i
-                    class="pi"
-                    [class.pi-moon]="!darkMode"
-                    [class.pi-sun]="darkMode">
-                </i>
-
-            </button>
-
-
-            <!-- Botón hamburguesa SOLO móvil -->
-            <button
-                class="mobile-menu lg:hidden"
-                (click)="menuOpen = !menuOpen">
+                class="mobile-menu"
+                (click)="toggleMenu()">
 
                 <i
                     class="pi"
@@ -59,39 +30,110 @@
 
         </div>
 
-
-        <!-- Menú móvil -->
-        @if(menuOpen){
-
-            <div class="mobile-dropdown lg:hidden">
-
-                <!-- Modo oscuro dentro del menú -->
-                <button
-                    class="theme-toggle mobile-theme"
-                    (click)="toggleDarkMode()">
-
-                    <i
-                        class="pi"
-                        [class.pi-moon]="!darkMode"
-                        [class.pi-sun]="darkMode">
-                    </i>
-
-                    <span>Modo oscuro</span>
-
-                </button>
-
-                <a routerLink="/">Dashboard</a>
-                <a routerLink="/eventos">Eventos</a>
-                <a routerLink="/heatmap">Heatmap</a>
-                <a routerLink="/forecast">Forecast</a>
-                <a routerLink="/alarmas">Alarmas</a>
-                <a routerLink="/notificaciones">Notificaciones</a>
-                <a routerLink="/admin">Administración</a>
-
-            </div>
-
-        }
-
     </div>
 
 </nav>
+
+
+<!-- Drawer -->
+<p-drawer
+    [(visible)]="menuOpen"
+    position="right"
+    [modal]="true"
+    [dismissible]="true"
+    [style]="{ width: '300px' }">
+
+    <div class="flex flex-col h-full">
+
+        <!-- Acciones -->
+        <div class="flex flex-col gap-2 mb-6">
+
+            <button
+                pButton
+                text
+                (click)="toggleDarkMode()">
+
+                <i
+                    class="pi mr-2"
+                    [class.pi-moon]="!darkMode"
+                    [class.pi-sun]="darkMode">
+                </i>
+
+                {{ darkMode ? 'Modo claro' : 'Modo oscuro' }}
+
+            </button>
+
+            @if(!isLogged){
+
+                <button
+                    pButton
+                    text
+                    icon="pi pi-sign-in"
+                    label="Iniciar sesión"
+                    (click)="login()">
+                </button>
+
+            } @else {
+
+                <button
+                    pButton
+                    text
+                    icon="pi pi-user"
+                    label="Perfil"
+                    (click)="goProfile()">
+                </button>
+
+            }
+
+        </div>
+
+        <p-divider></p-divider>
+
+        <!-- Navegación -->
+
+        @for(item of menuItems; track item.label){
+
+            @if(!item.adminOnly || isAdmin){
+
+                <a
+                    class="menu-link"
+                    [routerLink]="item.route"
+                    (click)="closeMenu()">
+
+                    <i
+                        class="pi"
+                        [class]="item.icon">
+                    </i>
+
+                    <span>
+                        {{ item.label }}
+                    </span>
+
+                </a>
+
+            }
+
+        }
+
+        <div class="mt-auto">
+
+            <p-divider></p-divider>
+
+            @if(isLogged){
+
+                <button
+                    pButton
+                    severity="danger"
+                    text
+                    icon="pi pi-sign-out"
+                    label="Cerrar sesión"
+                    (click)="logout()">
+                </button>
+
+            }
+
+        </div>
+
+    </div>
+
+</p-drawer>
