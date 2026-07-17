@@ -4,6 +4,9 @@ import { DrawerModule } from 'primeng/drawer';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { RouterLink } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
+import { AuthService } from '../../services/auth/auth.service';
+import { RolService } from '../../services/roles/roles.service';
 
 interface MenuItem {
 
@@ -21,7 +24,7 @@ interface MenuItem {
     DrawerModule,
     ButtonModule,
     DividerModule,
-    RouterLink
+    RouterLink,
   ],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css'
@@ -37,93 +40,57 @@ export class Navbar {
 
   isAdmin = true;
 
-  menuItems: MenuItem[] = [
+  menuItems: MenuItem[] = [];
 
-    {
-      label: 'Dashboard',
-      route: '/',
-      icon: 'pi-home'
-    },
+  constructor(
+    private router: Router,
+    private auth: AuthService,
+    private rol: RolService
+  ) {}
 
-    {
-      label: 'Eventos',
-      route: '/eventos',
-      icon: 'pi-list'
-    },
+  ngOnInit(){
 
-    {
-      label: 'Mapa de calor',
-      route: '/heatmap',
-      icon: 'pi-map'
-    },
+    if(this.auth.isLogged()){
+      // AUN NECESTIO EL INTERRPRETADOR DEL TOKEN
+      this.auth.getToken()
 
-    {
-      label: 'Forecast',
-      route: '/forecast',
-      icon: 'pi-chart-line'
-    },
+    }else if(!this.auth.isLogged()){
 
-    {
-      label: 'Alarmas',
-      route: '/alarmas',
-      icon: 'pi-bell'
-    },
-
-    {
-      label: 'Administración',
-      route: '/admin',
-      icon: 'pi-cog',
-      adminOnly: true
+      this.rol.rolDefault().subscribe({
+        next: (menu) => {
+          this.menuItems = menu.modules;
+        }
+      })
     }
-
-  ];
-
-  constructor(private router: Router) {}
+  }
 
   toggleMenu(): void {
-
     this.menuOpen = !this.menuOpen;
-
   }
 
   closeMenu(): void {
-
     this.menuOpen = false;
-
   }
 
   toggleDarkMode(): void {
-
     this.darkMode = !this.darkMode;
-
     document.documentElement.classList.toggle('dark');
-
   }
 
   login(): void {
-
     this.closeMenu();
-
     this.router.navigate(['/login']);
-
   }
 
   goProfile(): void {
-
     this.closeMenu();
-
     this.router.navigate(['/profile']);
-
   }
 
   logout(): void {
-
     this.closeMenu();
-
     // Aquí después limpiarás el JWT
-
     this.router.navigate(['/login']);
-
   }
 
 }

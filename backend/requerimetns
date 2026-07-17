@@ -4,3 +4,11 @@ Uvicorn → servidor que ejecuta FastAPI
 python -m pip install fastapi uvicorn
 
 pip install python-dotenv
+
+pip install sqlalchemy
+pip install psycopg2-binary
+pip install passlib[bcrypt]
+
+LEVANTAR BACKEND
+uvicorn app.main:app --reload
+python -m uvicorn app.main:app --reload

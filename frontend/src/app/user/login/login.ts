@@ -9,7 +9,7 @@ import { DividerModule } from 'primeng/divider';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { AuthService } from '../../services/auth/auth.service';
 
@@ -41,57 +41,31 @@ export class Login {
   ){
 
     this.loginForm = this.fb.group({
-
-      email: [''],
-
-      password: ['']
-
+      email: ['', Validators.required, Validators.email],
+      password: ['',Validators.required]
     });
   }
 
-login(){
+  login(){
+      const email = this.loginForm.value.email;
+      const password = this.loginForm.value.password;
 
-    const email = this.loginForm.value.email;
-    const password = this.loginForm.value.password;
-
-
-    this.auth.login(email, password)
-    .subscribe({
-
-        next: (response) => {
-
-            this.messageService.add({
-
-                severity:'success',
-
-                summary:'Login correcto',
-
-                detail:'Bienvenido a Energy Risk Monitor'
-
-            });
-
-            console.log(response);
-
-        },
-
-
-        error: (error) => {
-
-            this.messageService.add({
-
-                severity:'error',
-
-                summary:'Login incorrecto',
-
-                detail:'Correo o contraseña inválidos'
-
-            });
-
-            console.log(error);
-
-        }
-
-    });
-
-}
+      this.auth.login(email, password)
+      .subscribe({
+          next: (response) => {
+              this.messageService.add({
+                  severity:'success',
+                  summary:'Login correcto',
+                  detail:'Bienvenido a Energy Risk Monitor'
+              });
+          },
+          error: (error) => {
+              this.messageService.add({
+                  severity:'error',
+                  summary:'Login incorrecto',
+                  detail:'Correo o contraseña inválidos'
+              });
+          }
+      });
+  }
 }

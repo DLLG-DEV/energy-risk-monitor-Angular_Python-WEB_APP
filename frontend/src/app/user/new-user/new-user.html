@@ -1,0 +1,128 @@
+<p-toast></p-toast>
+
+<div class="min-h-screen flex items-center justify-center px-6">
+
+    <div class="w-full max-w-md">
+
+        <div class="rounded-2xl shadow-xl p-8 border surface-card">
+
+            <div class="flex flex-col items-center mb-8">
+                <h1 class="text-3xl font-bold">
+                    Crear cuenta
+                </h1>
+                <p class="text-center mt-2 text-color-secondary">
+                    Registra un nuevo usuario en la plataforma.
+                </p>
+            </div>
+
+            <form
+                class="flex flex-col gap-5"
+                [formGroup]="registerForm"
+                (ngSubmit)="register()">
+
+                <div>
+
+                    <label
+                        for="first_name"
+                        class="block mb-2 font-medium">
+                        Nombre
+                    </label>
+                    <input
+                        id="first_name"
+                        type="text"
+                        pInputText
+                        formControlName="first_name"
+                        class="w-full"
+                        placeholder="Juan">
+                </div>
+
+                <div>
+                    <label
+                        for="last_name"
+                        class="block mb-2 font-medium">
+                        Apellido
+                    </label>
+                    <input
+                        id="last_name"
+                        type="text"
+                        pInputText
+                        formControlName="last_name"
+                        class="w-full"
+                        placeholder="Pérez">
+                </div>
+
+                <div>
+                    <label
+                        for="email"
+                        class="block mb-2 font-medium">
+                        Correo electrónico
+                    </label>
+                    <input
+                        id="email"
+                        type="email"
+                        pInputText
+                        formControlName="email"
+                        class="w-full"
+                        placeholder="correo@empresa.com">
+                </div>
+
+                <div>
+                    <label
+                        for="password"
+                        class="block mb-2 font-medium">
+                        Contraseña
+                    </label>
+                    <p-password
+                        inputId="password"
+                        formControlName="password"
+                        [toggleMask]="true"
+                        [feedback]="true"
+                        placeholder="********"
+                        styleClass="w-full"
+                        inputStyleClass="w-full">
+                    </p-password>
+                </div>
+
+                <div>
+                    <label
+                        for="confirmPassword"
+                        class="block mb-2 font-medium">
+                        Confirmar contraseña
+                    </label>
+                    <p-password
+                        inputId="confirmPassword"
+                        formControlName="confirmPassword"
+                        [toggleMask]="true"
+                        [feedback]="false"
+                        placeholder="********"
+                        styleClass="w-full"
+                        inputStyleClass="w-full">
+                    </p-password>
+                </div>
+
+                <button
+                    pButton
+                    type="submit"
+                    label="Crear cuenta"
+                    icon="pi pi-user-plus"
+                    class="w-full"
+                    [disabled]="registerForm.invalid">
+                </button>
+            </form>
+
+            <p-divider></p-divider>
+
+            <div class="text-center">
+                <span class="text-color-secondary">
+                    ¿Ya tienes una cuenta?
+                </span>
+                <a
+                    routerLink="/login"
+                    class="ml-2 text-primary font-semibold">
+                    Iniciar sesión
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</div>
