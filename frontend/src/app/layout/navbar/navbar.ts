@@ -31,6 +31,8 @@ interface MenuItem {
 })
 export class Navbar {
 
+  viewr_rol: number = 3;
+
   menuOpen = false;
 
   darkMode = false;
@@ -51,14 +53,15 @@ export class Navbar {
   ngOnInit(){
 
     if(this.auth.isLogged()){
-      // AUN NECESTIO EL INTERRPRETADOR DEL TOKEN
-      this.auth.getToken()
+      const data = this.auth.decodeToken(this.auth.getToken()!);
+      this.menuItems = data.modulos;
+      this.isLogged = true;
 
     }else if(!this.auth.isLogged()){
 
-      this.rol.rolDefault().subscribe({
+      this.rol.get_rol(this.viewr_rol).subscribe({
         next: (menu) => {
-          this.menuItems = menu.modules;
+          this.menuItems = menu;
         }
       })
     }
@@ -89,7 +92,7 @@ export class Navbar {
 
   logout(): void {
     this.closeMenu();
-    // Aquí después limpiarás el JWT
+    this.auth.logout();
     this.router.navigate(['/login']);
   }
 

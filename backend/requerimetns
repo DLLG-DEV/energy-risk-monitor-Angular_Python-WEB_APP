@@ -8,6 +8,7 @@ pip install python-dotenv
 pip install sqlalchemy
 pip install psycopg2-binary
 pip install passlib[bcrypt]
+pip install python-jose[cryptography]
 
 LEVANTAR BACKEND
 uvicorn app.main:app --reload

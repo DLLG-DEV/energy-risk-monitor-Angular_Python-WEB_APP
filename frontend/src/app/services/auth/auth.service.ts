@@ -5,8 +5,9 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 interface LoginResponse {
-  access_token: string;
-  token_type: string;
+  access_token: string,
+  status: string,
+  token_type: string,
 }
 
 export interface RegisterResponse {
@@ -42,37 +43,31 @@ export class AuthService {
     );
   }
 
-  saveToken(token:string){
-
-    localStorage.setItem(
-      'token',
-      token
-    );
-
-  }
-
   getToken(){
-
     return localStorage.getItem('token');
-
   }
 
   logout(){
-
-    localStorage.removeItem('token');
-
+    localStorage.clear();
   }
 
   isLogged(){
-
     return !!this.getToken();
-
   }
 
   new_user(user: NewUser): Observable<RegisterResponse>{
-    console.log("ENVIADO",user)
     return this.http.post<RegisterResponse>(
       `${this.url_back}/auth/register`,user
     );
   }
+
+  decodeToken(token: string): any {
+    const payload = token.split('.')[1];
+    const base64 = payload
+        .replace(/-/g, '+')
+        .replace(/_/g, '/');
+
+    return JSON.parse(atob(base64));
+  }
+
 }

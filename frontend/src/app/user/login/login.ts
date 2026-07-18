@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
@@ -12,6 +12,13 @@ import { ToastModule } from 'primeng/toast';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { AuthService } from '../../services/auth/auth.service';
+
+export interface LoginResponse {
+  access_token: string,
+  status: string,
+  token_type: string,
+}
+
 
 @Component({
   selector: 'app-login',
@@ -33,11 +40,13 @@ import { AuthService } from '../../services/auth/auth.service';
 })
 export class Login {
   loginForm!: FormGroup;
+  loading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private router: Router
   ){
 
     this.loginForm = this.fb.group({
@@ -47,25 +56,48 @@ export class Login {
   }
 
   login(){
-      const email = this.loginForm.value.email;
-      const password = this.loginForm.value.password;
+    this.loading = true;
+    const email = this.loginForm.value.email;
+    const password = this.loginForm.value.password;
 
-      this.auth.login(email, password)
-      .subscribe({
-          next: (response) => {
-              this.messageService.add({
-                  severity:'success',
-                  summary:'Login correcto',
-                  detail:'Bienvenido a Energy Risk Monitor'
-              });
-          },
-          error: (error) => {
-              this.messageService.add({
-                  severity:'error',
-                  summary:'Login incorrecto',
-                  detail:'Correo o contraseña inválidos'
-              });
-          }
-      });
+    this.auth.login(email, password).subscribe({
+      next: (response: LoginResponse) => {
+        this.messageService.add({
+            severity:'success',
+            summary:'Login correcto',
+            detail:'Bienvenido a Energy Risk Monitor'
+        });
+
+        const data = this.auth.decodeToken(response.access_token)
+
+
+        localStorage.setItem(
+          "modulos",
+          data.modulos
+        )
+        localStorage.setItem(
+          "username",
+          data.userName
+        )
+        localStorage.setItem(
+          'token',
+          response.access_token
+        );
+
+
+        setTimeout(() => {
+          this.router.navigate(['/']);
+        }, 1500);
+
+      },
+      error: (error) => {
+        this.loading = false;
+        this.messageService.add({
+            severity:'error',
+            summary:'Login incorrecto',
+            detail:'Correo o contraseña inválidos'
+        });
+      }
+    });
   }
 }

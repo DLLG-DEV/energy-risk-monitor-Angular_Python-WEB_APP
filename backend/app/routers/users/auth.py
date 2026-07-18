@@ -5,6 +5,8 @@ from pydantic import BaseModel
 
 from app.database.database import get_db
 from app.models.user import User
+from  app.routers.users.roles import get_role_modules
+from app.core.securyt import create_access_token
 
 router = APIRouter(
     prefix="/api/auth",
@@ -15,7 +17,6 @@ pwd_context = CryptContext(
     schemes=["bcrypt"],
     deprecated="auto"
 )
-
 
 class LoginRequest(BaseModel):
     email: str
@@ -29,10 +30,7 @@ class NewUserRequest(BaseModel):
     role_id: int
 
 @router.post("/login")
-def login(
-    data: LoginRequest,
-    db: Session = Depends(get_db)
-):
+def login(data: LoginRequest, db: Session = Depends(get_db)):
     user = (
         db.query(User)
         .filter(User.email == data.email)
@@ -56,18 +54,25 @@ def login(
             status_code=403,
             detail="El usuario está deshabilitado"
         )
+        
+    modulos = get_role_modules(
+        user.role_id,
+        db
+    )
+
+    token = create_access_token(
+        {
+            "userName": f"{user.first_name} {user.last_name}",
+            "modulos": modulos,
+        }
+    )
 
     return {
         "status": "ok",
-        "detail": "Login correcto",
-        "user": {
-            "id": user.id,
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-            "email": user.email,
-            "role_id": user.role_id
-        }
-    }    
+        "access_token": token,
+        "token_type": "Bearer"
+    }  
+      
 @router.post("/register")
 def register_user(
     data: NewUserRequest,

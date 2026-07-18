@@ -15,10 +15,10 @@ export class RolService {
     private http: HttpClient
   ){}
 
-    rolDefault(): Observable<any> {
-        return this.http.get<any>(
-            `${this.url_back}/rol/default-role`
-    );
-    }
+  get_rol(role_id:number): Observable<any> {
+      return this.http.get<any>(
+          `${this.url_back}/rol/modules/${role_id}`
+  );
+  }
 
 }

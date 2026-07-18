@@ -12,19 +12,19 @@ router = APIRouter(
 )
 
 
-@router.get("/default-role")
-def default_role(db: Session = Depends(get_db)):
+@router.get("/modules/{role_id}")
+def get_role_modules(role_id: int, db: Session = Depends(get_db) ):
 
     role = (
         db.query(Role)
-        .filter(Role.name == "Viewer")
+        .filter(Role.id == role_id)
         .first()
     )
 
     if role is None:
         raise HTTPException(
             status_code=404,
-            detail="Rol Viewer no encontrado"
+            detail="Rol no encontrado"
         )
 
     modules = (
@@ -33,18 +33,11 @@ def default_role(db: Session = Depends(get_db)):
         .all()
     )
 
-    return {
-        "role": {
-            "id": role.id,
-            "name": role.name
-        },
-        "modules": [
-            {
-                "label": module.name,
-                "route": module.route,
-                "icon": module.icon,
-            }
-            for module in modules
-        ]
-
-    }
+    return [
+        {
+            "label": module.name,
+            "route": module.route,
+            "icon": module.icon
+        }
+        for module in modules
+    ]

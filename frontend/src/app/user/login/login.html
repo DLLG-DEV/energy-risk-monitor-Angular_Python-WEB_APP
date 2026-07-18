@@ -58,7 +58,8 @@
                     label="Iniciar sesión"
                     icon="pi pi-sign-in"
                     class="w-full"
-                    [disabled]="loginForm.invalid">
+                    [loading]="loading"
+                    [disabled]="loginForm.invalid || loading">
                 </button>
 
             </form>
