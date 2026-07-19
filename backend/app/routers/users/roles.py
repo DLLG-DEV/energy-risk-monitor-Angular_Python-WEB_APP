@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.database.database import get_db
 from app.models.role import Role
 from app.models.module import Module
+from app.core.config import settings
 
 
 router = APIRouter(
@@ -12,14 +13,15 @@ router = APIRouter(
 )
 
 
-@router.get("/modules/{role_id}")
-def get_role_modules(role_id: int, db: Session = Depends(get_db) ):
+@router.get("/modules")
+def get_role_modules(db: Session = Depends(get_db)):
 
     role = (
         db.query(Role)
-        .filter(Role.id == role_id)
+        .filter(Role.id == settings.VIEWER_ROLE_ID)
         .first()
     )
+
 
     if role is None:
         raise HTTPException(
@@ -27,11 +29,13 @@ def get_role_modules(role_id: int, db: Session = Depends(get_db) ):
             detail="Rol no encontrado"
         )
 
+
     modules = (
         db.query(Module)
         .filter(Module.id.in_(role.modules))
         .all()
     )
+
 
     return [
         {

@@ -10,8 +10,8 @@ import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AuthService } from '../../core/auth/auth.service';
 
-import { AuthService } from '../../services/auth/auth.service';
 
 export interface LoginResponse {
   access_token: string,
@@ -69,7 +69,6 @@ export class Login {
         });
 
         const data = this.auth.decodeToken(response.access_token)
-
 
         localStorage.setItem(
           "modulos",

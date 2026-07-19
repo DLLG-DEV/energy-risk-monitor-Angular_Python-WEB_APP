@@ -8,8 +8,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { SelectModule } from 'primeng/select';
 import { ToastModule } from 'primeng/toast';
-import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../core/auth/auth.service';
 
 export interface RegisterResponse {
     status_code: string;

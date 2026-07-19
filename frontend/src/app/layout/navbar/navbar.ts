@@ -5,8 +5,8 @@ import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { AuthService } from '../../services/auth/auth.service';
-import { RolService } from '../../services/roles/roles.service';
+import { AuthService } from '../../core/auth/auth.service';
+import { RolService } from '../../core/roles/roles.service';
 
 interface MenuItem {
 
@@ -31,8 +31,6 @@ interface MenuItem {
 })
 export class Navbar {
 
-  viewr_rol: number = 3;
-
   menuOpen = false;
 
   darkMode = false;
@@ -52,15 +50,24 @@ export class Navbar {
 
   ngOnInit(){
 
+    this.darkMode =
+      localStorage.getItem('darkmode') === 'true';
+
+    document.documentElement.classList.toggle(
+      'dark',
+      this.darkMode
+    );
+
     if(this.auth.isLogged()){
       const data = this.auth.decodeToken(this.auth.getToken()!);
       this.menuItems = data.modulos;
       this.isLogged = true;
-
+      
     }else if(!this.auth.isLogged()){
 
-      this.rol.get_rol(this.viewr_rol).subscribe({
+      this.rol.get_rol().subscribe({
         next: (menu) => {
+          console.log(menu)
           this.menuItems = menu;
         }
       })
@@ -77,6 +84,10 @@ export class Navbar {
 
   toggleDarkMode(): void {
     this.darkMode = !this.darkMode;
+    localStorage.setItem(
+      "darkmode",
+      String(this.darkMode)
+    )
     document.documentElement.classList.toggle('dark');
   }
 

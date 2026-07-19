@@ -15,9 +15,9 @@ export class RolService {
     private http: HttpClient
   ){}
 
-  get_rol(role_id:number): Observable<any> {
+  get_rol(): Observable<any> {
       return this.http.get<any>(
-          `${this.url_back}/rol/modules/${role_id}`
+          `${this.url_back}/rol/modules`
   );
   }
 

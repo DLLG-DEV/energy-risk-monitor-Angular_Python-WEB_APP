@@ -26,7 +26,18 @@
     --text-secondary: #64748b;
 
     /* Botones */
-    --hover: #f1f5f9;
+    /* --primary-btn: rgb(52, 211, 153); */
+    /* --primary-btn: rgb(52, 161, 211);
+    --primary-btn-text: #000;
+    --hover: #f1f5f9; */
+        /* ==========================
+       BOTÓN PRIMARIO
+       Acción principal
+       ========================== */
+    --primary-btn: hsl(194, 100%, 74%);
+    --primary-btn-hover: #4fec9e;
+    --primary-btn-active: #1E6F97;
+    --primary-btn-text: #000;
 
     /* Links */
     --primary: #2563eb;
@@ -78,3 +89,17 @@ body{
     font-family:Inter, sans-serif;
 }
 
+.p-button-primary{
+
+    background: var(--primary-btn) !important;
+    color: var(--primary-btn-text) !important;
+    border-color: var(--primary-btn) !important;
+
+}
+
+.p-button-primary:hover{
+
+    background: var(--primary-btn-hover) !important;
+    border-color: var(--primary-btn-hover) !important;
+
+}

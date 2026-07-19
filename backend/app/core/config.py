@@ -13,4 +13,8 @@ class Settings:
         "LOCAL_FRONTEND_URL"
     )
 
+    VIEWER_ROLE_ID = int(
+        os.getenv("VIEWER_ROLE_ID")
+    )
+
 settings = Settings()

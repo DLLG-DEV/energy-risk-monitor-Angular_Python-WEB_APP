@@ -2,7 +2,8 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from pydantic import BaseModel
-
+from app.models.role import Role
+from app.models.module import Module
 from app.database.database import get_db
 from app.models.user import User
 from  app.routers.users.roles import get_role_modules
@@ -55,15 +56,38 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
             detail="El usuario está deshabilitado"
         )
         
-    modulos = get_role_modules(
-        user.role_id,
-        db
+    role = (
+        db.query(Role)
+        .filter(Role.id == user.role_id)
+        .first()
     )
+
+    if role is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Rol no encontrado"
+        )
+        
+    modules = (
+        db.query(Module)
+        .filter(Module.id.in_(role.modules))
+        .all()
+    )
+
+    modulos = [
+        {
+            "label": module.name,
+            "route": module.route,
+            "icon": module.icon
+        }
+        for module in modules
+    ]
 
     token = create_access_token(
         {
             "userName": f"{user.first_name} {user.last_name}",
             "modulos": modulos,
+            "rol": role.name
         }
     )
 
@@ -89,7 +113,7 @@ def register_user(
 
         raise HTTPException(
             status_code=400,
-            detail="El correo ya está registrado"
+            detail="El correo ya está regiastrado"
         )
 
     password_hash = pwd_context.hash(data.password)
