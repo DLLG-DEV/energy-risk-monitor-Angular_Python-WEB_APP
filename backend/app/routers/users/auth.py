@@ -6,8 +6,8 @@ from app.models.role import Role
 from app.models.module import Module
 from app.database.database import get_db
 from app.models.user import User
-from  app.routers.users.roles import get_role_modules
-from app.core.securyt import create_access_token
+from app.routers.users.roles import get_role_modules
+from app.core.security import create_access_token
 
 router = APIRouter(
     prefix="/api/auth",
@@ -61,6 +61,7 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
         .filter(Role.id == user.role_id)
         .first()
     )
+    
 
     if role is None:
         raise HTTPException(
@@ -85,9 +86,10 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
 
     token = create_access_token(
         {
+            "sub": str(user.id),
             "userName": f"{user.first_name} {user.last_name}",
             "modulos": modulos,
-            "rol": role.name
+            "rol": user.role_id
         }
     )
 

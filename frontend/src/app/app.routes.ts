@@ -4,6 +4,8 @@ import { Layout } from './layout/layout/layout';
 import { Login } from './user/login/login';
 import { NewUser } from './user/new-user/new-user';
 import { Admincmp } from './pages/admin/admin';
+import { authGuard } from './core/guards/auth-guard';
+import { roleGuard } from './core/guards/role-guard';
 
 export const routes: Routes = [
     {
@@ -19,10 +21,15 @@ export const routes: Routes = [
     { 
         path: '',
         component: Layout,
+        children:[
+            {
+                path:'admin',
+                component: Admincmp,
+                canActivate: [authGuard, roleGuard],
+                data:{
+                    role: 1
+                },
+            }
+        ]
     },
-
-    {
-        path: 'admin',
-        component: Admincmp
-    }
 ];

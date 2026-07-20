@@ -55,19 +55,44 @@ export class AuthService {
     return !!this.getToken();
   }
 
+  isAuthenticated(): boolean {
+
+    if (!this.getToken()) {
+        return false;
+    }
+
+    const payload = this.decodeToken();
+
+    if (!payload) {
+        return false;
+    }
+
+    return payload.exp * 1000 > Date.now();
+}
+
   new_user(user: NewUser): Observable<RegisterResponse>{
     return this.http.post<RegisterResponse>(
       `${this.url_back}/auth/register`,user
     );
   }
 
-  decodeToken(token: string): any {
-    const payload = token.split('.')[1];
-    const base64 = payload
-        .replace(/-/g, '+')
-        .replace(/_/g, '/');
+  decodeToken(): any | null {
 
-    return JSON.parse(atob(base64));
+      const token = this.getToken();
+
+      if (!token) {
+          return null;
+      }
+
+      try {
+          const payload = token.split('.')[1];
+          const base64 = payload
+              .replace(/-/g, '+')
+              .replace(/_/g, '/');
+          return JSON.parse(atob(base64));
+      } catch {
+          return null;
+      }
   }
 
 }

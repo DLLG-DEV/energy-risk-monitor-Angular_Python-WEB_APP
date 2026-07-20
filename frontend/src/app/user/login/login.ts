@@ -53,6 +53,8 @@ export class Login {
       email: ['', Validators.required, Validators.email],
       password: ['',Validators.required]
     });
+
+    this.auth.logout();
   }
 
   login(){
@@ -65,10 +67,15 @@ export class Login {
         this.messageService.add({
             severity:'success',
             summary:'Login correcto',
-            detail:'Bienvenido a Energy Risk Monitor'
+            detail:'Bienvenido a ERM'
         });
 
-        const data = this.auth.decodeToken(response.access_token)
+        localStorage.setItem(
+          'token',
+          response.access_token
+        );
+
+        const data = this.auth.decodeToken()
 
         localStorage.setItem(
           "modulos",
@@ -78,11 +85,6 @@ export class Login {
           "username",
           data.userName
         )
-        localStorage.setItem(
-          'token',
-          response.access_token
-        );
-
 
         setTimeout(() => {
           this.router.navigate(['/']);

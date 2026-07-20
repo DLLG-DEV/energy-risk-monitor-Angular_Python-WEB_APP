@@ -36,6 +36,7 @@ export interface RegisterResponse {
 })
 export class NewUser {
   registerForm: FormGroup;
+  loading: boolean = false;
   roles: MenuItem[] = [];
 
   constructor(
@@ -68,6 +69,7 @@ export class NewUser {
   }
 
   register() {
+    this.loading = true;
 
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
@@ -83,6 +85,7 @@ export class NewUser {
         summary: 'Contraseñas',
         detail: 'Las contraseñas no coinciden'
       });
+      this.loading = false;
       return;
     }
 
@@ -106,6 +109,7 @@ export class NewUser {
       },
 
       error: (error) => {
+        this.loading = false;
         this.messageService.add({
           severity: 'error',
           summary: 'Error',

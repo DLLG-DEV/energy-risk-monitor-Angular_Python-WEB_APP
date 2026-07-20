@@ -1,0 +1,125 @@
+<div class="w-full">
+
+    <!-- Header -->
+    <div class="mb-6">
+        <h2 
+            class="text-xl font-semibold"
+            style="color:var(--text)">
+            Usuarios del sistema
+        </h2>
+
+        <p
+            class="text-sm mt-1"
+            style="color:var(--text-secondary)">
+            Administración de usuarios registrados en ERM
+        </p>
+    </div>
+
+    <!-- Card -->
+    <div
+        class="rounded-xl p-4 shadow-sm border"
+        style="
+            background:var(--surface);
+            border-color:var(--navbar-border);
+        "
+    >
+
+
+        <p-table
+            [value]="users"
+            [loading]="loading"
+            [showLoader]="true"
+            responsiveLayout="scroll"
+            styleClass="w-full"
+        >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>
+                        Nombre
+                    </th>
+
+                    <th>
+                        Correo
+                    </th>
+
+                    <th>
+                        Rol
+                    </th>
+
+                    <th>
+                        Estado
+                    </th>
+
+                    <th>
+                        Creado
+                    </th>
+
+                </tr>
+            </ng-template>
+
+            <ng-template 
+                pTemplate="body"
+                let-user>
+                <tr>
+                    <td>
+                        <div class="flex flex-col">
+                            <span
+                                class="font-medium"
+                                style="color:var(--text)"
+                            >
+                                {{user.first_name}}
+                                {{user.last_name}}
+                            </span>
+
+                            <span
+                                class="text-xs"
+                                style="color:var(--text-secondary)"
+                            >
+                                ID: {{user.id}}
+                            </span>
+                        </div>
+                    </td>
+
+                    <td
+                        style="color:var(--text)"
+                    >
+                        {{user.email}}
+                    </td>
+
+                    <td>
+                        <p-tag
+                            [value]="user.role"
+                        />
+                    </td>
+
+                    <td>
+                        <p-tag
+                            [value]="
+                                user.is_active 
+                                ? 'Activo'
+                                : 'Inactivo'
+                            "
+                        />
+                    </td>
+                    <td
+                        style="color:var(--text-secondary)"
+                    >
+                        {{user.created_at | date:'dd/MM/yyyy'}}
+                    </td>
+                </tr>
+
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td 
+                        colspan="5"
+                        class="text-center py-6"
+                    >
+                        No hay usuarios registrados
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

@@ -6,7 +6,7 @@ import { DividerModule } from 'primeng/divider';
 import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
-import { RolService } from '../../core/roles/roles.service';
+import { RolService } from '../../core/services/roles/roles.service';
 
 interface MenuItem {
 
@@ -59,7 +59,7 @@ export class Navbar {
     );
 
     if(this.auth.isLogged()){
-      const data = this.auth.decodeToken(this.auth.getToken()!);
+      const data = this.auth.decodeToken();
       this.menuItems = data.modulos;
       this.isLogged = true;
       
@@ -67,7 +67,6 @@ export class Navbar {
 
       this.rol.get_rol().subscribe({
         next: (menu) => {
-          console.log(menu)
           this.menuItems = menu;
         }
       })

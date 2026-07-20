@@ -46,6 +46,21 @@
     /* Sombras */
     --shadow: 0 2px 10px rgba(0,0,0,.08);
 
+    /* ==========================
+    TABLES
+    ========================== */
+
+    --table-bg: #ffffff;
+
+    --table-header-bg: #e2e8f0;
+    --table-header-text: #0f172a;
+
+    --table-row-text: #0f172a;
+
+    --table-border: #cbd5e1;
+
+    --table-hover: #f1f5f9;
+
 }
 
 /* ========================= */
@@ -72,6 +87,21 @@ html.dark {
     --primary-hover: #93c5fd;
 
     --shadow: 0 2px 15px rgba(0,0,0,.45);
+
+    /* ==========================
+       TABLES DARK
+       ========================== */
+
+    --table-bg: #1e293b;
+
+    --table-header-bg: #334155;
+    --table-header-text: #f8fafc;
+
+    --table-row-text: #f8fafc;
+
+    --table-border: #475569;
+
+    --table-hover: #334155;
 
 }
 
@@ -101,5 +131,64 @@ body{
 
     background: var(--primary-btn-hover) !important;
     border-color: var(--primary-btn-hover) !important;
+
+}
+
+/* ==============================
+   PRIME NG TABLE GLOBAL
+================================ */
+
+
+.p-datatable {
+
+    background: var(--table-bg) !important;
+
+}
+
+
+
+.p-datatable-table {
+
+    background: var(--table-bg) !important;
+
+}
+
+
+
+.p-datatable-thead > tr > th {
+
+    background: var(--table-header-bg) !important;
+
+    color: var(--table-header-text) !important;
+
+    border-color: var(--table-border) !important;
+
+}
+
+
+
+.p-datatable-tbody > tr {
+
+    background: var(--table-bg) !important;
+
+    color: var(--table-row-text) !important;
+
+}
+
+
+
+.p-datatable-tbody > tr > td {
+
+    color: var(--table-row-text) !important;
+
+    border-color: var(--table-border) !important;
+
+}
+
+
+
+.p-datatable-tbody > tr:hover {
+
+    background: var(--table-hover) !important;
 
 }
