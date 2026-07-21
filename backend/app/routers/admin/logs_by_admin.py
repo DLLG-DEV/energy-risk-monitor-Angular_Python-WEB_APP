@@ -37,27 +37,16 @@ def create_log(
 ):
 
     log = AuditLog(
-
         user_id=user.id,
-
         username=f"{user.first_name} {user.last_name}",
-
         user_role=user.role.name,
-
         action=action,
-
         entity=entity,
-
         entity_id=entity_id,
-
         description=description,
-
         old_data=old_data,
-
         new_data=new_data,
-
         ip_address=ip
-
     )
     db.add(log)
     db.commit()

@@ -12,6 +12,7 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { Roles_AdmService } from '../../../core/services/admin/roles/roles_admin.service';
 import { RoleList, UserAdmin } from '../../../core/interfaces/user-admin';
+import { LogRefreshService } from '../../../core/services/admin/logs/refresh.service';
 
 @Component({
   selector: 'app-users-by-admin',
@@ -53,24 +54,25 @@ export class UsersByAdminComponent  {
     private messageService: MessageService,
     private cdr: ChangeDetectorRef,
     private Rol_ServAdm: Roles_AdmService,
+    private logRefresh: LogRefreshService
   ){
-    
   }
   
   ngOnInit(){
     this.loadRoles();
     this.loadUsers();
-
   }
 
   loadUsers(){
-
     this.Usr_ServAdm.getUsers()
     .subscribe({
       next:(data: UserAdmin[])=>{
         this.users = data;
         this.loading = false;
         this.cdr.detectChanges();
+
+        this.logRefresh.refresh();
+
 
         this.messageService.add({
             severity:'success',

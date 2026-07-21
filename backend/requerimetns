@@ -9,6 +9,10 @@ pip install sqlalchemy
 pip install psycopg2-binary
 pip install passlib[bcrypt]
 pip install python-jose[cryptography]
+pip install requests
+pip install reverse_geocoder
+pip install pycountry
+
 
 LEVANTAR BACKEND
 uvicorn app.main:app --reload

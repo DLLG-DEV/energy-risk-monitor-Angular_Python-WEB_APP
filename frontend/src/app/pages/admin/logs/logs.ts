@@ -7,6 +7,7 @@ import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
+import { LogRefreshService } from '../../../core/services/admin/logs/refresh.service';
 
 @Component({
   standalone: true,
@@ -32,11 +33,17 @@ export class Logs_by_admin {
   constructor(
     private logsService:Logs_AdmService,
     private cdr: ChangeDetectorRef, 
-    private messageService: MessageService
+    private messageService: MessageService,
+    private logRefresh: LogRefreshService,
   ){}
 
   ngOnInit():void{
     this.loadLogs();
+
+    this.logRefresh.refresh$.subscribe(() => {
+      this.loadLogs();
+    });
+
   }
 
   loadLogs(){
@@ -66,12 +73,25 @@ export class Logs_by_admin {
     this.showDetail=true;
   }
 
-  getActionSeverity(action:string){
-    switch(action){
-      case 'CREATE':  return 'success';
-      case 'UPDATE':  return 'info';
-      case 'DELETE':  return 'danger';
-      default:  return 'secondary';
+  getActionSeverity(action: string) {
+    switch (action) {
+      case 'CREATE':
+        return 'success';    // Verde
+
+      case 'ALTA':
+        return 'contrast';   // Azul/Turquesa (o el color disponible en tu tema)
+
+      case 'UPDATE':
+        return 'info';       // Azul
+
+      case 'BAJA':
+        return 'warn';       // Amarillo/Naranja
+
+      case 'DELETE':
+        return 'danger';     // Rojo
+
+      default:
+        return 'secondary';  // Gris
     }
   }
 

@@ -32,6 +32,11 @@ class Settings:
     ACCESS_TOKEN_EXPIRE_MINUTES = int(
         os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
     )
+    
+    API_NASA_EONET = os.getenv(
+        "API_NASA_EONET"
+    )
+
 
 
 

@@ -12,13 +12,11 @@ import { ToastModule } from 'primeng/toast';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../core/auth/auth.service';
 
-
 export interface LoginResponse {
   access_token: string,
   status: string,
   token_type: string,
 }
-
 
 @Component({
   selector: 'app-login',

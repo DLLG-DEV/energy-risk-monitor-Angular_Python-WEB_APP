@@ -117,6 +117,18 @@ def update_user(
         "is_active": user.is_active
     }
 
+    # Determinar la acción del log
+    action = "UPDATE"
+    description = f"Actualizó el usuario {user.email}"
+
+    if old_data["is_active"] != data.is_active:
+        if data.is_active:
+            action = "ALTA"
+            description = f"Activó el usuario {user.email}"
+        else:
+            action = "BAJA"
+            description = f"Desactivó el usuario {user.email}"
+
     user.first_name = data.first_name
     user.last_name = data.last_name
     user.email = data.email
@@ -124,7 +136,7 @@ def update_user(
     user.is_active = data.is_active
 
     db.commit()
-    
+
     new_data = {
         "first_name": user.first_name,
         "last_name": user.last_name,
@@ -133,18 +145,18 @@ def update_user(
         "role": role.name,
         "is_active": user.is_active
     }
-    
+
     create_log(
         db=db,
         user=current_user,
-        action="UPDATE",
+        action=action,
         entity="USER",
         entity_id=user.id,
-        description=f"Actualizó el usuario {user.email}",
+        description=description,
         old_data=old_data,
         new_data=new_data
-    )    
-    
+    )
+
     db.refresh(user)
 
     return {
