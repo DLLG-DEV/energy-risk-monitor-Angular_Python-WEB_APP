@@ -1,7 +1,44 @@
-<h1>ADMIN</h1>
+<div class="w-full">
 
-<app-users-by-admin></app-users-by-admin>
+    <!-- Título principal -->
+    <div class="mb-8 text-center">
 
-<app-roles-by-admin></app-roles-by-admin>
+        <h1
+            class="text-3xl font-bold"
+            style="color:var(--text)">
+            ADMIN
+        </h1>
 
-<app-logs-by-admin></app-logs-by-admin>
+        <p
+            class="text-sm mt-2"
+            style="color:var(--text-secondary)">
+            Gestión de usuarios, roles y auditoría del sistema ERM
+        </p>
+
+    </div>
+
+
+    <p-divider>
+    </p-divider>
+
+
+    <app-users-by-admin></app-users-by-admin>
+
+
+
+    <p-divider>
+    </p-divider>
+
+
+    <app-roles-by-admin></app-roles-by-admin>
+
+
+
+    <p-divider>
+    </p-divider>
+
+
+    <app-logs-by-admin></app-logs-by-admin>
+
+
+</div>

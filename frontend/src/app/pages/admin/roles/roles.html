@@ -1,1 +1,358 @@
-<p>roles works!</p>
+
+<div class="w-full">
+
+    <!-- Header -->
+    <div class="mb-1 mt-5">
+
+        <h2 
+            class="text-xl font-semibold"
+            style="color:var(--text)">
+            Roles del sistema
+        </h2>
+
+        <p
+            class="text-sm mt-1"
+            style="color:var(--text-secondary)">
+            Administración de permisos y módulos asignados en ERM
+        </p>
+
+    </div>
+
+    <!-- Botón nuevo rol -->
+<div class="flex justify-center mb-1">
+
+    <button
+        pButton
+        type="button"
+        label="Nuevo Rol"
+        icon="pi pi-plus"
+        severity="success"
+        class="px-5"
+        (click)="openRole('N')">
+    </button>
+
+</div>
+
+    <!-- Card -->
+    <div
+        class="rounded-xl p-4 shadow-sm border"
+        style="
+            background:var(--surface);
+            border-color:var(--navbar-border);
+        "
+    >
+
+        <p-table
+            [value]="role"
+            responsiveLayout="scroll"
+            styleClass="w-full"
+        >
+
+
+            <!-- HEADER -->
+            <ng-template pTemplate="header">
+
+                <tr>
+
+                    <th>
+                        Rol
+                    </th>
+
+                    <th>
+                        Módulos asignados
+                    </th>
+
+                    <th>
+                        Cantidad
+                    </th>
+
+                    <th class="text-center">
+                        Acciones
+                    </th>
+
+                </tr>
+
+            </ng-template>
+
+
+
+            <!-- BODY -->
+            <ng-template 
+                pTemplate="body"
+                let-role>
+
+
+                <tr>
+
+
+                    <!-- Nombre rol -->
+                    <td>
+
+                        <div class="flex flex-col">
+
+                            <span
+                                class="font-medium"
+                                style="color:var(--text)"
+                            >
+                                {{role.name}}
+                            </span>
+
+
+                            <span
+                                class="text-xs"
+                                style="color:var(--text-secondary)"
+                            >
+                                ID: {{role.id}}
+                            </span>
+
+                        </div>
+
+                    </td>
+
+
+
+
+                    <!-- Modulos -->
+                    <td>
+
+
+                        <div class="flex flex-wrap gap-2">
+
+
+                            <p-tag
+                                *ngFor="let module of role.modules"
+                                severity="info"
+                                [value]="module.label"
+                                [icon]="'pi ' + module.icon"
+                            >
+                            </p-tag>
+
+
+                        </div>
+
+
+                    </td>
+
+
+
+
+                    <!-- Cantidad -->
+                    <td>
+
+                        <p-tag
+                            [value]="role.modules.length + ' módulos'"
+                        />
+
+                    </td>
+
+
+
+
+                    <!-- Acciones -->
+                    <td class="text-center">
+
+
+                        <button
+                            pButton
+                            type="button"
+                            severity="info"
+                            icon="pi pi-pencil"
+                            class="p-button-rounded p-button-text"
+                            (click)="openRole('E', role)">
+                        </button>
+
+
+                    </td>
+
+
+                </tr>
+
+
+            </ng-template>
+
+
+
+
+            <!-- VACIO -->
+            <ng-template pTemplate="emptymessage">
+
+                <tr>
+
+                    <td
+                        colspan="4"
+                        class="text-center py-6"
+                    >
+                        No hay roles registrados
+                    </td>
+
+                </tr>
+
+            </ng-template>
+
+
+
+        </p-table>
+
+
+    </div>
+
+
+</div>
+
+<p-dialog
+    [header]="modeRole === 'N' ? 'Nuevo Rol' : 'Editar Rol'"
+    [(visible)]="showRoleDialog"
+    [modal]="true"
+    [style]="{width:'600px'}"
+    [draggable]="false"
+    [resizable]="false"
+>
+
+
+<div class="flex flex-col gap-5">
+
+
+    <!-- Nombre -->
+    <div>
+
+        <label class="font-semibold">
+            Nombre del rol
+        </label>
+
+
+        <input
+            pInputText
+            class="w-full mt-2"
+            [(ngModel)]="selectedRole.name"
+            name="roleName"
+        >
+
+    </div>
+
+
+
+    <!-- Tabla permisos -->
+
+    <div>
+
+        <label class="font-semibold">
+            Permisos de acceso
+        </label>
+
+
+        <div
+            class="border rounded-lg mt-3 overflow-hidden"
+        >
+
+            <table class="w-full">
+
+
+                <thead>
+
+                    <tr
+                    style="background:var(--navbar)"
+                    >
+
+                        <th
+                        class="text-left p-3">
+                            Módulo
+                        </th>
+
+
+                        <th
+                        class="text-center p-3">
+                            Acceso
+                        </th>
+
+
+                    </tr>
+
+                </thead>
+
+
+
+                <tbody>
+
+
+                    <tr
+                    *ngFor="let module of modulesPermission"
+                    class="border-t"
+                    >
+
+
+                        <td class="p-3">
+
+                            <div class="flex items-center gap-3">
+
+                                <i
+                                class="pi {{module.icon}}">
+                                </i>
+
+
+                                {{module.label}}
+
+                            </div>
+
+                        </td>
+
+
+
+                        <td class="text-center">
+
+
+                            <p-checkbox
+                                [(ngModel)]="module.active"
+                                [binary]="true"
+                                name="module_{{module.id}}">
+                            </p-checkbox>
+
+
+                        </td>
+
+
+                    </tr>
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+<ng-template pTemplate="footer">
+
+
+<button
+pButton
+label="Cancelar"
+icon="pi pi-times"
+class="p-button-text"
+(click)="showRoleDialog=false">
+</button>
+
+
+
+<button
+pButton
+label="Guardar"
+icon="pi pi-check"
+(click)="saveRole()"
+[loading]="loading"
+>
+</button>
+
+
+</ng-template>
+
+
+</p-dialog>

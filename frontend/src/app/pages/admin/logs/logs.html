@@ -1,1 +1,500 @@
-<p>logs works!</p>
+<div class="w-full">
+
+
+    <!-- Header -->
+    <div class="mb-6">
+
+        <h2
+            class="text-xl font-semibold"
+            style="color:var(--text)"
+        >
+            Auditoría del sistema
+        </h2>
+
+
+        <p
+            class="text-sm mt-1"
+            style="color:var(--text-secondary)"
+        >
+            Registro de actividades realizadas dentro de ERM
+        </p>
+
+    </div>
+
+
+
+    <!-- Card -->
+
+    <div class="flex justify-center mb-1">
+
+    <button
+        pButton
+        type="button"
+        label="Recarga"
+        icon="pi pi-refresh"
+        severity="info"
+        class="px-5"
+        (click)="loadLogs()">
+    </button>
+
+</div>
+
+    <div
+        class="rounded-xl p-4 shadow-sm border"
+        style="
+            background:var(--surface);
+            border-color:var(--navbar-border);
+        "
+    >
+
+
+        <p-table
+
+            [value]="logs"
+
+            [loading]="loading"
+
+            responsiveLayout="scroll"
+
+            styleClass="w-full"
+
+        >
+
+
+            <!-- HEADER -->
+
+            <ng-template pTemplate="header">
+
+                <tr>
+
+
+                    <th>
+                        Acción
+                    </th>
+
+
+                    <th>
+                        Usuario
+                    </th>
+
+
+                    <th>
+                        Entidad
+                    </th>
+
+
+                    <th>
+                        Descripción
+                    </th>
+
+
+                    <th>
+                        Fecha y hora
+                    </th>
+
+
+                    <th class="text-center">
+                        Detalle
+                    </th>
+
+
+                </tr>
+
+            </ng-template>
+
+
+
+            <!-- BODY -->
+
+            <ng-template
+                pTemplate="body"
+                let-log
+            >
+
+            <tr>
+
+
+                <!-- Acción -->
+
+                <td>
+
+                    <p-tag
+                        [value]="log.action"
+                        [severity]="getActionSeverity(log.action)"
+                    />
+
+                </td>
+
+
+
+                <!-- Usuario -->
+
+                <td>
+
+
+                    <div class="flex flex-col">
+
+
+                        <span
+                            class="font-medium"
+                            style="color:var(--text)"
+                        >
+
+                            {{log.username}}
+
+                        </span>
+
+
+                        <span
+                            class="text-xs"
+                            style="color:var(--text-secondary)"
+                        >
+
+                            Rol: {{log.user_role}}
+
+                        </span>
+
+
+                    </div>
+
+
+                </td>
+
+
+
+                <!-- Entidad -->
+
+                <td>
+
+                    <span
+                        style="color:var(--text)"
+                    >
+
+                        {{log.entity}}
+
+                    </span>
+
+
+                </td>
+
+
+
+                <!-- Descripción -->
+
+                <td>
+
+                    <span
+                        style="color:var(--text)"
+                    >
+
+                        {{log.description}}
+
+                    </span>
+
+                </td>
+
+
+
+
+                <!-- Fecha -->
+
+                <td>
+
+                    <div class="flex flex-col">
+
+
+                        <span
+                            style="color:var(--text)"
+                        >
+
+                            {{log.created_at | date:'dd/MM/yyyy'}}
+
+                        </span>
+
+
+                        <span
+                            class="text-xs"
+                            style="color:var(--text-secondary)"
+                        >
+
+                            {{log.created_at | date:'HH:mm:ss'}}
+
+                        </span>
+
+
+                    </div>
+
+
+                </td>
+
+
+
+                <!-- Acción -->
+
+                <td class="text-center">
+
+
+                    <button
+
+                        pButton
+
+                        type="button"
+
+                        icon="pi pi-eye"
+
+                        class="p-button-rounded p-button-text"
+
+                        severity="info"
+
+                        (click)="openDetail(log)"
+
+                    >
+
+                    </button>
+
+
+                </td>
+
+
+            </tr>
+
+
+            </ng-template>
+
+
+
+
+            <!-- VACIO -->
+
+
+            <ng-template pTemplate="emptymessage">
+
+                <tr>
+
+                    <td
+                        colspan="6"
+                        class="text-center py-6"
+                    >
+
+                        No existen registros de auditoría
+
+                    </td>
+
+                </tr>
+
+            </ng-template>
+
+
+        </p-table>
+
+
+    </div>
+
+
+</div>
+
+
+
+
+
+<!-- MODAL DETALLE -->
+
+<p-dialog
+
+    header="Detalle de auditoría"
+
+    [(visible)]="showDetail"
+
+    [modal]="true"
+
+    [style]="{
+        width:'700px'
+    }"
+
+    [draggable]="false"
+
+    [resizable]="false"
+
+>
+
+
+
+<div *ngIf="selectedLog">
+
+
+    <div class="grid grid-cols-2 gap-4 mb-5">
+
+
+        <div>
+
+            <label class="font-semibold">
+                Usuario
+            </label>
+
+            <p class="mt-1">
+                {{selectedLog.username}}
+            </p>
+
+        </div>
+
+
+
+        <div>
+
+            <label class="font-semibold">
+                Rol
+            </label>
+
+            <p class="mt-1">
+                {{selectedLog.user_role}}
+            </p>
+
+        </div>
+
+
+
+
+        <div>
+
+            <label class="font-semibold">
+                Acción
+            </label>
+
+            <div class="mt-2">
+
+                <p-tag
+                    [value]="selectedLog.action"
+                    [severity]="getActionSeverity(selectedLog.action)"
+                />
+
+            </div>
+
+
+        </div>
+
+
+
+        <div>
+
+            <label class="font-semibold">
+                Fecha
+            </label>
+
+
+            <p class="mt-1">
+
+                {{selectedLog.created_at 
+                    | date:'dd/MM/yyyy HH:mm:ss'}}
+
+            </p>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+    <div class="mb-4">
+
+
+        <label class="font-semibold">
+            Descripción
+        </label>
+
+
+        <p
+            class="mt-2"
+            style="color:var(--text-secondary)"
+        >
+
+            {{selectedLog.description}}
+
+        </p>
+
+
+    </div>
+
+
+
+
+    <div class="grid grid-cols-2 gap-4">
+
+
+        <div>
+
+
+            <label class="font-semibold">
+                Datos anteriores
+            </label>
+
+
+            <pre
+                class="mt-2 p-3 rounded-lg text-sm overflow-auto"
+                style="
+                    background:var(--background);
+                    color:var(--text);
+                "
+            >{{selectedLog.old_data | json}}</pre>
+
+
+        </div>
+
+
+
+
+        <div>
+
+
+            <label class="font-semibold">
+                Datos nuevos
+            </label>
+
+
+            <pre
+                class="mt-2 p-3 rounded-lg text-sm overflow-auto"
+                style="
+                    background:var(--background);
+                    color:var(--text);
+                "
+            >{{selectedLog.new_data | json}}</pre>
+
+
+        </div>
+
+
+    </div>
+
+
+
+</div>
+
+
+
+<ng-template pTemplate="footer">
+
+
+    <button
+
+        pButton
+
+        label="Cerrar"
+
+        icon="pi pi-times"
+
+        class="p-button-text"
+
+        (click)="showDetail=false"
+
+    >
+
+    </button>
+
+
+</ng-template>
+
+
+
+</p-dialog>

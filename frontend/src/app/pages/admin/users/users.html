@@ -24,7 +24,6 @@
         "
     >
 
-
         <p-table
             [value]="users"
             [loading]="loading"
@@ -52,6 +51,10 @@
 
                     <th>
                         Creado
+                    </th>
+
+                    <th class="text-center">
+                        Acciones
                     </th>
 
                 </tr>
@@ -101,10 +104,22 @@
                             "
                         />
                     </td>
+
                     <td
                         style="color:var(--text-secondary)"
                     >
                         {{user.created_at | date:'dd/MM/yyyy'}}
+                    </td>
+
+                    <td class="text-center">
+                        <button
+                            pButton
+                            type="button"
+                            severity="info"
+                            icon="pi pi-pencil"
+                            class="p-button-rounded p-button-text"
+                            (click)="openEditModal(user)">
+                        </button>
                     </td>
                 </tr>
 
@@ -123,3 +138,154 @@
         </p-table>
     </div>
 </div>
+
+<p-dialog
+    header="Editar usuario"
+    [(visible)]="showUserDialog"
+    [modal]="true"
+    [style]="{ width: '650px' }"
+    [draggable]="false"
+    [resizable]="false"
+>
+
+<form #userForm="ngForm">
+
+    <div class="grid grid-cols-2 gap-4">
+
+        <!-- Nombre -->
+        <div>
+            <label class="font-semibold">
+                Nombre
+            </label>
+
+            <input
+                pInputText
+                class="w-full mt-2"
+                [(ngModel)]="selectedUser.first_name"
+                name="first_name"
+            >
+        </div>
+
+        <!-- Apellido -->
+        <div>
+
+            <label class="font-semibold">
+                Apellido
+            </label>
+
+            <input
+                pInputText
+                class="w-full mt-2"
+                [(ngModel)]="selectedUser.last_name"
+                name="last_name"
+            >
+
+        </div>
+
+        <!-- Email -->
+        <div class="col-span-2">
+
+            <label class="font-semibold">
+                Correo
+            </label>
+
+            <input
+                pInputText
+                class="w-full mt-2"
+                [(ngModel)]="selectedUser.email"
+                name="email"
+            >
+
+        </div>
+
+        <!-- Rol -->
+        <div>
+
+            <label class="font-semibold">
+                Rol
+            </label>
+
+            <p-select
+                name="role_id"
+                [options]="roles"
+                optionLabel="name"
+                optionValue="id"
+                [(ngModel)]="selectedUser.role_id">
+            </p-select>
+        </div>
+
+        <!-- Estado -->
+        <div>
+
+            <label class="font-semibold">
+                Estado
+            </label>
+
+<div class="flex gap-5 mt-3">
+
+    <div class="flex items-center gap-2">
+
+        <p-radiobutton
+            name="estado"
+            [value]="true"
+            [(ngModel)]="selectedUser.is_active">
+        </p-radiobutton>
+
+        <label>Activo</label>
+
+    </div>
+
+    <div class="flex items-center gap-2">
+
+        <p-radiobutton
+            name="estado"
+            [value]="false"
+            [(ngModel)]="selectedUser.is_active">
+        </p-radiobutton>
+
+        <label>Inactivo</label>
+
+    </div>
+
+</div>        </div>
+
+        <!-- Fecha -->
+        <div class="col-span-2">
+
+            <label class="font-semibold">
+                Fecha de registro
+            </label>
+
+            <input
+                pInputText
+                class="w-full mt-2"
+                [value]="selectedUser.created_at | date:'dd/MM/yyyy HH:mm'"
+                readonly>
+
+        </div>
+
+    </div>
+
+</form>
+
+<ng-template pTemplate="footer">
+
+    <button
+        pButton
+        label="Cancelar"
+        icon="pi pi-times"
+        class="p-button-text"
+        (click)="showUserDialog=false">
+    </button>
+
+    <button
+        pButton
+        label="Guardar"
+        icon="pi pi-check"
+        [loading]="loading"
+        (click)="saveUser()">
+    </button>
+
+</ng-template>
+
+</p-dialog>
