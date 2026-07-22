@@ -1,0 +1,115 @@
+.map-container{
+
+    width:100%;
+
+    height:700px;
+
+    border-radius:15px;
+
+    overflow:hidden;
+
+}
+
+
+#world-map{
+
+    width:100%;
+
+    height:100%;
+
+}
+
+
+
+.card-stat{
+
+    padding:20px;
+
+    border-radius:12px;
+
+    background:var(--surface-card);
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+}
+
+
+.card-stat strong{
+
+    font-size:30px;
+
+}
+
+.card-stat{
+
+    padding: 10px;
+
+    border-radius: 10px;
+
+    border: 1px solid var(--border);
+
+    background: var(--surface);
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    height:75px;
+
+}
+
+
+
+.card-stat span{
+
+    font-size:0.75rem;
+
+    color:var(--text-secondary);
+
+    margin-bottom:4px;
+
+}
+
+
+
+.card-stat strong{
+
+    font-size:1.35rem;
+
+    font-weight:700;
+
+    color:var(--text);
+
+}
+
+
+
+.map-container{
+
+    width:100%;
+
+    height:650px;
+
+    border-radius:12px;
+
+    overflow:hidden;
+
+}
+
+
+
+#world-map{
+
+    width:100%;
+
+    height:100%;
+
+}

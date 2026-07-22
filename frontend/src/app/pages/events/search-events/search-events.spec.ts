@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Heatmap } from './heatmap';
+import { SearchEvents } from './search-events';
 
-describe('Heatmap', () => {
-  let component: Heatmap;
-  let fixture: ComponentFixture<Heatmap>;
+describe('SearchEvents', () => {
+  let component: SearchEvents;
+  let fixture: ComponentFixture<SearchEvents>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Heatmap],
+      imports: [SearchEvents],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Heatmap);
+    fixture = TestBed.createComponent(SearchEvents);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

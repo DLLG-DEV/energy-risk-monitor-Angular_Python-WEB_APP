@@ -6,6 +6,7 @@ import { NewUser } from './user/new-user/new-user';
 import { Admincmp } from './pages/admin/admin';
 import { authGuard } from './core/guards/auth-guard';
 import { roleGuard } from './core/guards/role-guard';
+import { Events } from './pages/events/events';
 
 export const routes: Routes = [
     {
@@ -29,6 +30,10 @@ export const routes: Routes = [
                 data:{
                     role: 1
                 },
+            },
+            {
+                path:'events',
+                component: Events,
             }
         ]
     },

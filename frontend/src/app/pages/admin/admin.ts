@@ -17,7 +17,4 @@ import { DividerModule } from 'primeng/divider';
   styleUrl: './admin.css',
 })
 export class Admincmp {
-
-  constructor(
-  ){}
 }

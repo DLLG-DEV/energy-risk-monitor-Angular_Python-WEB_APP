@@ -1,0 +1,347 @@
+<div class="w-full">
+
+
+    <!-- Header -->
+    <div class="mb-6">
+
+        <h2 
+            class="text-xl font-semibold"
+            style="color:var(--text)">
+            Explorador de eventos
+        </h2>
+
+
+        <p
+            class="text-sm mt-1"
+            style="color:var(--text-secondary)">
+            Consulta eventos naturales históricos registrados en ERM
+        </p>
+
+    </div>
+
+
+
+    <!-- Filtros -->
+    <div
+        class="rounded-xl p-4 shadow-sm border mb-6"
+        style="
+            background:var(--surface);
+            border-color:var(--navbar-border);
+        "
+    >
+
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+
+            <!-- Texto -->
+            <div>
+
+                <label
+                    class="text-sm block mb-2"
+                    style="color:var(--text)">
+                    Buscar evento
+                </label>
+
+
+                <input
+                    pInputText
+                    type="text"
+                    class="w-full"
+                    placeholder="Ej. incendio, volcán..."
+                    [(ngModel)]="filters.category"
+                />
+
+            </div>
+
+
+
+            <!-- Categoria -->
+            <div>
+
+                <label
+                    class="text-sm block mb-2"
+                    style="color:var(--text)">
+                    Categoría
+                </label>
+
+                <p-select
+                    [options]="categories"
+                    [(ngModel)]="filters.category"
+                    optionLabel="name"
+                    optionValue="value"
+                    placeholder="Seleccione categoría"
+                    class="w-full">
+                </p-select>
+
+            </div>
+
+
+
+
+            <!-- Pais -->
+            <div>
+
+                <label
+                    class="text-sm block mb-2"
+                    style="color:var(--text)">
+                    País
+                </label>
+
+
+                <input
+                    pInputText
+                    class="w-full"
+                    placeholder="Ej. México"
+                    [(ngModel)]="filters.country"
+                />
+
+            </div>
+
+
+
+            <!-- Fecha inicio -->
+            <div>
+
+                <label
+                    class="text-sm block mb-2"
+                    style="color:var(--text)">
+                    Desde
+                </label>
+
+                <p-datepicker
+                    [(ngModel)]="filters.start_date"
+                    dateFormat="yy-mm-dd"
+                    class="w-full">
+                </p-datepicker>
+            </div>
+
+
+
+            <!-- Fecha fin -->
+            <div>
+
+                <label
+                    class="text-sm block mb-2"
+                    style="color:var(--text)">
+                    Hasta
+                </label>
+
+
+                <p-calendar
+                    [(ngModel)]="filters.end_date"
+                    dateFormat="yy-mm-dd"
+                    class="w-full">
+                </p-calendar>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- Botones -->
+
+        <div class="flex justify-end gap-3 mt-5">
+
+
+            <button
+                pButton
+                label="Limpiar"
+                icon="pi pi-times"
+                severity="secondary"
+                class="p-button-text"
+                (click)="clearFilters()">
+            </button>
+
+
+
+            <button
+                pButton
+                label="Buscar"
+                icon="pi pi-search"
+                (click)="searchEvents()">
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <!-- Tabla -->
+    <div
+        class="rounded-xl p-4 shadow-sm border"
+        style="
+            background:var(--surface);
+            border-color:var(--navbar-border);
+        "
+    >
+
+
+        <p-table
+            [value]="events"
+            [loading]="loading"
+            responsiveLayout="scroll"
+            styleClass="w-full"
+        >
+
+
+
+            <ng-template pTemplate="header">
+
+                <tr>
+
+                    <th>
+                        Evento
+                    </th>
+
+
+                    <th>
+                        Categoría
+                    </th>
+
+
+                    <th>
+                        País
+                    </th>
+
+
+                    <th>
+                        Fecha
+                    </th>
+
+
+                    <th class="text-center">
+                        Acción
+                    </th>
+
+
+                </tr>
+
+            </ng-template>
+
+
+
+
+            <ng-template 
+                pTemplate="body"
+                let-event>
+
+
+                <tr>
+
+
+                    <td>
+
+                        <div class="flex flex-col">
+
+
+                            <span
+                                class="font-medium"
+                                style="color:var(--text)">
+                                {{event.title}}
+                            </span>
+
+
+                            <span
+                                class="text-xs"
+                                style="color:var(--text-secondary)">
+                                ID: {{event.id}}
+                            </span>
+
+
+                        </div>
+
+                    </td>
+
+
+
+                    <td>
+
+                        <p-tag
+                            [value]="event.category">
+                        </p-tag>
+
+                    </td>
+
+
+
+                    <td
+                        style="color:var(--text)">
+                        {{event.country ?? 'Sin información'}}
+                    </td>
+
+
+
+                    <td
+                        style="color:var(--text-secondary)">
+
+                        {{event.event_date | date:'dd/MM/yyyy'}}
+
+                    </td>
+
+
+
+
+                    <td class="text-center">
+
+
+                        <button
+                            pButton
+                            icon="pi pi-eye"
+                            severity="info"
+                            class="p-button-rounded p-button-text"
+                            (click)="viewDetail(event)">
+                        </button>
+
+
+                    </td>
+
+
+                </tr>
+
+
+            </ng-template>
+
+
+
+
+            <ng-template pTemplate="emptymessage">
+
+                <tr>
+
+                    <td
+                        colspan="5"
+                        class="text-center py-6">
+
+                        No hay eventos encontrados
+
+                    </td>
+
+                </tr>
+
+            </ng-template>
+
+
+        </p-table>
+
+
+
+    </div>
+
+
+</div>
+
+<app-event-detail-dialog
+
+    [(visible)]="showDetailDialog"
+
+    [selectedEvent]="selectedEvent">
+
+</app-event-detail-dialog>

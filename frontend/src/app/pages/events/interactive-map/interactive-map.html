@@ -1,0 +1,80 @@
+<div class="w-full">
+
+
+    <!-- Estadísticas superiores -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-5">
+
+
+        <div class="card-stat">
+
+            <span>Total</span>
+
+            <strong>
+                {{totalEvents}}
+            </strong>
+
+        </div>
+
+
+
+        <div class="card-stat">
+
+            <span>Incendios</span>
+
+            <strong>
+                {{statistics.fires}}
+            </strong>
+
+        </div>
+
+
+
+        <div class="card-stat">
+
+            <span>Tormentas</span>
+
+            <strong>
+                {{statistics.storms}}
+            </strong>
+
+        </div>
+
+
+
+        <div class="card-stat">
+
+            <span>Volcanes</span>
+
+            <strong>
+                {{statistics.volcanoes}}
+            </strong>
+
+        </div>
+
+
+
+        <div class="card-stat">
+
+            <span>Otros</span>
+
+            <strong>
+                {{statistics.other}}
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- MAPA -->
+
+    <div class="map-container">
+
+        <div id="world-map"></div>
+
+    </div>
+
+
+</div>

@@ -299,3 +299,8 @@ Desarrollar una plataforma capaz de monitorear eventos naturales a nivel mundial
 Backend Developer | Python | FastAPI | Angular | PostgreSQL
 
 ---
+
+# REQUERIMIENTOS
+
+npm install -D @types/leaflet
+npm install leaflet
