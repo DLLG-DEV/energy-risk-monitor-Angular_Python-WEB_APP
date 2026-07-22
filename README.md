@@ -304,3 +304,4 @@ Backend Developer | Python | FastAPI | Angular | PostgreSQL
 
 npm install -D @types/leaflet
 npm install leaflet
+npm install leaflet.heat

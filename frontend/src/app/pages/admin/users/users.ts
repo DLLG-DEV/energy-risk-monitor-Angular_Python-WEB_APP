@@ -72,13 +72,6 @@ export class UsersByAdminComponent  {
         this.cdr.detectChanges();
 
         this.logRefresh.refresh();
-
-
-        this.messageService.add({
-            severity:'success',
-            summary:'Error obteniendo usuarios',
-        });
-
       },
       error:(error)=>{
         console.error(

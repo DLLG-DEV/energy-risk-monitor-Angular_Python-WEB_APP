@@ -75,6 +75,7 @@ export class Login {
 
         const data = this.auth.decodeToken()
 
+        console.log(data)
         localStorage.setItem(
           "modulos",
           data.modulos

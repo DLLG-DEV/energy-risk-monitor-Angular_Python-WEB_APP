@@ -7,6 +7,9 @@ import { Admincmp } from './pages/admin/admin';
 import { authGuard } from './core/guards/auth-guard';
 import { roleGuard } from './core/guards/role-guard';
 import { Events } from './pages/events/events';
+import { Heatmap } from './pages/heatmap/heatmap';
+import { environment } from '../environments/environment';
+
 
 export const routes: Routes = [
     {
@@ -28,12 +31,24 @@ export const routes: Routes = [
                 component: Admincmp,
                 canActivate: [authGuard, roleGuard],
                 data:{
-                    role: 1
-                },
+                    role:environment.ADMIN_ROLE_ID,
+                    module:"Administración"
+                }
+            },
+            {
+                path:'heatmap',
+                component: Heatmap,
+                canActivate: [authGuard, roleGuard],
+                data:{
+                    module:'Mapa de Riesgo'
+                }
             },
             {
                 path:'events',
                 component: Events,
+                data:{
+                    module:'Eventos Globales'
+                }
             }
         ]
     },
