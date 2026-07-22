@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
-import { EventDetail, EventList, EventSearchResponse } from '../../interfaces/events';
+import { CategoriResponse, EventDetail, EventList, EventSearchResponse, EventStatistics } from '../../interfaces/events';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +26,21 @@ export class EventsService {
         `${this.url_back}/events/${id}`
     );
   }
+
+  get_categoria(): Observable<CategoriResponse[]>{
+    return this.http.get<CategoriResponse[]>(
+        `${this.url_back}/categories`
+    );
+
+  }
+
+  get_statistics(): Observable<EventStatistics>{
+
+    return this.http.get<EventStatistics>(
+        `${this.url_back}/events/statistics`
+    );
+
+}
 
   get_events_searchs(filters: {
     category?: string;

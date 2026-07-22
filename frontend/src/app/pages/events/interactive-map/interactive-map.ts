@@ -6,7 +6,7 @@ import {
   Component,
   OnInit
 } from '@angular/core';
-import { EventList } from '../../../core/interfaces/events';
+import { EventList, EventStatistics } from '../../../core/interfaces/events';
 import * as L from 'leaflet';
 
 @Component({
@@ -25,17 +25,7 @@ export class InteractiveMap {
   totalEvents = 0;
   eventMarkers:L.Marker[]=[];
   map!: L.Map;
-statistics = {
-
- fires:0,
-
- storms:0,
-
- volcanoes:0,
-
- other:0
-
-};
+  statistics!: EventStatistics;
   
   constructor(
     private readonly Events_Serv: EventsService,
@@ -45,6 +35,7 @@ statistics = {
 
   ngOnInit(): void {
     this.loadEvents();
+    this.loadStatistics();
   }
 
   loadEvents(){
@@ -54,7 +45,6 @@ statistics = {
       next:(data)=>{
         this.events=data;
         this.totalEvents=data.length;
-        this.calculateStatistics();
         this.generateCountryPoints();
         this.loadMap();        
         this.cdr.detectChanges();
@@ -68,62 +58,34 @@ statistics = {
     })
   }
 
-calculateStatistics(){
+  loadStatistics(){
 
-  this.events.forEach(event=>{
+      this.Events_Serv
+      .get_statistics()
+      .subscribe({
 
-    const category =
-    event.category.toUpperCase();
+          next:(data)=>{
 
+              this.statistics=data;
 
-    switch(category){
+              this.cdr.detectChanges();
 
+          },
 
-      case 'FIRE':
+          error:(err)=>{
 
-        this.statistics.fires++;
+              console.error(
+                  "Error estadísticas",
+                  err
+              );
 
-      break;
+          }
 
+      });
 
-
-      case 'STORM':
-
-        this.statistics.storms++;
-
-      break;
-
-
-
-      case 'VOLCANO':
-
-        this.statistics.volcanoes++;
-
-      break;
+  }
 
 
-
-      case 'OTHER':
-
-        this.statistics.other++;
-
-      break;
-
-
-
-      default:
-
-        this.statistics.other++;
-
-      break;
-
-
-    }
-
-
-  });
-
-}
 
   drawCountryEvents(events:EventList[]){
   this.eventMarkers.forEach(

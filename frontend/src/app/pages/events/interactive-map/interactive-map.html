@@ -1,71 +1,42 @@
 <div class="w-full">
 
+    <!-- KPI TOTAL -->
+    <div class="stats-grid">
 
-    <!-- Estadísticas superiores -->
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-5">
+        <div class="card-stat total-card">
 
-
-        <div class="card-stat">
-
-            <span>Total</span>
+            <span>Total Eventos</span>
 
             <strong>
-                {{totalEvents}}
+                {{ statistics?.total }}
             </strong>
 
         </div>
 
 
+        @for(category of statistics?.categories; track category.code){
 
-        <div class="card-stat">
+            <div class="card-stat">
 
-            <span>Incendios</span>
+                <div class="card-header">
 
-            <strong>
-                {{statistics.fires}}
-            </strong>
+                    <span>
+                        {{ category.name }}
+                    </span>
 
-        </div>
-
-
-
-        <div class="card-stat">
-
-            <span>Tormentas</span>
-
-            <strong>
-                {{statistics.storms}}
-            </strong>
-
-        </div>
+                </div>
 
 
-
-        <div class="card-stat">
-
-            <span>Volcanes</span>
-
-            <strong>
-                {{statistics.volcanoes}}
-            </strong>
-
-        </div>
+                <strong>
+                    {{ category.total }}
+                </strong>
 
 
+            </div>
 
-        <div class="card-stat">
-
-            <span>Otros</span>
-
-            <strong>
-                {{statistics.other}}
-            </strong>
-
-        </div>
-
+        }
 
     </div>
-
 
 
     <!-- MAPA -->

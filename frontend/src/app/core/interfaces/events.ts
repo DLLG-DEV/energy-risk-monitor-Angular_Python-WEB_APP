@@ -26,3 +26,26 @@ export interface EventSearchResponse {
   limit: number;
   results: EventList[];
 }
+export interface CategoriResponse {
+  code: string,
+  name: string
+}
+
+export interface CategoryStatistics {
+
+  code:string;
+
+  name:string;
+
+  total:number;
+
+}
+
+
+export interface EventStatistics {
+
+  total:number;
+
+  categories:CategoryStatistics[];
+
+}

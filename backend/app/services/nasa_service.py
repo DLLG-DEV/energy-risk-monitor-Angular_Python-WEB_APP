@@ -1,7 +1,6 @@
 import requests
 
-from datetime import datetime, timedelta
-
+from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 
 from app.models.event import Event
@@ -11,240 +10,624 @@ import time
 import pycountry
 import reverse_geocoder as rg
 
+
 geo = rg.RGeocoder()
 
+# =====================================================
+# MAPEO NASA -> ERM
+# =====================================================
+
 CATEGORY_MAP = {
-    "Wildfires": "FIRE",
-    "Volcanoes": "VOLCANO",
-    "Severe Storms": "STORM",
-    "Floods": "FLOOD",
-    "Earthquakes": "EARTHQUAKE"
+
+    "wildfires": "FIRE",
+
+    "volcanoes": "VOLCANO",
+
+    "severeStorms": "STORM",
+
+    "floods": "FLOOD",
+
+    "earthquakes": "EARTHQUAKE",
+
+    "seaLakeIce": "ICE"
+
 }
 
-def get_nasa_events():
 
-    response = requests.get(
-        settings.API_NASA_EONET,
-        params={
-            "limit": 1000
-        },
-        timeout=30
-    )
+# cache de países
+country_cache = {}
 
-    response.raise_for_status()
 
-    return response.json()["events"]
 
-def get_last_5_years_events():
+# =====================================================
+# OBTENER CATALOGO NASA
+# =====================================================
+
+def get_nasa_categories():
 
     print("\n==============================")
-    print("CONSULTANDO NASA EONET")
+    print("CONSULTANDO CATALOGO NASA")
     print("==============================")
 
-    end = datetime.utcnow()
-    start = end - timedelta(days=365 * 6)
-
-    print(f"Fecha inicio: {start}")
-    print(f"Fecha fin:    {end}")
-
-    t0 = time.time()
 
     response = requests.get(
         settings.API_NASA_EONET,
         params={
-            "start": start.strftime("%Y-%m-%d"),
-            "end": end.strftime("%Y-%m-%d"),
-            "limit": 5000
+            "limit":5000
         },
         timeout=120
     )
 
-    print(f"Status Code NASA: {response.status_code}")
-    print(f"Tiempo NASA: {time.time()-t0:.2f} segundos")
 
     response.raise_for_status()
 
-    events = response.json()["events"]
 
-    print(f"Eventos recibidos: {len(events)}")
+    events = response.json().get(
+        "events",
+        []
+    )
 
-    return events
 
-def normalize_category(category: str):
+    categories={}
+
+
+    for event in events:
+
+        for category in event.get("categories",[]):
+
+            categories[
+                category["id"]
+            ] = category["title"]
+
+
+
+    print("\nCATEGORIAS ENCONTRADAS")
+
+
+    for key,value in categories.items():
+
+        print(
+            f"{key} -> {value}"
+        )
+
+
+    print(
+        "TOTAL:",
+        len(categories)
+    )
+
+
+    return categories
+
+
+
+
+# =====================================================
+# OBTENER EVENTOS HISTORICOS NASA EONET
+# =====================================================
+
+def get_last_years_events(years):
+
+    print("\n==============================")
+    print(f"CONSULTANDO NASA EVENTS {years} AÑOS")
+    print("==============================")
+
+
+    end = datetime.now(timezone.utc)
+
+    start = end - timedelta(
+        days=365 * years
+    )
+
+
+    url = settings.API_NASA_EONET
+
+
+    params = {
+
+        "start": start.strftime("%Y-%m-%d"),
+
+        "end": end.strftime("%Y-%m-%d"),
+
+        "limit": 10000
+
+    }
+
+
+    all_events=[]
+
+    seen=set()
+
+    page=1
+
+
+    while True:
+
+
+        print(
+            f"\nPAGINA {page}"
+        )
+
+
+        response=requests.get(
+
+            url,
+
+            params=params,
+
+            timeout=120
+
+        )
+
+
+        response.raise_for_status()
+
+
+        data=response.json()
+
+
+        events=data.get(
+            "events",
+            []
+        )
+
+
+        print(
+            "Eventos recibidos:",
+            len(events)
+        )
+
+
+        if not events:
+
+            break
+
+
+
+        nuevos=0
+
+
+        for event in events:
+
+
+            event_id=event.get("id")
+
+
+            if event_id not in seen:
+
+                seen.add(event_id)
+
+                all_events.append(event)
+
+                nuevos+=1
+
+
+
+        print(
+            "Nuevos:",
+            nuevos
+        )
+
+
+
+        next_page=data.get(
+            "next"
+        )
+
+
+        if not next_page:
+
+            print(
+                "No existe siguiente pagina"
+            )
+
+            break
+
+
+
+        url=next_page
+
+
+        params={}
+
+
+        page+=1
+
+
+
+        # protección contra errores de API
+
+        if page > 500:
+
+            print(
+                "Limite seguridad alcanzado"
+            )
+
+            break
+
+
+
+    print("\n==============================")
+    print("TOTAL EVENTOS NASA")
+    print("==============================")
+
+
+    print(
+        len(all_events)
+    )
+
+
+    return all_events
+# =====================================================
+# NORMALIZAR CATEGORIA
+# =====================================================
+
+def normalize_category(category_id):
+
     return CATEGORY_MAP.get(
-        category,
+        category_id,
         "OTHER"
     )
 
 
-def normalize_coordinates(geometry: list):
-    if not geometry:
-        return None
 
-    latest = geometry[-1]
 
-    coordinates = latest.get("coordinates", [])
+# =====================================================
+# NORMALIZAR COORDENADAS
+# =====================================================
 
-    if len(coordinates) < 2:
+def normalize_geometry_points(geometry):
 
-        return None
+    points=[]
 
-    event_date = None
+    seen_dates=set()
 
-    if latest.get("date"):
-        event_date = datetime.fromisoformat(
-            latest["date"].replace("Z", "")
+
+    for point in geometry:
+
+
+        coordinates=point.get(
+            "coordinates",
+            []
         )
 
-    return {
-        "latitude": coordinates[1],
-        "longitude": coordinates[0],
-        "event_date": event_date
-    }
 
-def get_country(lat: float, lng: float):
+        if len(coordinates)<2:
 
-    try:
+            continue
 
-        result = geo.query(
-            [
-                (lat, lng)
-            ]
-        )
 
-        if result:
 
-            country_code = result[0]["cc"]
+        event_date=None
 
-            country = pycountry.countries.get(
-                alpha_2=country_code
+
+        if point.get("date"):
+
+
+            event_date=datetime.fromisoformat(
+
+                point["date"]
+                .replace(
+                    "Z",
+                    "+00:00"
+                )
+
             )
 
-            if country:
-                return country.name
 
 
-    except Exception as e:
-
-        print(
-            f"Error obteniendo pais: {e}"
+        key=str(
+            event_date
         )
 
 
-    return "UNKNOWN"
+        if key in seen_dates:
 
-def save_events(db: Session, events: list):
+            continue
 
-    imported = 0
-    skipped = 0
 
-    existing_ids = {
-        x[0] for x in db.query(Event.external_id).all()
-    }
-            
+
+        seen_dates.add(key)
+
+
+
+        points.append({
+
+            "latitude":coordinates[1],
+
+            "longitude":coordinates[0],
+
+            "event_date":event_date
+
+        })
+
+
+    return points
+
+
+
+# =====================================================
+# PAIS CON CACHE
+# =====================================================
+
+def build_country_cache(events):
+
     print("\n==============================")
-    print("INICIANDO IMPORTACION")
+    print("CALCULANDO PAISES")
     print("==============================")
-    print(f"Total eventos: {len(events)}")
 
-    try:
+    unique_points = {}
 
-        for index, item in enumerate(events, start=1):
+    for item in events:
 
-            print("\n-----------------------------------")
-            print(f"Evento {index}/{len(events)}")
-            print(f"ID NASA: {item['id']}")
-            print(f"Titulo : {item.get('title')}")
+        geometries = normalize_geometry_points(
+            item.get("geometry", [])
+        )
 
-            geometry = normalize_coordinates(
-                item.get("geometry", [])
+        for geometry in geometries:
+
+            key = (
+                round(geometry["latitude"], 5),
+                round(geometry["longitude"], 5)
             )
 
-            if geometry is None:
-
-                print("Sin coordenadas")
-
-                skipped += 1
-
-                continue
-
-            print(f"Latitud : {geometry['latitude']}")
-            print(f"Longitud: {geometry['longitude']}")
-
-            if item["id"] in existing_ids:
-                skipped +=1
-                continue
-            
-            print("Calculando pais...") 
-
-            t0 = time.time()
-
-            country = get_country(
+            unique_points[key] = (
                 geometry["latitude"],
                 geometry["longitude"]
             )
 
-            print(
-                f"Pais: {country} "
-                f"({time.time()-t0:.2f} segundos)"
+    print(
+        f"Coordenadas únicas: {len(unique_points)}"
+    )
+
+    coordinates = list(unique_points.values())
+
+    t0 = time.time()
+
+    results = geo.query(coordinates)
+
+    print(
+        f"Geocoder terminado en {time.time()-t0:.2f}s"
+    )
+
+    cache = {}
+
+    for key, result in zip(unique_points.keys(), results):
+
+        country = "UNKNOWN"
+
+        try:
+
+            obj = pycountry.countries.get(
+                alpha_2=result["cc"]
             )
 
-            category = "OTHER"
+            if obj:
+
+                country = obj.name
+
+        except Exception:
+
+            pass
+
+        cache[key] = country
+
+    print(
+        f"Países cacheados: {len(cache)}"
+    )
+
+    return cache
+
+# =====================================================
+# GUARDAR EVENTOS
+# =====================================================
+
+def save_events(
+    db: Session,
+    events: list
+):
+
+    imported = 0
+    skipped = 0
+    batch = []
+
+    print("\n==============================")
+    print("IMPORTANDO EVENTOS")
+    print("==============================")
+
+    total_events = len(events)
+
+    existing_ids = {
+        x[0]
+        for x in db.query(Event.external_id).all()
+    }
+
+    # ------------------------------------
+    # CACHE DE PAISES
+    # ------------------------------------
+
+    t_cache = time.perf_counter()
+
+    country_cache = build_country_cache(events)
+
+    cache_time = time.perf_counter() - t_cache
+
+    print(f"\nCache de países construida en {cache_time:.2f} s")
+
+    global_start = time.perf_counter()
+
+    try:
+
+        for event_number, item in enumerate(events, start=1):
+
+            event_start = time.perf_counter()
+
+            nasa_id = item["id"]
+            title = item.get("title")
+
+            # ------------------------------------
+            # Categoria
+            # ------------------------------------
 
             if item.get("categories"):
 
                 category = normalize_category(
-                    item["categories"][0]["title"]
+                    item["categories"][0]["id"]
                 )
 
-            print(f"Categoria: {category}")
+            else:
 
-            event = Event(
+                category = "OTHER"
 
-                external_id=item["id"],
+            # ------------------------------------
+            # Normalizar geometrías
+            # ------------------------------------
 
-                title=item.get("title"),
+            t_geometry = time.perf_counter()
 
-                category=category,
-
-                country=country,
-
-                latitude=geometry["latitude"],
-
-                longitude=geometry["longitude"],
-
-                event_date=geometry["event_date"]
-
+            geometries = normalize_geometry_points(
+                item.get("geometry", [])
             )
 
-            db.add(event)
-                        
-            existing_ids.add(
-                item["id"]
+            geometry_time = time.perf_counter() - t_geometry
+
+            event_imported = 0
+            event_skipped = 0
+
+            object_time = 0
+
+            # ------------------------------------
+            # Crear objetos
+            # ------------------------------------
+
+            for index, geometry in enumerate(geometries):
+
+                if geometry["event_date"]:
+
+                    geometry_id = geometry["event_date"].strftime(
+                        "%Y%m%d%H%M%S"
+                    )
+
+                else:
+
+                    geometry_id = str(index)
+
+                external_id = f"{nasa_id}_{geometry_id}"
+
+                if external_id in existing_ids:
+
+                    skipped += 1
+                    event_skipped += 1
+                    continue
+
+                key = (
+                    round(geometry["latitude"], 5),
+                    round(geometry["longitude"], 5)
+                )
+
+                country = country_cache.get(
+                    key,
+                    "UNKNOWN"
+                )
+
+                t_object = time.perf_counter()
+
+                batch.append(
+
+                    Event(
+
+                        external_id=external_id,
+
+                        title=title,
+
+                        category=category,
+
+                        country=country,
+
+                        latitude=geometry["latitude"],
+
+                        longitude=geometry["longitude"],
+
+                        event_date=geometry["event_date"]
+
+                    )
+
+                )
+
+                object_time += (
+                    time.perf_counter() - t_object
+                )
+
+                existing_ids.add(external_id)
+
+                imported += 1
+                event_imported += 1
+
+            # ------------------------------------
+            # Estadísticas
+            # ------------------------------------
+
+            event_elapsed = (
+                time.perf_counter() - event_start
             )
 
-            imported += 1
+            total_elapsed = (
+                time.perf_counter() - global_start
+            ) + cache_time
 
-            print("Agregado a la sesion SQLAlchemy")
+            average = total_elapsed / event_number
+
+            eta = average * (
+                total_events - event_number
+            )
+
+            # imprimir únicamente cada 100 eventos
+            if (
+                event_number % 100 == 0
+                or event_number == total_events
+            ):
+
+                print("\n====================================================")
+                print(f"EVENTO {event_number}/{total_events}")
+                print(f"NASA ID             : {nasa_id}")
+                print(f"GEOMETRIAS          : {len(geometries)}")
+                print(f"INSERTADOS EVENTO   : {event_imported}")
+                print(f"OMITIDOS EVENTO     : {event_skipped}")
+                print(f"NORMALIZAR GEOMETRIA: {geometry_time:.6f} s")
+                print(f"CREAR OBJETOS       : {object_time:.6f} s")
+                print(f"TIEMPO EVENTO       : {event_elapsed:.6f} s")
+                print(f"PROMEDIO            : {average:.6f} s/evento")
+                print(f"ETA                 : {eta:.1f} s")
 
         print("\n==============================")
-        print("REALIZANDO COMMIT...")
+        print("GUARDANDO EN BASE DE DATOS")
         print("==============================")
 
-        t0 = time.time()
+        t_insert = time.perf_counter()
+
+        db.bulk_save_objects(batch)
 
         db.commit()
 
-        print(
-            f"Commit terminado "
-            f"({time.time()-t0:.2f} segundos)"
+        insert_time = (
+            time.perf_counter() - t_insert
         )
 
+        total_time = (
+            time.perf_counter() - global_start
+        ) + cache_time
+
         print("\n==============================")
-        print("IMPORTACION FINALIZADA")
+        print("FINALIZADO")
         print("==============================")
-        print(f"Importados : {imported}")
-        print(f"Omitidos   : {skipped}")
+
+        print(f"Eventos procesados : {total_events}")
+        print(f"Insertados         : {imported}")
+        print(f"Omitidos           : {skipped}")
+        print(f"Tiempo cache       : {cache_time:.2f} s")
+        print(f"Tiempo INSERT SQL  : {insert_time:.2f} s")
+        print(f"Tiempo total       : {total_time:.2f} s")
+        print(f"Promedio/evento    : {total_time/total_events:.6f} s")
 
         return {
 
@@ -256,9 +639,12 @@ def save_events(db: Session, events: list):
 
     except Exception as e:
 
-        print("\nERROR DURANTE IMPORTACION")
-        print(e)
-
         db.rollback()
+
+        print("\n==============================")
+        print("ERROR DURANTE IMPORTACION")
+        print("==============================")
+
+        print(e)
 
         raise

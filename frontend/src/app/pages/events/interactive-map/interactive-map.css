@@ -1,8 +1,101 @@
-.map-container{
+/* =========================
+   STATS CARDS
+========================= */
+
+.stats-grid {
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(180px, 1fr));
+
+    gap:20px;
+
+    margin-bottom:25px;
+
+}
+
+
+
+.card-stat {
+
+    background:var(--surface);
+
+    border:1px solid var(--border);
+
+    border-radius:16px;
+
+    padding:20px;
+
+    min-height:110px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    transition:.2s ease;
+
+}
+
+
+
+.card-stat:hover {
+
+    transform:translateY(-5px);
+
+}
+
+
+
+.card-stat span {
+
+    font-size:14px;
+
+    color:var(--text-secondary);
+
+    margin-bottom:10px;
+
+    text-align:center;
+
+}
+
+
+
+.card-stat strong {
+
+    font-size:32px;
+
+    font-weight:700;
+
+    color:var(--text);
+
+    text-align:center;
+
+}
+
+
+
+/* Tarjeta principal */
+
+.total-card {
+
+    border-left:5px solid var(--primary);
+
+}
+
+
+
+/* =========================
+   MAP
+========================= */
+
+.map-container {
 
     width:100%;
 
-    height:700px;
+    height:650px;
 
     border-radius:15px;
 
@@ -11,102 +104,8 @@
 }
 
 
-#world-map{
 
-    width:100%;
-
-    height:100%;
-
-}
-
-
-
-.card-stat{
-
-    padding:20px;
-
-    border-radius:12px;
-
-    background:var(--surface-card);
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:8px;
-
-}
-
-
-.card-stat strong{
-
-    font-size:30px;
-
-}
-
-.card-stat{
-
-    padding: 10px;
-
-    border-radius: 10px;
-
-    border: 1px solid var(--border);
-
-    background: var(--surface);
-
-    display:flex;
-
-    flex-direction:column;
-
-    align-items:center;
-
-    justify-content:center;
-
-    height:75px;
-
-}
-
-
-
-.card-stat span{
-
-    font-size:0.75rem;
-
-    color:var(--text-secondary);
-
-    margin-bottom:4px;
-
-}
-
-
-
-.card-stat strong{
-
-    font-size:1.35rem;
-
-    font-weight:700;
-
-    color:var(--text);
-
-}
-
-
-
-.map-container{
-
-    width:100%;
-
-    height:650px;
-
-    border-radius:12px;
-
-    overflow:hidden;
-
-}
-
-
-
-#world-map{
+#world-map {
 
     width:100%;
 
