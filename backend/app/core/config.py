@@ -37,6 +37,9 @@ class Settings:
         "API_NASA_EONET"
     )
 
+    USER_ROLE_ID = os.getenv(
+        "USER_ROLE_ID"
+    )
 
 
 

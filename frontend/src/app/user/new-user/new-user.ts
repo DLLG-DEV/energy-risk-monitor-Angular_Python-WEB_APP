@@ -10,7 +10,7 @@ import { SelectModule } from 'primeng/select';
 import { ToastModule } from 'primeng/toast';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
-
+import { environment } from '../../../environments/environment';
 export interface RegisterResponse {
     status_code: string;
     detail: string;
@@ -39,11 +39,14 @@ export class NewUser {
   loading: boolean = false;
   roles: MenuItem[] = [];
 
+  private USER_ROLE_ID = environment.USER_ROLE_ID;
+  
+
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
     private messageService: MessageService,
-    private router: Router
+    private router: Router,
   ){
     this.registerForm = this.fb.group({
 
@@ -63,7 +66,7 @@ export class NewUser {
 
         confirmPassword: ['', Validators.required],
 
-        role_id: [3]
+        role_id: [this.USER_ROLE_ID]
 
     });
   }
@@ -94,7 +97,7 @@ export class NewUser {
       last_name: this.registerForm.value.last_name,
       email: this.registerForm.value.email,
       password: this.registerForm.value.password,
-      role_id: 3
+      role_id: this.registerForm.value.role_id
     }).subscribe({
       next: (response: RegisterResponse) => {
         this.messageService.add({

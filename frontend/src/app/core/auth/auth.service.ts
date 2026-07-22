@@ -68,7 +68,7 @@ export class AuthService {
     }
 
     return payload.exp * 1000 > Date.now();
-}
+  }
 
   new_user(user: NewUser): Observable<RegisterResponse>{
     return this.http.post<RegisterResponse>(
