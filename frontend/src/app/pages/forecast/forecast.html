@@ -1,0 +1,110 @@
+<div class="w-full">
+
+
+    <!-- Header -->
+    <div class="mb-8 text-center">
+
+
+        <h1
+            class="text-3xl font-bold"
+            style="color:var(--text)">
+            FORECAST
+        </h1>
+
+
+        <p
+            class="text-sm mt-2"
+            style="color:var(--text-secondary)">
+            Pronóstico de eventos naturales y evaluación de riesgo energético
+            para los próximos 3 meses
+        </p>
+
+
+    </div>
+
+
+
+    <p-divider>
+    </p-divider>
+
+
+
+
+    <!-- Indicadores principales -->
+    <section class="mb-8">
+
+
+        <app-kpi-cards
+            [dashboard]="dashboard"
+            [categories]="categories">
+        </app-kpi-cards>
+
+    </section>
+
+
+
+
+
+    <p-divider>
+    </p-divider>
+
+
+
+
+
+    <!-- Línea temporal del forecast -->
+    <section class="mb-8">
+
+        <app-timeline
+            [timeline]="timeline">
+        </app-timeline>
+
+    </section>
+
+
+
+
+
+    <p-divider>
+    </p-divider>
+
+
+
+
+
+    <!-- Análisis gráfico -->
+    <section class="mb-8">
+        <app-chards
+
+            [dashboard]="dashboard"
+
+            [categories]="categories"
+
+            [mapData]="mapData">
+
+        </app-chards>
+    </section>
+
+
+
+
+
+    <p-divider>
+    </p-divider>
+
+
+
+
+
+    <!-- Mapa de riesgo -->
+    <section class="mb-8">
+
+
+        <app-risk-map [countries]="mapData"></app-risk-map>
+
+
+    </section>
+
+
+
+</div>

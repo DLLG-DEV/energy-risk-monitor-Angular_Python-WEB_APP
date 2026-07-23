@@ -12,7 +12,10 @@ pip install python-jose[cryptography]
 pip install requests
 pip install reverse_geocoder
 pip install pycountry
-
+pip install pandas
+pip install prophet
+pip install scikit-learn
+pip install numpy
 
 LEVANTAR BACKEND
 uvicorn app.main:app --reload

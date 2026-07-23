@@ -8,9 +8,10 @@ from datetime import datetime
 from typing import Optional
 from sqlalchemy import func
 from app.services.nasa_service import (
-    get_last_years_events,
     save_events,
-    get_nasa_categories
+    get_nasa_categories,
+    convert_to_days,
+    get_last_days_events
 )
 
 router = APIRouter(
@@ -26,41 +27,6 @@ CATEGORY_TRANSLATION = {
 }
 
 
-@router.post("/import")
-def import_events(
-    db: Session = Depends(get_db),
-    current_user = Depends(require_admin)
-):
-
-    categories = get_nasa_categories()
-
-
-    print(
-        "Categorias NASA:",
-        categories
-    )
-    
-    events = get_last_years_events(
-        years=5
-    )
-
-
-    result = save_events(
-        db,
-        events
-    )
-
-
-    return {
-        
-        "message": "Import completed",
-        "categories": len(categories),
-
-        "events_received": len(events),
-
-        **result
-    }
-       
 @router.get("/list")
 def get_events(db: Session = Depends(get_db)):
     events = db.query(Event).all()
@@ -247,7 +213,76 @@ def get_statistics(
         ]
     }
     
+@router.post("/import/{amount}/{unit}")
+def import_events(
+    amount:int,
+    unit:str,
+    db:Session = Depends(get_db),
+    current_user = Depends(require_admin)
+):
+
+
+    try:
+
+        days = convert_to_days(
+            amount,
+            unit
+        )
+
+
+    except ValueError as e:
+
+        raise HTTPException(
+            status_code=400,
+            detail=str(e)
+        )
+
+
+
+    categories = get_nasa_categories()
+
+
+
+    events = get_last_days_events(
+        days
+    )
+
+
+    result = save_events(
+        db,
+        events,
+        current_user
+    )
+
+
+
+    return {
+
+
+        "message":"Import completed",
+
+        "period":{
+
+            "amount":amount,
+
+            "unit":unit,
+
+            "days":days
+
+        },
+
+
+        "categories":len(categories),
+
+
+        "events_received":len(events),
+
+
+        **result
+
+    }
     
+       
 @router.get("/{event_id}")
 def get_event(event_id: int, db: Session = Depends(get_db)):
     event = db.query(Event).filter(Event.id == event_id).first()

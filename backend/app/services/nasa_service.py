@@ -9,7 +9,7 @@ from app.core.config import settings
 import time
 import pycountry
 import reverse_geocoder as rg
-
+from app.routers.admin.logs_by_admin import create_log
 
 geo = rg.RGeocoder()
 
@@ -32,7 +32,6 @@ CATEGORY_MAP = {
     "seaLakeIce": "ICE"
 
 }
-
 
 # cache de países
 country_cache = {}
@@ -99,6 +98,40 @@ def get_nasa_categories():
 
     return categories
 
+# =====================================================
+# CONVERTIR UNIDAD DE TIEMPO
+# =====================================================
+
+def convert_to_days(
+    amount:int,
+    unit:str
+):
+
+    unit = unit.lower()
+
+
+    conversions = {
+
+        "day":1,
+        "days":1,
+
+        "month":30,
+        "months":30,
+
+        "year":365,
+        "years":365
+
+    }
+
+
+    if unit not in conversions:
+
+        raise ValueError(
+            "Unidad de tiempo no válida"
+        )
+
+
+    return amount * conversions[unit]
 
 
 
@@ -106,64 +139,233 @@ def get_nasa_categories():
 # OBTENER EVENTOS HISTORICOS NASA EONET
 # =====================================================
 
-def get_last_years_events(years):
+# def get_last_years_events(years):
+
+#     print("\n==============================")
+#     print(f"CONSULTANDO NASA EVENTS {years} AÑOS")
+#     print("==============================")
+
+
+#     end = datetime.now(timezone.utc)
+
+#     start = end - timedelta(
+#         days=365 * years
+#     )
+
+
+#     url = settings.API_NASA_EONET
+
+
+#     params = {
+
+#         "start": start.strftime("%Y-%m-%d"),
+
+#         "end": end.strftime("%Y-%m-%d"),
+
+#         "limit": 10000
+
+#     }
+
+
+#     all_events=[]
+
+#     seen=set()
+
+#     page=1
+
+
+#     while True:
+
+
+#         print(
+#             f"\nPAGINA {page}"
+#         )
+
+
+#         response=requests.get(
+
+#             url,
+
+#             params=params,
+
+#             timeout=120
+
+#         )
+
+
+#         response.raise_for_status()
+
+
+#         data=response.json()
+
+
+#         events=data.get(
+#             "events",
+#             []
+#         )
+
+
+#         print(
+#             "Eventos recibidos:",
+#             len(events)
+#         )
+
+
+#         if not events:
+
+#             break
+
+
+
+#         nuevos=0
+
+
+#         for event in events:
+
+
+#             event_id=event.get("id")
+
+
+#             if event_id not in seen:
+
+#                 seen.add(event_id)
+
+#                 all_events.append(event)
+
+#                 nuevos+=1
+
+
+
+#         print(
+#             "Nuevos:",
+#             nuevos
+#         )
+
+
+
+#         next_page=data.get(
+#             "next"
+#         )
+
+
+#         if not next_page:
+
+#             print(
+#                 "No existe siguiente pagina"
+#             )
+
+#             break
+
+
+
+#         url=next_page
+
+
+#         params={}
+
+
+#         page+=1
+
+
+
+#         # protección contra errores de API
+
+#         if page > 500:
+
+#             print(
+#                 "Limite seguridad alcanzado"
+#             )
+
+#             break
+
+
+
+#     print("\n==============================")
+#     print("TOTAL EVENTOS NASA")
+#     print("==============================")
+
+
+#     print(
+#         len(all_events)
+#     )
+
+
+#     return all_events
+
+def get_last_days_events(days:int):
+
 
     print("\n==============================")
-    print(f"CONSULTANDO NASA EVENTS {years} AÑOS")
+    print(
+        f"CONSULTANDO NASA EONET ULTIMOS {days} DIAS"
+    )
     print("==============================")
 
 
-    end = datetime.now(timezone.utc)
-
-    start = end - timedelta(
-        days=365 * years
+    end = datetime.now(
+        timezone.utc
     )
 
 
-    url = settings.API_NASA_EONET
+    start = end - timedelta(
+        days=days
+    )
 
 
-    params = {
 
-        "start": start.strftime("%Y-%m-%d"),
+    url=settings.API_NASA_EONET
 
-        "end": end.strftime("%Y-%m-%d"),
 
-        "limit": 10000
+
+    params={
+
+        "start":
+        start.strftime("%Y-%m-%d"),
+
+
+        "end":
+        end.strftime("%Y-%m-%d"),
+
+
+        "limit":500
 
     }
+
 
 
     all_events=[]
 
     seen=set()
 
+
     page=1
+
 
 
     while True:
 
 
+
         print(
-            f"\nPAGINA {page}"
+            f"Pagina {page}"
         )
+
 
 
         response=requests.get(
-
             url,
-
             params=params,
-
             timeout=120
-
         )
+
 
 
         response.raise_for_status()
 
 
+
         data=response.json()
+
 
 
         events=data.get(
@@ -172,10 +374,11 @@ def get_last_years_events(years):
         )
 
 
+
         print(
-            "Eventos recibidos:",
-            len(events)
+            f"Eventos recibidos: {len(events)}"
         )
+
 
 
         if not events:
@@ -184,13 +387,12 @@ def get_last_years_events(years):
 
 
 
-        nuevos=0
-
 
         for event in events:
 
 
             event_id=event.get("id")
+
 
 
             if event_id not in seen:
@@ -199,14 +401,6 @@ def get_last_years_events(years):
 
                 all_events.append(event)
 
-                nuevos+=1
-
-
-
-        print(
-            "Nuevos:",
-            nuevos
-        )
 
 
 
@@ -215,11 +409,8 @@ def get_last_years_events(years):
         )
 
 
-        if not next_page:
 
-            print(
-                "No existe siguiente pagina"
-            )
+        if not next_page:
 
             break
 
@@ -227,34 +418,31 @@ def get_last_years_events(years):
 
         url=next_page
 
-
         params={}
+
 
 
         page+=1
 
 
 
-        # protección contra errores de API
-
         if page > 500:
 
             print(
-                "Limite seguridad alcanzado"
+                "Protección paginación activada"
             )
 
             break
 
 
 
-    print("\n==============================")
-    print("TOTAL EVENTOS NASA")
+
+
     print("==============================")
-
-
     print(
-        len(all_events)
+        f"TOTAL EVENTOS: {len(all_events)}"
     )
+    print("==============================")
 
 
     return all_events
@@ -268,9 +456,6 @@ def normalize_category(category_id):
         category_id,
         "OTHER"
     )
-
-
-
 
 # =====================================================
 # NORMALIZAR COORDENADAS
@@ -424,7 +609,8 @@ def build_country_cache(events):
 
 def save_events(
     db: Session,
-    events: list
+    events: list,
+    user
 ):
 
     imported = 0
@@ -608,6 +794,19 @@ def save_events(
         db.bulk_save_objects(batch)
 
         db.commit()
+        
+        create_log(
+            db,
+            user,
+            "EXECUTE",
+            "EVENTS",
+            "Importación de eventos NASA EONET ejecutada",
+            new_data={
+                "imported": imported,
+                "skipped": skipped,
+                "source": "NASA EONET"
+            }
+        )
 
         insert_time = (
             time.perf_counter() - t_insert

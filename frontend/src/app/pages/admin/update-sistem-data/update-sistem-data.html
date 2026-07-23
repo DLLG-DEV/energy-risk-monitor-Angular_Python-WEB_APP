@@ -1,0 +1,632 @@
+<div class="w-full">
+
+
+    <!-- HEADER -->
+
+    <div class="mb-6 mt-5">
+
+        <h2
+            class="text-xl font-semibold"
+            style="color:var(--text)">
+
+            Actualización del sistema
+
+        </h2>
+
+
+        <p
+            class="text-sm mt-1"
+            style="color:var(--text-secondary)">
+
+            Administración manual de datos NASA EONET y actualización del modelo predictivo
+
+        </p>
+
+    </div>
+
+
+
+
+
+    <div
+        class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+
+
+
+
+
+
+        <!-- EVENTS CARD -->
+
+        <p-card
+            styleClass="h-full">
+
+
+            <div class="flex justify-between items-start">
+
+
+                <div class="flex items-center gap-3">
+
+
+                    <div
+                        class="flex items-center justify-center rounded-xl"
+                        style="
+                        width:45px;
+                        height:45px;
+                        background:rgba(37,99,235,.15);
+                        color:#2563eb;
+                        ">
+
+                        <i class="pi pi-globe text-xl"></i>
+
+                    </div>
+
+
+
+                    <div>
+
+                        <h3 class="text-lg font-semibold">
+                            Datos NASA EONET
+                        </h3>
+
+
+                        <p class="text-sm"
+                        style="color:var(--text-secondary)">
+
+                            Eventos naturales globales
+
+                        </p>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <p-tag
+                    severity="success"
+                    value="Activo">
+                </p-tag>
+
+
+
+            </div>
+
+
+
+
+
+<div
+class="mt-6 p-4 rounded-lg"
+style="
+background:var(--surface-card);
+border:1px solid var(--navbar-border);
+">
+
+
+    <div class="flex items-center gap-2 mb-3">
+
+
+        <i class="pi pi-calendar"></i>
+
+
+        <span class="font-semibold text-sm">
+
+            Periodo de importación
+
+        </span>
+
+
+    </div>
+
+
+
+    <div class="grid grid-cols-2 gap-3">
+
+
+
+        <!-- cantidad -->
+
+        <div>
+
+
+            <label
+            class="text-xs block mb-2">
+
+                Cantidad
+
+            </label>
+
+<input
+
+    pInputText
+
+    type="number"
+
+    min="1"
+
+    placeholder="Ej. 5"
+
+    class="w-full"
+
+    [(ngModel)]="importAmount">
+
+        </div>
+
+
+
+
+
+        <!-- unidad -->
+
+        <div>
+
+
+            <label
+            class="text-xs block mb-2">
+
+                Unidad
+
+            </label>
+
+
+
+ <p-select
+
+    [options]="units"
+
+    optionLabel="label"
+
+    optionValue="value"
+
+    placeholder="Seleccione"
+
+    class="w-full"
+
+    [(ngModel)]="importUnit">
+
+</p-select>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+</div>
+
+
+            <div class="mt-6 grid grid-cols-2 gap-4">
+
+
+
+                <div
+                    class="rounded-lg p-4"
+                    style="
+                    background:var(--surface-card);
+                    border:1px solid var(--navbar-border);
+                    ">
+
+
+                    <span class="text-xs"
+                    style="color:var(--text-secondary)">
+                        Eventos importados
+                    </span>
+
+
+                    <h2 class="text-2xl font-bold mt-2">
+
+                        {{updates.events_update.imported}}
+
+                    </h2>
+
+
+                </div>
+
+
+
+
+
+                <div
+                    class="rounded-lg p-4"
+                    style="
+                    background:var(--surface-card);
+                    border:1px solid var(--navbar-border);
+                    ">
+
+
+                    <span class="text-xs"
+                    style="color:var(--text-secondary)">
+                        Eventos omitidos
+                    </span>
+
+
+                    <h2 class="text-2xl font-bold mt-2">
+
+                        {{updates.events_update.skipped}}
+
+                    </h2>
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+            <div class="mt-5 flex flex-col gap-3">
+
+
+
+                <div class="flex justify-between">
+
+
+                    <span class="text-sm">
+                        Última ejecución
+                    </span>
+
+
+                    <strong class="text-sm">
+
+                        {{
+                        formatDate(
+                        updates.events_update.date
+                        )
+                        }}
+
+                    </strong>
+
+
+                </div>
+
+
+
+
+
+                <div class="flex justify-between">
+
+
+                    <span class="text-sm">
+                        Usuario
+                    </span>
+
+
+                    <strong class="text-sm">
+
+                        {{updates.events_update.username}}
+
+                    </strong>
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+            <ng-template #footer>
+
+
+<button
+
+    pButton
+
+    type="button"
+
+    [label]="
+        loadingImport 
+        ? 'Actualizando NASA...' 
+        : 'Actualizar datos NASA'
+    "
+
+    [icon]="
+        loadingImport
+        ? 'pi pi-spin pi-spinner'
+        : 'pi pi-refresh'
+    "
+
+    class="w-full"
+
+
+    [disabled]="
+        loadingImport ||
+        !importAmount ||
+        !importUnit
+    "
+
+
+    (click)="importNASA()">
+
+</button>
+
+            </ng-template>
+
+
+
+        </p-card>
+
+
+
+
+
+
+
+
+
+
+
+
+        <!-- FORECAST CARD -->
+
+        <p-card
+            styleClass="h-full">
+
+
+
+            <div class="flex justify-between items-start">
+
+
+                <div class="flex items-center gap-3">
+
+
+                    <div
+                        class="flex items-center justify-center rounded-xl"
+                        style="
+                        width:45px;
+                        height:45px;
+                        background:rgba(14,165,164,.15);
+                        color:#0ea5a4;
+                        ">
+
+
+                        <i class="pi pi-chart-line text-xl"></i>
+
+
+                    </div>
+
+
+
+
+
+                    <div>
+
+
+                        <h3 class="text-lg font-semibold">
+                            Modelo Forecast
+                        </h3>
+
+
+                        <p class="text-sm"
+                        style="color:var(--text-secondary)">
+
+                            Predicción de eventos futuros
+
+                        </p>
+
+
+                    </div>
+
+
+
+                </div>
+
+
+
+
+                <p-tag
+                    severity="info"
+                    value="Disponible">
+                </p-tag>
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+            <div class="mt-6 grid grid-cols-2 gap-4">
+
+
+
+                <div
+                    class="rounded-lg p-4"
+                    style="
+                    background:var(--surface-card);
+                    border:1px solid var(--navbar-border);
+                    ">
+
+
+                    <span class="text-xs"
+                    style="color:var(--text-secondary)">
+                        Modelo
+                    </span>
+
+
+                    <h3 class="text-lg font-bold mt-2">
+
+                        {{updates.forecast_update.model}}
+
+                    </h3>
+
+
+                </div>
+
+
+
+
+
+                <div
+                    class="rounded-lg p-4"
+                    style="
+                    background:var(--surface-card);
+                    border:1px solid var(--navbar-border);
+                    ">
+
+
+                    <span class="text-xs"
+                    style="color:var(--text-secondary)">
+                        Predicciones
+                    </span>
+
+
+                    <h2 class="text-2xl font-bold mt-2">
+
+                        {{updates.forecast_update.records_generated}}
+
+                    </h2>
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+            <div class="mt-5 flex flex-col gap-3">
+
+
+
+                <div class="flex justify-between">
+
+
+                    <span class="text-sm">
+                        Última ejecución
+                    </span>
+
+
+                    <strong class="text-sm">
+
+                        {{
+                        formatDate(
+                        updates.forecast_update.date
+                        )
+                        }}
+
+                    </strong>
+
+
+                </div>
+
+
+
+
+
+                <div class="flex justify-between">
+
+
+                    <span class="text-sm">
+                        Usuario
+                    </span>
+
+
+                    <strong class="text-sm">
+
+                        {{updates.forecast_update.username}}
+
+                    </strong>
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+            <ng-template #footer>
+
+<button
+
+    pButton
+
+    type="button"
+
+    [label]="
+        loadingForecast
+        ? 'Generando Forecast...'
+        : 'Actualizar Forecast'
+    "
+
+    [icon]="
+        loadingForecast
+        ? 'pi pi-spin pi-spinner'
+        : 'pi pi-refresh'
+    "
+
+    class="w-full"
+
+
+    [disabled]="loadingForecast"
+
+
+    (click)="generateForecast()">
+
+</button>
+
+
+            </ng-template>
+
+
+
+
+
+        </p-card>
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+ 
+
+
+
+</div>

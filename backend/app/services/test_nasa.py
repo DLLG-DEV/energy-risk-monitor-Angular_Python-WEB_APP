@@ -1,263 +1,263 @@
-import requests
-from datetime import datetime, timedelta, timezone
-from collections import Counter
+# import requests
+# from datetime import datetime, timedelta, timezone
+# from collections import Counter
 
-from app.core.config import settings
+# from app.core.config import settings
 
-def get_nasa_events():
+# def get_nasa_events():
 
-    end = datetime.now(timezone.utc)
+#     end = datetime.now(timezone.utc)
 
-    start = end - timedelta(days=365 * 5)
+#     start = end - timedelta(days=365 * 5)
 
 
-    print("==============================")
-    print("CONSULTANDO NASA EONET")
-    print("==============================")
+#     print("==============================")
+#     print("CONSULTANDO NASA EONET")
+#     print("==============================")
 
 
-    print("Inicio:", start)
-    print("Fin:", end)
+#     print("Inicio:", start)
+#     print("Fin:", end)
 
 
-    all_events = []
+#     all_events = []
 
-    limit = 5000
+#     limit = 5000
 
-    offset = 0
+#     offset = 0
 
-    max_pages = 100  # seguridad contra ciclos infinitos
+#     max_pages = 100  # seguridad contra ciclos infinitos
 
 
-    existing_ids = set()
+#     existing_ids = set()
 
 
-    page = 0
+#     page = 0
 
 
-    while page < max_pages:
+#     while page < max_pages:
 
 
-        print(
-            f"\nConsultando offset {offset}"
-        )
+#         print(
+#             f"\nConsultando offset {offset}"
+#         )
 
 
-        response = requests.get(
+#         response = requests.get(
 
-            settings.API_NASA_EONET,
+#             settings.API_NASA_EONET,
 
-            params={
+#             params={
 
-                "start": start.strftime("%Y-%m-%d"),
+#                 "start": start.strftime("%Y-%m-%d"),
 
-                "end": end.strftime("%Y-%m-%d"),
+#                 "end": end.strftime("%Y-%m-%d"),
 
-                "limit": limit,
+#                 "limit": limit,
 
-                "offset": offset
+#                 "offset": offset
 
-            },
+#             },
 
-            timeout=120
+#             timeout=120
 
-        )
+#         )
 
 
-        response.raise_for_status()
+#         response.raise_for_status()
 
 
-        data = response.json()
+#         data = response.json()
 
 
-        events = data.get(
-            "events",
-            []
-        )
+#         events = data.get(
+#             "events",
+#             []
+#         )
 
 
-        print(
-            f"Eventos pagina: {len(events)}"
-        )
+#         print(
+#             f"Eventos pagina: {len(events)}"
+#         )
 
 
-        if not events:
+#         if not events:
 
-            print(
-                "No hay más eventos."
-            )
+#             print(
+#                 "No hay más eventos."
+#             )
 
-            break
+#             break
 
 
 
-        new_events = []
+#         new_events = []
 
 
-        for event in events:
+#         for event in events:
 
-            event_id = event.get("id")
+#             event_id = event.get("id")
 
 
-            if event_id not in existing_ids:
+#             if event_id not in existing_ids:
 
-                existing_ids.add(event_id)
+#                 existing_ids.add(event_id)
 
-                new_events.append(event)
+#                 new_events.append(event)
 
 
 
-        print(
-            f"Nuevos eventos: {len(new_events)}"
-        )
+#         print(
+#             f"Nuevos eventos: {len(new_events)}"
+#         )
 
 
 
-        if not new_events:
+#         if not new_events:
 
-            print(
-                "Página repetida. Finalizando."
-            )
+#             print(
+#                 "Página repetida. Finalizando."
+#             )
 
-            break
+#             break
 
 
 
-        all_events.extend(
-            new_events
-        )
+#         all_events.extend(
+#             new_events
+#         )
 
 
-        # si regresó menos que el límite
-        # probablemente es la última página
+#         # si regresó menos que el límite
+#         # probablemente es la última página
 
-        if len(events) < limit:
+#         if len(events) < limit:
 
-            print(
-                "Última página encontrada."
-            )
+#             print(
+#                 "Última página encontrada."
+#             )
 
-            break
+#             break
 
 
 
-        offset += limit
+#         offset += limit
 
-        page += 1
+#         page += 1
 
 
 
-    print("\n==============================")
-    print("TOTAL EVENTOS OBTENIDOS")
-    print("==============================")
+#     print("\n==============================")
+#     print("TOTAL EVENTOS OBTENIDOS")
+#     print("==============================")
 
-    print(
-        len(all_events)
-    )
+#     print(
+#         len(all_events)
+#     )
 
 
-    return all_events
+#     return all_events
 
-def analyze_categories(events):
+# def analyze_categories(events):
 
-    categories = []
+#     categories = []
 
 
-    print("\n==============================")
-    print("ANALIZANDO CATEGORIAS")
-    print("==============================")
+#     print("\n==============================")
+#     print("ANALIZANDO CATEGORIAS")
+#     print("==============================")
 
 
-    for event in events:
+#     for event in events:
 
 
-        nasa_categories = event.get(
-            "categories",
-            []
-        )
+#         nasa_categories = event.get(
+#             "categories",
+#             []
+#         )
 
 
-        for category in nasa_categories:
+#         for category in nasa_categories:
 
 
-            categories.append(
-                category["title"]
-            )
+#             categories.append(
+#                 category["title"]
+#             )
 
 
-    counter = Counter(categories)
+#     counter = Counter(categories)
 
 
 
-    print("\nTOTAL CATEGORIAS ENCONTRADAS:")
-    print(
-        len(counter)
-    )
+#     print("\nTOTAL CATEGORIAS ENCONTRADAS:")
+#     print(
+#         len(counter)
+#     )
 
 
 
-    print("\n==============================")
-    print("CLASIFICACION NASA")
-    print("==============================")
+#     print("\n==============================")
+#     print("CLASIFICACION NASA")
+#     print("==============================")
 
 
-    for name,total in counter.most_common():
+#     for name,total in counter.most_common():
 
-        print(
-            f"{name}: {total}"
-        )
+#         print(
+#             f"{name}: {total}"
+#         )
 
 
 
-def analyze_examples(events):
+# def analyze_examples(events):
 
 
-    print("\n==============================")
-    print("EJEMPLOS DE EVENTOS")
-    print("==============================")
+#     print("\n==============================")
+#     print("EJEMPLOS DE EVENTOS")
+#     print("==============================")
 
 
-    for event in events[:20]:
+#     for event in events[:20]:
 
-        categories = [
-            x["title"]
-            for x in event.get(
-                "categories",
-                []
-            )
-        ]
+#         categories = [
+#             x["title"]
+#             for x in event.get(
+#                 "categories",
+#                 []
+#             )
+#         ]
 
 
-        print(
-            event["title"],
-            "->",
-            categories
-        )
+#         print(
+#             event["title"],
+#             "->",
+#             categories
+#         )
 
 
 
-def main():
+# def main():
 
 
-    events = get_nasa_events()
+#     events = get_nasa_events()
 
 
-    print(
-        f"\nEventos recibidos TOTAL: {len(events)}"
-    )
+#     print(
+#         f"\nEventos recibidos TOTAL: {len(events)}"
+#     )
 
 
-    analyze_categories(
-        events
-    )
+#     analyze_categories(
+#         events
+#     )
 
 
-    analyze_examples(
-        events
-    )
+#     analyze_examples(
+#         events
+#     )
 
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-    main()
+#     main()

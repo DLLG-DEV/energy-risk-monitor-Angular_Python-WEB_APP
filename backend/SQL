@@ -85,6 +85,106 @@ CREATE TABLE audit_logs (
         ON DELETE SET NULL
 
 );
+
+
+CREATE TABLE forecast (
+
+    id SERIAL PRIMARY KEY,
+
+
+    -- Fecha del periodo que se está prediciendo
+    forecast_date DATE NOT NULL,
+
+
+    -- Categoría EONET
+    -- FIRE, FLOOD, STORM, VOLCANO...
+    category VARCHAR(100) NOT NULL,
+
+
+    -- Región geográfica
+    -- Asia, Europe, North America...
+    region VARCHAR(100) NOT NULL,
+
+
+    -- País específico
+    country VARCHAR(100),
+
+
+    -- Cantidad esperada de eventos
+    expected_events INTEGER NOT NULL,
+
+
+    -- Confianza del modelo 0-1
+    confidence FLOAT NOT NULL,
+
+
+    -- LOW / MEDIUM / HIGH / CRITICAL
+    risk_level VARCHAR(20) NOT NULL,
+
+
+    -- Intervalos de predicción
+    lower_bound FLOAT,
+
+    upper_bound FLOAT,
+
+
+    -- Modelo utilizado
+    model_version VARCHAR(50) NOT NULL,
+
+
+    -- Información adicional del entrenamiento
+    extra_data JSONB,
+
+
+    -- Fecha cuando se generó el forecast
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+
+    -- Forecast vigente
+    active BOOLEAN NOT NULL DEFAULT TRUE
+
+);
+
+
+
+-- ============================
+-- ÍNDICES
+-- ============================
+
+
+CREATE INDEX idx_forecast_date
+ON forecast(forecast_date);
+
+
+
+CREATE INDEX idx_forecast_category
+ON forecast(category);
+
+
+
+CREATE INDEX idx_forecast_region
+ON forecast(region);
+
+
+
+CREATE INDEX idx_forecast_country
+ON forecast(country);
+
+
+
+CREATE INDEX idx_forecast_risk_level
+ON forecast(risk_level);
+
+
+
+CREATE INDEX idx_forecast_created_at
+ON forecast(created_at);
+
+
+
+CREATE INDEX idx_forecast_active
+ON forecast(active);
+
 -- ===============================================
 -- INSERTST QUE HAY
 -- ===============================================

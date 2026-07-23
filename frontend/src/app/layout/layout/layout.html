@@ -2,7 +2,8 @@
 
     <app-navbar></app-navbar>
 
-    <main class="flex-1 p-6">
+    <main class="flex-1"
+        [class.p-6]="!isLanding()">
         <router-outlet></router-outlet>
     </main>
 

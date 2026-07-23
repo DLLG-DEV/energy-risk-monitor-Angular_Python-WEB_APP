@@ -1,0 +1,247 @@
+<!-- Leyenda de amenazas -->
+<div class="event-legend">
+
+
+    <h3>
+        Tipos de eventos monitoreados
+    </h3>
+
+
+
+    <div class="legend-grid">
+
+
+
+        <div class="legend-item">
+
+
+            <span class="icon volcano">
+
+                <i class="pi pi-globe"></i>
+
+            </span>
+
+
+            <div>
+
+                <strong>
+                    VOLCANO
+                </strong>
+
+
+                <p>
+                    Actividad volcánica y posibles
+                    erupciones que pueden afectar
+                    infraestructura energética,
+                    transporte y zonas operativas.
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+        <div class="legend-item">
+
+
+            <span class="icon fire">
+
+                <i class="pi pi-bolt"></i>
+
+            </span>
+
+
+            <div>
+
+                <strong>
+                    FIRE
+                </strong>
+
+
+                <p>
+                    Incendios forestales detectados.
+                    Riesgo para líneas de transmisión,
+                    subestaciones y activos cercanos.
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+        <div class="legend-item">
+
+
+            <span class="icon ice">
+
+                <i class="pi pi-cloud"></i>
+
+            </span>
+
+
+            <div>
+
+                <strong>
+                    ICE
+                </strong>
+
+
+                <p>
+                    Condiciones de congelamiento
+                    y acumulación de hielo que pueden
+                    afectar infraestructura eléctrica.
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+        <div class="legend-item">
+
+
+            <span class="icon storm">
+
+                <i class="pi pi-cloud"></i>
+
+            </span>
+
+
+            <div>
+
+                <strong>
+                    STORM
+                </strong>
+
+
+                <p>
+                    Tormentas severas con potencial
+                    impacto en redes eléctricas,
+                    operación y mantenimiento.
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+
+    </div>
+
+
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5  mt-6">
+
+    <!-- Eventos -->
+    <div class="kpi-card">
+
+        <div class="kpi-title">
+
+            Eventos esperados
+
+        </div>
+
+        <div class="kpi-value">
+
+            {{ dashboard?.summary?.total_expected_events || 0 }}
+
+        </div>
+
+        <div class="kpi-description">
+
+            Pronóstico próximos 3 meses
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Riesgos -->
+    <div class="kpi-card">
+
+        <div class="kpi-title">
+
+            Regiones críticas
+
+        </div>
+
+        <div class="kpi-value">
+
+            {{ dashboard?.summary?.critical_regions || 0 }}
+
+        </div>
+
+        <div class="kpi-description">
+
+            Riesgo alto detectado
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Categoría -->
+    <div class="kpi-card">
+
+        <div class="kpi-title">
+
+            Categoría dominante
+
+        </div>
+
+        <div class="kpi-value text-xl">
+
+            {{ dominantCategory?.category || 'N/A' }}
+
+        </div>
+
+        <div class="kpi-description">
+
+            {{ dominantCategory?.percentage || 0 }}% de los eventos
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Modelos -->
+    <div class="kpi-card">
+
+        <div class="kpi-title">
+
+            Categorías activas
+
+        </div>
+
+        <div class="kpi-value">
+
+            {{ dashboard?.summary?.categories || 0 }}
+
+        </div>
+
+        <div class="kpi-description">
+
+            Tipos con pronóstico
+
+        </div>
+
+    </div>
+
+</div>

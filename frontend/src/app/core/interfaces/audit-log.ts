@@ -12,3 +12,65 @@ export interface AuditLog {
     ip_address: string | null;
     created_at: string;
 }
+
+export interface SystemUpdateResponse {
+    events_update:{
+        username:string;
+        date:string;
+        description:string;
+        imported:number;
+        skipped:number;
+    };
+
+    forecast_update:{
+        username:string;
+        date:string;
+        description:string;
+        model:string;
+        records_generated:number;
+    };
+}
+
+export interface ImportEventsRequest {
+
+    amount:number;
+
+    unit:
+    | 'day'
+    | 'days'
+    | 'month'
+    | 'months'
+    | 'year'
+    | 'years';
+
+}
+
+export interface ImportEventsResponse {
+
+
+    message:string;
+
+
+    period:{
+
+        amount:number;
+
+        unit:string;
+
+        days:number;
+
+    };
+
+
+    categories:number;
+
+
+    events_received:number;
+
+
+    imported:number;
+
+
+    skipped:number;
+
+}

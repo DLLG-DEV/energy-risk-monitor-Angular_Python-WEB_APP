@@ -1,0 +1,180 @@
+.kpi-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:14px;
+    transition:.2s;
+}
+
+.kpi-card:hover{
+    transform:translateY(-8px);
+}
+
+.kpi-title{
+    font-size:12px;
+    color:var(--text-secondary);
+}
+
+.kpi-value{
+    margin-top:6px;
+    font-size:24px;
+    font-weight:700;
+    color:var(--text);
+}
+
+.kpi-description{
+    margin-top:4px;
+    font-size:11px;
+    color:var(--text-secondary);
+}
+
+.event-legend{
+
+    background:var(--surface);
+
+    border:1px solid var(--border);
+
+    border-radius:16px;
+
+    padding:20px;
+
+}
+
+
+
+.event-legend h3{
+
+    color:var(--text);
+
+    font-size:18px;
+
+    font-weight:600;
+
+    margin-bottom:18px;
+
+}
+
+
+
+.legend-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(260px,1fr));
+
+    gap:16px;
+
+}
+
+
+
+.legend-item{
+
+    display:flex;
+
+    gap:14px;
+
+    padding:15px;
+
+    border-radius:12px;
+
+    background:var(--surface-card);
+
+    border:1px solid var(--border);
+
+}
+
+
+
+.icon{
+
+    width:42px;
+
+    height:42px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:50%;
+
+    font-size:20px;
+
+    flex-shrink:0;
+
+}
+
+
+
+.icon i{
+
+    font-size:20px;
+
+}
+
+
+
+.volcano{
+
+    background:#fee2e2;
+
+    color:#dc2626;
+
+}
+
+
+
+.fire{
+
+    background:#ffedd5;
+
+    color:#ea580c;
+
+}
+
+
+
+.ice{
+
+    background:#dbeafe;
+
+    color:#2563eb;
+
+}
+
+
+
+.storm{
+
+    background:#ede9fe;
+
+    color:#7c3aed;
+
+}
+
+
+
+.legend-item strong{
+
+    font-size:14px;
+
+    color:var(--text);
+
+}
+
+
+
+.legend-item p{
+
+    margin-top:5px;
+
+    font-size:12px;
+
+    line-height:1.4;
+
+    color:var(--text-secondary);
+
+}

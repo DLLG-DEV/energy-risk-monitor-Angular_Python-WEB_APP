@@ -7,6 +7,7 @@ from app.routers.users import auth, roles
 from app.routers.admin import users_by_admin, logs_by_admin, roles_by_admin
 from app.routers.events import events
 from app.routers.heatmap import heatmap
+from app.routers.forecast import forecast
 
 app = FastAPI(
     title="Energy Risk Monitor API",
@@ -20,6 +21,7 @@ app.include_router(users_by_admin.router)
 app.include_router(roles_by_admin.router)
 app.include_router(events.router)
 app.include_router(heatmap.router)
+app.include_router(forecast.router)
 
 app.add_middleware(
     CORSMiddleware,

@@ -1,0 +1,35 @@
+.card-chart{
+
+
+    background:var(--surface);
+
+
+    border:1px solid var(--border);
+
+
+    border-radius:16px;
+
+
+    padding:20px;
+
+
+}
+
+
+
+.card-chart h3{
+
+
+    font-size:18px;
+
+
+    font-weight:600;
+
+
+    margin-bottom:20px;
+
+
+    color:var(--text);
+
+
+}

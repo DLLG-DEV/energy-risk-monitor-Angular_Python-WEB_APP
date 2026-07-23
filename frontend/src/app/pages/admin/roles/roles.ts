@@ -160,20 +160,11 @@ export class Roles_by_admin {
 
 
     const request = {
-
       name:this.selectedRole.name,
-
       modules:modulesSelected
-
     };
 
-
-    console.log("Enviando:",request);
-
-
-
     if(this.modeRole === 'N'){
-
 
       this.Rol_SerAdm.createRole(request)
       .subscribe({
@@ -186,9 +177,7 @@ export class Roles_by_admin {
             detail:'Rol creado correctamente'
           });
 
-
           this.showRoleDialog=false;
-
           this.loadData();
 
         },

@@ -9,6 +9,8 @@ import { roleGuard } from './core/guards/role-guard';
 import { Events } from './pages/events/events';
 import { Heatmap } from './pages/heatmap/heatmap';
 import { environment } from '../environments/environment';
+import { Forecast } from './pages/forecast/forecast';
+import { Landing } from './pages/landing/landing';
 
 
 export const routes: Routes = [
@@ -26,6 +28,18 @@ export const routes: Routes = [
         path: '',
         component: Layout,
         children:[
+            {
+                path:'',
+                redirectTo:'inicio',
+                pathMatch:'full'
+            },
+            {
+                path:'inicio',
+                component: Landing,
+                data:{
+                    module:'Inicio'
+                }
+            },
             {
                 path:'admin',
                 component: Admincmp,
@@ -48,6 +62,14 @@ export const routes: Routes = [
                 component: Events,
                 data:{
                     module:'Eventos Globales'
+                }
+            },
+            {
+                path: 'forecast',
+                component: Forecast,
+                canActivate: [authGuard, roleGuard],
+                data:{
+                    module:'Pronósticos'
                 }
             }
         ]
