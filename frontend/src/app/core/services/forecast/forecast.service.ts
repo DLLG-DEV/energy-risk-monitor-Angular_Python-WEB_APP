@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { HeatmapFilters, HeatmapKpis, HeatmapPoint, HeatmapCountries, CategoryEvents } from '../../interfaces/heatmap';
-import { ForecastDashboard, ForecastTimeline, ForecastCategory, ForecastMapItem } from '../../interfaces/forecast';
+import { ForecastDashboard, ForecastTimeline, ForecastCategory, ForecastMapItem, EventCategory } from '../../interfaces/forecast';
 
 
 @Injectable({
@@ -47,4 +47,11 @@ export class ForecastService {
             {}
         );
     }
+
+    getCatCategories():Observable<EventCategory[]>{
+        return this.http.get<EventCategory[]>(
+            `${this.api}/cat/caategoria`
+        );
+    }
+
 }

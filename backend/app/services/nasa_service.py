@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 import requests
 
 from datetime import datetime, timedelta, timezone
@@ -5,33 +6,17 @@ from sqlalchemy.orm import Session
 
 from app.models.event import Event
 from app.core.config import settings
+from app.models.event_category import EventCategory
+from app.utils.dictionaries import CATEGORY_MAP
 
 import time
 import pycountry
 import reverse_geocoder as rg
 from app.routers.admin.logs_by_admin import create_log
-
+from app.utils.dictionaries import CATEGORY_MAP
 geo = rg.RGeocoder()
 
-# =====================================================
-# MAPEO NASA -> ERM
-# =====================================================
 
-CATEGORY_MAP = {
-
-    "wildfires": "FIRE",
-
-    "volcanoes": "VOLCANO",
-
-    "severeStorms": "STORM",
-
-    "floods": "FLOOD",
-
-    "earthquakes": "EARTHQUAKE",
-
-    "seaLakeIce": "ICE"
-
-}
 
 # cache de países
 country_cache = {}
@@ -52,7 +37,7 @@ def get_nasa_categories():
     response = requests.get(
         settings.API_NASA_EONET,
         params={
-            "limit":5000
+            "limit":50000
         },
         timeout=120
     )
@@ -98,7 +83,66 @@ def get_nasa_categories():
 
     return categories
 
-# =====================================================
+
+
+def save_nasa_categories(
+    db,
+    categories
+):
+
+    inserted = []
+
+
+    for external_id, title in categories.items():
+
+
+        exists = (
+            db.query(EventCategory)
+            .filter(
+                EventCategory.external_name == title
+            )
+            .first()
+        )
+
+
+        if exists:
+            continue
+
+
+
+        normalized_name = CATEGORY_MAP.get(
+            external_id,
+            "OTHER"
+        )
+
+
+        category = EventCategory(
+
+            name=normalized_name,
+
+            external_name=title
+
+        )
+
+
+        db.add(category)
+
+
+        inserted.append(
+            {
+                "name": normalized_name,
+                "external_name": title
+            }
+        )
+
+
+
+    db.commit()
+
+
+    return inserted
+
+#=====================================================
 # CONVERTIR UNIDAD DE TIEMPO
 # =====================================================
 
@@ -162,7 +206,7 @@ def convert_to_days(
 
 #         "end": end.strftime("%Y-%m-%d"),
 
-#         "limit": 10000
+#         "limit": 50000
 
 #     }
 
@@ -327,7 +371,7 @@ def get_last_days_events(days:int):
         end.strftime("%Y-%m-%d"),
 
 
-        "limit":500
+        "limit":50000
 
     }
 
@@ -610,7 +654,7 @@ def build_country_cache(events):
 def save_events(
     db: Session,
     events: list,
-    user
+    current_user
 ):
 
     imported = 0
@@ -797,7 +841,7 @@ def save_events(
         
         create_log(
             db,
-            user,
+            current_user,
             "EXECUTE",
             "EVENTS",
             "Importación de eventos NASA EONET ejecutada",
@@ -829,13 +873,13 @@ def save_events(
         print(f"Promedio/evento    : {total_time/total_events:.6f} s")
 
         return {
-
-            "imported": imported,
-
-            "skipped": skipped
-
+            "status": "OK",
+            "message": "Events imported successfully.",
+            "data": {
+                "imported": imported,
+                "skipped": skipped
+            }
         }
-
     except Exception as e:
 
         db.rollback()
@@ -846,4 +890,11 @@ def save_events(
 
         print(e)
 
-        raise
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "status": "ERROR",
+                "message": "Error importing NASA EONET events.",
+                "error": str(e)
+            }
+        )

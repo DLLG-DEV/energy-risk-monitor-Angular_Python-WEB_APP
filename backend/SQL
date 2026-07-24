@@ -86,7 +86,6 @@ CREATE TABLE audit_logs (
 
 );
 
-
 CREATE TABLE forecast (
 
     id SERIAL PRIMARY KEY,
@@ -146,7 +145,160 @@ CREATE TABLE forecast (
 );
 
 
+CREATE TABLE event_categories (
 
+    id SERIAL PRIMARY KEY,
+
+
+    -- Nombre limpio usado por nuestro sistema
+    name VARCHAR(100) NOT NULL,
+
+
+    -- Nombre original NASA
+    external_name VARCHAR(150) NOT NULL,
+
+    description TEXT,
+
+
+    active BOOLEAN DEFAULT TRUE,
+
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+);
+
+CREATE TABLE user_alerts (
+
+    id SERIAL PRIMARY KEY,
+
+
+    user_id INTEGER NOT NULL,
+
+
+    name VARCHAR(150),
+
+
+    latitude DOUBLE PRECISION NOT NULL,
+
+
+    longitude DOUBLE PRECISION NOT NULL,
+
+
+    country VARCHAR(100),
+
+
+    state VARCHAR(100),
+
+
+    radius_km INTEGER DEFAULT 100,
+
+
+    min_risk_level VARCHAR(20) DEFAULT 'LOW',
+
+
+    frequency VARCHAR(20) NOT NULL,
+
+
+    preferred_day INTEGER,
+
+
+    last_sent_at TIMESTAMP,
+
+
+    next_send_at TIMESTAMP,
+
+
+    enabled BOOLEAN DEFAULT TRUE,
+
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+
+    CONSTRAINT fk_alert_user
+    FOREIGN KEY(user_id)
+    REFERENCES users(id)
+
+);
+
+
+
+CREATE TABLE user_alert_categories (
+
+    id SERIAL PRIMARY KEY,
+
+
+    alert_id INTEGER NOT NULL,
+
+
+    category_id INTEGER NOT NULL,
+
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+
+    CONSTRAINT fk_alert
+    FOREIGN KEY(alert_id)
+    REFERENCES user_alerts(id)
+    ON DELETE CASCADE,
+
+
+    CONSTRAINT fk_category
+    FOREIGN KEY(category_id)
+    REFERENCES event_categories(id)
+    ON DELETE CASCADE,
+
+
+    UNIQUE(alert_id,category_id)
+
+);
+
+
+CREATE TABLE alert_notifications (
+
+    id SERIAL PRIMARY KEY,
+
+
+    alert_id INTEGER NOT NULL,
+
+
+    category_id INTEGER,
+
+
+    message TEXT NOT NULL,
+
+
+    risk_level VARCHAR(20),
+
+
+    forecast_id INTEGER,
+
+
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+
+    status VARCHAR(20) DEFAULT 'SENT',
+
+
+    error_message TEXT,
+
+
+    CONSTRAINT fk_notification_alert
+    FOREIGN KEY(alert_id)
+    REFERENCES user_alerts(id)
+    ON DELETE CASCADE,
+
+
+    CONSTRAINT fk_notification_category
+    FOREIGN KEY(category_id)
+    REFERENCES event_categories(id)
+
+);
 -- ============================
 -- ÍNDICES
 -- ============================

@@ -11,7 +11,7 @@ from app.routers.admin.logs_by_admin import create_log
 
 import pandas as pd
 
-def generate_forecast(db, user):
+def generate_forecast(db, current_user):
 
 
     # Desactivar forecast anterior
@@ -361,7 +361,7 @@ def generate_forecast(db, user):
 
         db,
 
-        user,
+        current_user,
 
         "EXECUTE",
 

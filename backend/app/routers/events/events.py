@@ -11,20 +11,17 @@ from app.services.nasa_service import (
     save_events,
     get_nasa_categories,
     convert_to_days,
-    get_last_days_events
+    get_last_days_events,
+    save_nasa_categories
 )
+from app.models.event_category import EventCategory
+from app.utils.dictionaries import CATEGORY_MAP
+
 
 router = APIRouter(
     prefix="/api/events",
     tags=["Events"]
 )
-
-CATEGORY_TRANSLATION = {
-    "FIRE": "Incendios",
-    "ICE": "Hielo",
-    "STORM": "Tormentas",
-    "VOLCANO": "Volcanes"
-}
 
 
 @router.get("/list")
@@ -69,7 +66,7 @@ def get_event_categories(
 
             "code": category,
 
-            "name": CATEGORY_TRANSLATION.get(
+            "name": CATEGORY_MAP.get(
                 category,
                 category
             )
@@ -78,7 +75,8 @@ def get_event_categories(
 
 
     return result
-   
+    
+
 @router.get("/search")
 def search_events(
     category: Optional[str] = Query(None),
@@ -165,7 +163,8 @@ def search_events(
             for event in events
         ]
     }
-    
+                    
+                     
 @router.get("/statistics")
 def get_statistics(
     db: Session = Depends(get_db)
@@ -202,10 +201,10 @@ def get_statistics(
         "categories": [
             {
                 "code": category,
-                "name": CATEGORY_TRANSLATION.get(
-                    category,
-                    category
-                ),
+                "name": category.replace(
+                    "_",
+                    " "
+                ).title(),
                 "total": total_category
             }
 
@@ -220,7 +219,6 @@ def import_events(
     db:Session = Depends(get_db),
     current_user = Depends(require_admin)
 ):
-
 
     try:
 
@@ -237,16 +235,16 @@ def import_events(
             detail=str(e)
         )
 
-
-
     categories = get_nasa_categories()
-
-
+    
+    new_categories = save_nasa_categories(
+        db,
+        categories
+    )
 
     events = get_last_days_events(
         days
     )
-
 
     result = save_events(
         db,
@@ -254,30 +252,14 @@ def import_events(
         current_user
     )
 
-
-
     return {
-
-
         "message":"Import completed",
-
         "period":{
-
             "amount":amount,
-
             "unit":unit,
-
             "days":days
-
         },
-
-
-        "categories":len(categories),
-
-
         "events_received":len(events),
-
-
         **result
 
     }

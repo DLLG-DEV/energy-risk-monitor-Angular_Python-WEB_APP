@@ -65,3 +65,18 @@ export interface MonthForecast {
     weeks:number;
     items:ForecastTimeline[];
 }
+
+
+export interface EventCategory {
+
+  id:number;
+
+  name:string;
+
+  external_name:string;
+
+  description:string;
+
+  icon:string;
+
+}

@@ -8,139 +8,48 @@
 
 
 
-    <div class="legend-grid">
+<div class="legend-grid">
+
+
+    <div 
+        class="legend-item"
+        *ngFor="let category of cat_categories"
+    >
+
+
+        <span 
+            class="icon"
+            [ngClass]="category.name.toLowerCase()"
+        >
+
+            <i 
+                class="pi"
+                [ngClass]="category.icon"
+            ></i>
+
+        </span>
 
 
 
-        <div class="legend-item">
+        <div>
+
+            <strong>
+                {{ category.name }}
+            </strong>
 
 
-            <span class="icon volcano">
-
-                <i class="pi pi-globe"></i>
-
-            </span>
-
-
-            <div>
-
-                <strong>
-                    VOLCANO
-                </strong>
-
-
-                <p>
-                    Actividad volcánica y posibles
-                    erupciones que pueden afectar
-                    infraestructura energética,
-                    transporte y zonas operativas.
-                </p>
-
-            </div>
-
-
-        </div>
-
-
-
-
-
-        <div class="legend-item">
-
-
-            <span class="icon fire">
-
-                <i class="pi pi-bolt"></i>
-
-            </span>
-
-
-            <div>
-
-                <strong>
-                    FIRE
-                </strong>
-
-
-                <p>
-                    Incendios forestales detectados.
-                    Riesgo para líneas de transmisión,
-                    subestaciones y activos cercanos.
-                </p>
-
-            </div>
+            <p>
+                {{ category.description }}
+            </p>
 
 
         </div>
-
-
-
-
-
-        <div class="legend-item">
-
-
-            <span class="icon ice">
-
-                <i class="pi pi-cloud"></i>
-
-            </span>
-
-
-            <div>
-
-                <strong>
-                    ICE
-                </strong>
-
-
-                <p>
-                    Condiciones de congelamiento
-                    y acumulación de hielo que pueden
-                    afectar infraestructura eléctrica.
-                </p>
-
-            </div>
-
-
-        </div>
-
-
-
-
-
-        <div class="legend-item">
-
-
-            <span class="icon storm">
-
-                <i class="pi pi-cloud"></i>
-
-            </span>
-
-
-            <div>
-
-                <strong>
-                    STORM
-                </strong>
-
-
-                <p>
-                    Tormentas severas con potencial
-                    impacto en redes eléctricas,
-                    operación y mantenimiento.
-                </p>
-
-            </div>
-
-
-        </div>
-
 
 
     </div>
 
+
+</div>
 
 </div>
 

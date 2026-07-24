@@ -9,6 +9,7 @@ from app.core.dependencies import get_current_user, require_admin
 from app.models.forecast import Forecast
 from sqlalchemy import func
 from datetime import datetime
+from app.models.event_category import EventCategory
 
 
 router=APIRouter(
@@ -248,6 +249,43 @@ def forecast_categories(
         }
 
         for row in data
+
+    ]
+    
+@router.get("/cat/caategoria")
+def get_categories(
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+
+    categories = (
+        db.query(EventCategory)
+        .filter(
+            EventCategory.active == True
+        )
+        .order_by(
+            EventCategory.name
+        )
+        .all()
+    )
+
+
+    return [
+
+        {
+            "id": category.id,
+
+            "name": category.name,
+
+            "external_name": category.external_name,
+
+            "description": category.description,
+
+            "icon": category.icon
+
+        }
+
+        for category in categories
 
     ]
     

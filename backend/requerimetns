@@ -16,6 +16,7 @@ pip install pandas
 pip install prophet
 pip install scikit-learn
 pip install numpy
+pip install apscheduler
 
 LEVANTAR BACKEND
 uvicorn app.main:app --reload

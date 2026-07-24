@@ -60,14 +60,26 @@ export class Navbar {
 
     if(this.auth.isLogged()){
       const data = this.auth.decodeToken();
-      this.menuItems = data.modulos;
+        this.menuItems = [...data.modulos].sort((a, b) => {
+
+          if (a.route === '/') return -1;
+          if (b.route === '/') return 1;
+
+          return 0;
+        }); 
       this.isLogged = true;
       
     }else if(!this.auth.isLogged()){
 
       this.rol.get_rol().subscribe({
         next: (menu) => {
-          this.menuItems = menu;
+          this.menuItems = [...menu].sort((a, b) => {
+
+            if (a.route === '/') return -1;
+            if (b.route === '/') return 1;
+
+            return 0;
+          });
         }
       })
     }
