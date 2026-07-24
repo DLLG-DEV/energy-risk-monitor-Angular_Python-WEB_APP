@@ -17,6 +17,8 @@ pip install prophet
 pip install scikit-learn
 pip install numpy
 pip install apscheduler
+pip install fastapi-mail
+
 
 LEVANTAR BACKEND
 uvicorn app.main:app --reload

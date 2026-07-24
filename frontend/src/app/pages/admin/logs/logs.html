@@ -48,18 +48,29 @@
     >
 
 
-        <p-table
+<p-table
 
-            [value]="logs"
+    [value]="logs"
 
-            [loading]="loading"
+    [loading]="loading"
 
-            responsiveLayout="scroll"
+    responsiveLayout="scroll"
 
-            styleClass="w-full"
+    styleClass="w-full"
 
-        >
+    [paginator]="true"
 
+    [rows]="5"
+
+    [rowsPerPageOptions]="[5,10,15,20,5000]"
+
+    paginatorPosition="bottom"
+
+    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+
+    [showCurrentPageReport]="true"
+
+>
 
             <!-- HEADER -->
 

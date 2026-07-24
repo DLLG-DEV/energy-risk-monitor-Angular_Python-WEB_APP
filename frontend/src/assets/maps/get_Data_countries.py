@@ -15,10 +15,3 @@ countries = sorted({
     for feature in geo["features"]
     if feature.get("properties", {}).get("name")
 })
-
-print("=" * 60)
-print(f"TOTAL DE PAISES: {len(countries)}")
-print("=" * 60)
-
-for country in countries:
-    print(country)

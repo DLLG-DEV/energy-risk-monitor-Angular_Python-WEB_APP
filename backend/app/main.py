@@ -11,8 +11,10 @@ from app.routers.admin import users_by_admin, logs_by_admin, roles_by_admin
 from app.routers.events import events
 from app.routers.heatmap import heatmap
 from app.routers.forecast import forecast
+from app.routers.alerts import alerts
 
 from app.services.automated.scheduler import scheduler
+from app.models.notification import Notification
 
 
 logger = logging.getLogger(__name__)
@@ -75,7 +77,7 @@ app.include_router(logs_by_admin.router)
 app.include_router(events.router)
 app.include_router(heatmap.router)
 app.include_router(forecast.router)
-
+app.include_router(alerts.router)
 
 # ==========================================================
 # Middleware

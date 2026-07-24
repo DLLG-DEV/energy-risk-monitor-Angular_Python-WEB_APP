@@ -89,7 +89,8 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
             "sub": str(user.id),
             "userName": f"{user.first_name} {user.last_name}",
             "modulos": modulos,
-            "rol": user.role_id
+            "rol": user.role_id,
+            "mail": user.email
         }
     )
 

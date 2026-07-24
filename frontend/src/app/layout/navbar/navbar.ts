@@ -7,6 +7,7 @@ import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
 import { RolService } from '../../core/services/roles/roles.service';
+import { TagModule } from 'primeng/tag';
 
 interface MenuItem {
 
@@ -25,6 +26,7 @@ interface MenuItem {
     ButtonModule,
     DividerModule,
     RouterLink,
+    TagModule
   ],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css'
@@ -39,6 +41,7 @@ export class Navbar {
   isLogged = false;
 
   isAdmin = true;
+  email: string = '';
 
   menuItems: MenuItem[] = [];
 
@@ -60,13 +63,19 @@ export class Navbar {
 
     if(this.auth.isLogged()){
       const data = this.auth.decodeToken();
-        this.menuItems = [...data.modulos].sort((a, b) => {
+      this.menuItems = [...data.modulos].sort((a, b) => {
 
-          if (a.route === '/') return -1;
-          if (b.route === '/') return 1;
+        if (a.route === '/') return -1;
+        if (b.route === '/') return 1;
 
-          return 0;
-        }); 
+        return 0;
+      }); 
+      const profile = this.auth.decodeToken();
+
+      if(profile){
+          this.email = profile.mail;
+      }
+
       this.isLogged = true;
       
     }else if(!this.auth.isLogged()){
@@ -107,9 +116,9 @@ export class Navbar {
     this.router.navigate(['/login']);
   }
 
-  goProfile(): void {
-    this.closeMenu();
-    this.router.navigate(['/profile']);
+  getProfile(): void {
+   console.log(this.auth.decodeToken())
+
   }
 
   logout(): void {

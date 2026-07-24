@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, Input } from '@angular/core';
 import { ForecastDashboard, ForecastCategory, EventCategory } from '../../../core/interfaces/forecast';
 import { MessageService } from 'primeng/api';
 import { ForecastService } from '../../../core/services/forecast/forecast.service';
@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-kpi-cards',
+  standalone: true,
   imports: [
     CommonModule
   ],
@@ -24,7 +25,8 @@ export class KpiCards {
 
  constructor(
     private categoryService:ForecastService,
-    private messageService:MessageService
+    private messageService:MessageService,
+    private cdr: ChangeDetectorRef
  ){}
 
 
@@ -59,8 +61,9 @@ export class KpiCards {
 
         next:(data)=>{
 
-            this.cat_categories=data;
-            console.log(data)
+        this.cat_categories = data;
+
+        this.cdr.detectChanges();
 
         },
 

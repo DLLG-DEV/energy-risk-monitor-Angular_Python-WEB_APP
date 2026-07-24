@@ -1,9 +1,11 @@
+import asyncio
 import logging
 from apscheduler.schedulers.background import BackgroundScheduler
 from sqlalchemy.orm import Session
 from app.database.database import SessionLocal
 from app.services.automated.import_service import import_daily_events
 from app.services.automated.trining_forecast import train_forecast
+from app.services.automated.alert_service import process_alerts
 
 logger = logging.getLogger(__name__)
 
@@ -16,17 +18,23 @@ def run_daily_pipeline(
         db=db,
         current_user=None
     )
+    
     forecast_result = train_forecast(
         db=db,
         current_user=None
     )
-
+    alert_result = asyncio.run(
+        process_alerts(
+            db=db
+        )
+    )    
     return {
         "status": "OK",
         "message": "Daily pipeline completed successfully.",
         "data": {
             "import": import_result,
-            "forecast": forecast_result
+            "forecast": forecast_result,
+            "alarms":alert_result
         }
     }
 
@@ -61,7 +69,7 @@ scheduler.add_job(
     daily_job,
     trigger="cron",
     hour=1,
-    minute=00,
+    minute=0,
     id="daily_pipeline",
     replace_existing=True
 )

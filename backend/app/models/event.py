@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime
-
+from sqlalchemy.orm import relationship
 from app.database.database import Base
 
 
@@ -60,3 +60,4 @@ class Event(Base):
         nullable=True,
         index=True
     )
+    

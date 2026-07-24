@@ -75,14 +75,10 @@
 
             } @else {
 
-                <button
-                    pButton
-                    text
+                <p-tag
                     icon="pi pi-user"
-                    label="Perfil"
-                    (click)="goProfile()">
-                </button>
-
+                    [value]="email">
+                </p-tag>
             }
 
         </div>

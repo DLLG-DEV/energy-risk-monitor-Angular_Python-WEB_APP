@@ -40,13 +40,6 @@ def prepare_events(events):
 
 def create_training_dataset(df):
 
-    print(
-        result.groupby(
-            "category"
-        )
-        .size()
-    )
-    
     result=(
 
         df.groupby(

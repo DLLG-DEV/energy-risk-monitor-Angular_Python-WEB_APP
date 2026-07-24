@@ -11,6 +11,7 @@ import { Heatmap } from './pages/heatmap/heatmap';
 import { environment } from '../environments/environment';
 import { Forecast } from './pages/forecast/forecast';
 import { Landing } from './pages/landing/landing';
+import { AlertsComponetn } from './pages/alerts/alerts';
 
 
 export const routes: Routes = [
@@ -71,7 +72,16 @@ export const routes: Routes = [
                 data:{
                     module:'Pronósticos'
                 }
+            },
+            {
+                path: 'alarms',
+                component: AlertsComponetn,
+                canActivate: [authGuard, roleGuard],
+                data:{
+                    module:'Alertas'
+                }
             }
+
         ]
     },
 ];

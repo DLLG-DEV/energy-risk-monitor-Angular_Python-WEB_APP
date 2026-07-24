@@ -118,7 +118,7 @@ export class SearchEvents {
       },
       error:(err)=>{
         this.loading=false;
-    console.log(err);
+        console.error(err);
 
         this.Msg_Service.add({
           severity:'error',

@@ -14,7 +14,7 @@ from app.database.database import Base
 
 class EventCategory(Base):
 
-    __tablename__="event_categories"
+    __tablename__="cat_categories"
 
 
     id = Column(

@@ -10,6 +10,8 @@ from sqlalchemy import (
 )
 from datetime import datetime
 from app.database.database import Base
+from sqlalchemy.orm import relationship
+
 
 class Forecast(Base):
     __tablename__ = "forecast"
@@ -111,4 +113,10 @@ class Forecast(Base):
         Boolean,
         default=True,
         index=True
+    )
+    
+    notifications = relationship(
+        "Notification",
+        back_populates="forecast",
+        cascade="all, delete-orphan"
     )

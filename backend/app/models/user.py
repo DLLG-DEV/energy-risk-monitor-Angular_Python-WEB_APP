@@ -79,3 +79,8 @@ class User(Base):
         "Role",
         back_populates="users"
     )
+    
+    alarms = relationship(
+        "Alarm",
+        back_populates="user"
+    )

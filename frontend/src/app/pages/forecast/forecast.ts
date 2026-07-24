@@ -49,9 +49,6 @@ export class Forecast implements OnInit {
     }).subscribe({
       next: (response) => {
         this.dashboard = response.dashboard;
-        console.log("DASHBOADS")
-        console.log(this.dashboard)
-
         this.timeline = response.timeline;
 
         this.categories = response.categories;

@@ -1,0 +1,680 @@
+<div class="w-full">
+
+
+    <!-- Header -->
+
+    <div class="mb-6">
+
+
+        <h2
+
+            class="text-xl font-semibold"
+
+            style="color:var(--text)"
+
+        >
+
+            Mis alertas
+
+        </h2>
+
+
+
+        <p
+
+            class="text-sm mt-1"
+
+            style="color:var(--text-secondary)"
+
+        >
+
+            Gestión de alertas configuradas para monitoreo de eventos
+
+        </p>
+
+
+    </div>
+
+
+
+
+    <!-- Card -->
+
+
+    <div
+
+        class="rounded-xl p-4 shadow-sm border"
+
+        style="
+            background:var(--surface);
+            border-color:var(--navbar-border);
+        "
+
+    >
+
+
+
+        <p-table
+
+
+            [value]="alarms"
+
+
+            [loading]="loading"
+
+
+            responsiveLayout="scroll"
+
+
+            styleClass="w-full"
+
+
+        >
+
+
+
+            <!-- HEADER -->
+
+
+            <ng-template pTemplate="header">
+
+
+                <tr>
+
+
+                    <th>
+                        País
+                    </th>
+
+
+                    <th>
+                        Categoría
+                    </th>
+
+
+                    <th>
+                        Estado
+                    </th>
+
+
+                    <th>
+                        Fecha creación
+                    </th>
+
+
+                    <th class="text-center">
+                        Acción
+                    </th>
+
+
+                </tr>
+
+
+            </ng-template>
+
+
+
+
+            <!-- BODY -->
+
+
+            <ng-template
+
+                pTemplate="body"
+
+                let-alarm
+
+            >
+
+
+            <tr>
+
+
+
+                <td>
+
+
+                    {{alarm.country || 'Todos'}}
+
+
+                </td>
+
+
+
+
+                <td>
+
+
+                    {{alarm.category || 'Todas'}}
+
+
+                </td>
+
+
+
+
+                <td>
+
+
+                    <p-tag
+
+                        [value]="alarm.active ? 'Activa':'Inactiva'"
+
+                        [severity]="alarm.active ? 'success':'danger'"
+
+                    />
+
+
+                </td>
+
+
+
+
+                <td>
+
+
+                    <div class="flex flex-col">
+
+
+                        <span>
+
+                            {{alarm.created_at | date:'dd/MM/yyyy'}}
+
+                        </span>
+
+
+                        <span
+
+                            class="text-xs"
+
+                            style="color:var(--text-secondary)"
+
+                        >
+
+                            {{alarm.created_at | date:'HH:mm:ss'}}
+
+                        </span>
+
+
+                    </div>
+
+
+                </td>
+
+
+
+
+
+<td class="text-center">
+
+
+    <div class="flex justify-center gap-2">
+
+
+        <!-- EDITAR -->
+
+        <button
+
+            pButton
+
+            type="button"
+
+            icon="pi pi-pencil"
+
+            class="p-button-rounded p-button-text"
+
+            severity="info"
+
+            (click)="editAlarm(alarm)"
+
+        >
+
+        </button>
+
+
+
+        <!-- ELIMINAR -->
+
+        <button
+
+            pButton
+
+            type="button"
+
+            icon="pi pi-trash"
+
+            class="p-button-rounded p-button-text"
+
+            severity="danger"
+
+            (click)="confirmDelete(alarm)"
+
+        >
+
+        </button>
+
+
+    </div>
+
+
+</td>
+
+
+
+
+            </tr>
+
+
+            </ng-template>
+
+
+
+
+
+            <!-- VACIO -->
+
+
+            <ng-template pTemplate="emptymessage">
+
+
+                <tr>
+
+
+                    <td
+
+                        colspan="5"
+
+                        class="text-center py-6"
+
+                    >
+
+                        No existen alertas configuradas
+
+
+                    </td>
+
+
+                </tr>
+
+
+            </ng-template>
+
+
+
+        </p-table>
+
+
+
+    </div>
+
+
+
+</div>
+
+<p-dialog
+
+
+    header="Detalle de alarma"
+
+
+    [(visible)]="showModal"
+
+
+    [modal]="true"
+
+
+    [style]="{
+        width:'500px'
+    }"
+
+
+    [draggable]="false"
+
+
+    [resizable]="false"
+
+
+>
+
+
+
+<div>
+
+
+    <div class="grid grid-cols-1 gap-4">
+
+
+
+        <div>
+
+
+            <label class="font-semibold">
+
+                País
+
+            </label>
+
+
+            <input
+
+                pInputText
+
+                class="w-full mt-2"
+
+                [(ngModel)]="form.country"
+
+            />
+
+
+        </div>
+
+
+<div>
+
+
+    <label class="font-semibold">
+
+        Periodicidad
+
+    </label>
+
+
+
+    <p-select
+
+
+        class="w-full mt-2"
+
+
+        [options]="periodicities"
+
+
+        optionLabel="label"
+
+
+        optionValue="value"
+
+
+        [(ngModel)]="form.periodicity"
+
+
+        placeholder="Seleccione periodicidad"
+
+
+        appendTo="body"
+
+    >
+
+
+    </p-select>
+
+
+</div>
+
+   <div>
+
+
+    <label class="font-semibold">
+
+        Categoría
+
+    </label>
+
+
+    <p-select
+
+
+        class="w-full mt-2"
+
+
+        [options]="categories"
+
+
+        [(ngModel)]="form.category"
+
+
+        placeholder="Seleccione categoría"
+
+    appendTo="body"
+
+    >
+
+
+    </p-select>
+
+
+</div>
+
+
+
+<div>
+
+
+    <label class="font-semibold">
+
+        Estado
+
+    </label>
+
+
+
+    <p-select
+
+
+        class="w-full mt-2"
+
+
+        [options]="states"
+
+
+        optionLabel="label"
+
+
+        optionValue="value"
+
+
+        [(ngModel)]="form.active"
+    appendTo="body"
+
+
+    >
+
+
+    </p-select>
+
+
+
+</div>
+
+
+
+        <div>
+
+
+            <label class="font-semibold">
+
+                Fecha creación
+
+            </label>
+
+
+            <p class="mt-2">
+
+                {{selectedAlarm?.created_at 
+                | date:'dd/MM/yyyy HH:mm:ss'}}
+
+            </p>
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+</div>
+
+
+
+
+<ng-template pTemplate="footer">
+
+
+<button
+
+    pButton
+
+    label="Cancelar"
+
+    icon="pi pi-times"
+
+    class="p-button-text"
+
+    (click)="showModal=false"
+
+>
+
+
+</button>
+
+
+
+
+<button
+
+    pButton
+
+    label="Guardar"
+
+    icon="pi pi-save"
+
+    severity="info"
+
+    (click)="save()"
+
+>
+
+
+</button>
+
+
+</ng-template>
+
+
+</p-dialog>
+
+
+<p-dialog
+
+
+    header="Eliminar alarma"
+
+
+    [(visible)]="showDeleteDialog"
+
+
+    [modal]="true"
+
+
+    [style]="{
+        width:'400px'
+    }"
+
+
+    [draggable]="false"
+
+
+    [resizable]="false"
+
+
+>
+
+
+
+<div class="text-center">
+
+
+    <i
+
+        class="pi pi-exclamation-triangle text-4xl"
+
+    ></i>
+
+
+
+    <p class="mt-4">
+
+
+        ¿Está seguro que desea eliminar esta alarma?
+
+
+    </p>
+
+
+
+    <p
+
+        class="text-sm"
+
+        style="color:var(--text-secondary)"
+
+    >
+
+        {{selectedAlarm?.country}} -
+        {{selectedAlarm?.category}}
+
+
+    </p>
+
+
+
+</div>
+
+
+
+
+<ng-template pTemplate="footer">
+
+
+<button
+
+    pButton
+
+    label="Cancelar"
+
+    class="p-button-text"
+
+    (click)="showDeleteDialog=false"
+
+>
+
+
+</button>
+
+
+
+
+<button
+
+    pButton
+
+    label="Eliminar"
+
+    severity="danger"
+
+    icon="pi pi-trash"
+
+    (click)="deleteAlarm()"
+
+>
+
+
+</button>
+
+
+</ng-template>
+
+
+</p-dialog>
