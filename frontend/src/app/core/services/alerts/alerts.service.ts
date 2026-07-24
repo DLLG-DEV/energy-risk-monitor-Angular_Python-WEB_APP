@@ -5,59 +5,38 @@ import { Observable } from 'rxjs';
 import { Alarm, AlarmCreate, AlarmUpdate } from '../../interfaces/alerts';
 
 @Injectable({
-  providedIn:'root'
+  providedIn: 'root',
 })
-export class AlertService{
+export class AlertService {
+  private api = environment.apiUrl + '/alarms';
 
-    private api=environment.apiUrl+"/alarms";
+  constructor(private http: HttpClient) {}
 
-    constructor(
-        private http:HttpClient
-    ){}
+  getAlarms(): Observable<Alarm[]> {
+    return this.http.get<Alarm[]>(this.api);
+  }
 
-    getAlarms():Observable<Alarm[]>{
-        return this.http.get<Alarm[]>(
-            this.api
-        );
-    }
+  getAlarm(id: number): Observable<Alarm> {
+    return this.http.get<Alarm>(`${this.api}/${id}`);
+  }
 
-    getAlarm(id:number):Observable<Alarm>{
-        return this.http.get<Alarm>(
-            `${this.api}/${id}`
-        );
-    }
+  createAlarm(data: AlarmCreate): Observable<Alarm> {
+    return this.http.post<Alarm>(this.api, data);
+  }
 
-    createAlarm(data:AlarmCreate):Observable<Alarm>{
-        return this.http.post<Alarm>(
-            this.api,
-            data
-        );
-    }
+  updateAlarm(id: number, data: AlarmUpdate): Observable<Alarm> {
+    return this.http.put<Alarm>(`${this.api}/${id}`, data);
+  }
 
-    updateAlarm(id:number,data:AlarmUpdate):Observable<Alarm>{
-        return this.http.put<Alarm>(
-            `${this.api}/${id}`,
-            data
-        );
-    }
+  deleteAlarm(id: number): Observable<any> {
+    return this.http.delete(`${this.api}/${id}`);
+  }
 
-    deleteAlarm(id:number):Observable<any>{
-        return this.http.delete(
-            `${this.api}/${id}`
-        );
-    }
+  searchCountries(text: string): Observable<string[]> {
+    return this.http.get<string[]>(`${this.api}/countries/search?q=${text}`);
+  }
 
-    searchCountries(text:string):Observable<string[]>{
-        return this.http.get<string[]>(
-            `${this.api}/countries/search?q=${text}`
-        );
-    }
-
-    getcat_categories():Observable<string[]>{
-        return this.http.get<string[]>(
-            `${this.api}/cat/categories`
-        );
-    }
-
-
+  getcat_categories(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.api}/cat/categories`);
+  }
 }

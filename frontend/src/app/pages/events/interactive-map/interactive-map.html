@@ -1,51 +1,32 @@
 <div class="w-full">
+  <!-- KPI TOTAL -->
+  <div class="stats-grid">
+    <div class="card-stat total-card">
+      <span>Total Eventos</span>
 
-    <!-- KPI TOTAL -->
-    <div class="stats-grid">
+      <strong>
+        {{ statistics?.total }}
+      </strong>
+    </div>
 
-        <div class="card-stat total-card">
-
-            <span>Total Eventos</span>
-
-            <strong>
-                {{ statistics?.total }}
-            </strong>
-
+    @for (category of statistics?.categories; track category.code) {
+      <div class="card-stat">
+        <div class="card-header">
+          <span>
+            {{ category.name }}
+          </span>
         </div>
 
+        <strong>
+          {{ category.total }}
+        </strong>
+      </div>
+    }
+  </div>
 
-        @for(category of statistics?.categories; track category.code){
+  <!-- MAPA -->
 
-            <div class="card-stat">
-
-                <div class="card-header">
-
-                    <span>
-                        {{ category.name }}
-                    </span>
-
-                </div>
-
-
-                <strong>
-                    {{ category.total }}
-                </strong>
-
-
-            </div>
-
-        }
-
-    </div>
-
-
-    <!-- MAPA -->
-
-    <div class="map-container">
-
-        <div id="world-map"></div>
-
-    </div>
-
-
+  <div class="map-container">
+    <div id="world-map"></div>
+  </div>
 </div>

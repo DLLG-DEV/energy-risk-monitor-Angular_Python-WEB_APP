@@ -1,50 +1,22 @@
 <div class="w-full">
+  <!-- Título principal -->
+  <div class="mb-8 text-center">
+    <h1 class="text-3xl font-bold" style="color: var(--text)">EVENTOS NATURALES GLOBALES</h1>
 
+    <p class="text-sm mt-2" style="color: var(--text-secondary)">
+      Monitoreo, análisis geoespacial y consulta de eventos registrados en ERM
+    </p>
+  </div>
 
-    <!-- Título principal -->
-    <div class="mb-8 text-center">
+  <p-divider> </p-divider>
 
-        <h1
-            class="text-3xl font-bold"
-            style="color:var(--text)">
-            EVENTOS NATURALES GLOBALES
-        </h1>
+  <app-interactive-map></app-interactive-map>
 
+  <p-divider> </p-divider>
 
-        <p
-            class="text-sm mt-2"
-            style="color:var(--text-secondary)">
-            Monitoreo, análisis geoespacial y consulta de eventos registrados en ERM
-        </p>
+  <app-table-events></app-table-events>
 
-    </div>
+  <p-divider> </p-divider>
 
-
-
-    <p-divider>
-    </p-divider>
-
-
-
-    <app-interactive-map></app-interactive-map>
-
-
-
-    <p-divider>
-    </p-divider>
-
-
-
-    <app-table-events></app-table-events>
-
-
-
-    <p-divider>
-    </p-divider>
-
-
-
-    <app-search-events></app-search-events>
-
-
+  <app-search-events></app-search-events>
 </div>

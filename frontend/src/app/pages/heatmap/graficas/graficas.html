@@ -1,137 +1,44 @@
 <div class="card mb-6">
+  <h3 class="text-center mb-4">Rango de fechas</h3>
 
-    <h3 class="text-center mb-4">
-        Rango de fechas
-    </h3>
+  <div class="flex justify-center items-end gap-4">
+    <div class="flex flex-col">
+      <label class="text-sm mb-1"> Fecha inicial </label>
 
-
-    <div class="flex justify-center items-end gap-4">
-
-
-        <div class="flex flex-col">
-
-            <label class="text-sm mb-1">
-                Fecha inicial
-            </label>
-
-            <p-datepicker
-                [(ngModel)]="startDate"
-                dateFormat="yy-mm-dd"
-                size="small">
-            </p-datepicker>
-
-        </div>
-
-
-
-        <div class="flex flex-col">
-
-            <label class="text-sm mb-1">
-                Fecha final
-            </label>
-
-            <p-datepicker
-                [(ngModel)]="endDate"
-                dateFormat="yy-mm-dd"
-                size="small">
-            </p-datepicker>
-
-        </div>
-
-
-
-        <button
-
-            pButton
-
-            label="Aplicar"
-
-            class="p-button-sm"
-
-            (click)="updateFilters()">
-
-        </button>
-
-
+      <p-datepicker [(ngModel)]="startDate" dateFormat="yy-mm-dd" size="small"> </p-datepicker>
     </div>
 
+    <div class="flex flex-col">
+      <label class="text-sm mb-1"> Fecha final </label>
+
+      <p-datepicker [(ngModel)]="endDate" dateFormat="yy-mm-dd" size="small"> </p-datepicker>
+    </div>
+
+    <button pButton label="Aplicar" class="p-button-sm" (click)="updateFilters()"></button>
+  </div>
 </div>
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <!-- Categorias -->
+  <!-- Categorias -->
 
-    <div class="card">
+  <div class="card">
+    <h3>Distribución por categoría</h3>
 
+    <p-chart type="bar" [data]="categoryChartData" [options]="categoryChartOptions" />
+  </div>
 
-        <h3>
-            Distribución por categoría
-        </h3>
+  <!-- Top paises -->
 
+  <div class="card">
+    <h3>Países con mayor actividad</h3>
 
-        <p-chart
+    <p-chart type="bar" [data]="countryChartData" [options]="countryChartOptions" />
+  </div>
 
-            type="bar"
+  <!-- Menor actividad -->
 
-            [data]="categoryChartData"
+  <div class="card">
+    <h3>Países con menor actividad registrada</h3>
 
-            [options]="categoryChartOptions"
-
-        />
-
-    </div>
-
-
-
-
-
-    <!-- Top paises -->
-
-    <div class="card">
-
-
-        <h3>
-            Países con mayor actividad
-        </h3>
-
-
-        <p-chart
-
-            type="bar"
-
-            [data]="countryChartData"
-
-            [options]="countryChartOptions"
-
-        />
-
-    </div>
-
-
-
-
-
-    <!-- Menor actividad -->
-
-
-    <div class="card">
-
-
-        <h3>
-            Países con menor actividad registrada
-        </h3>
-
-
-        <p-chart
-
-            type="bar"
-
-            [data]="bottomCountryChartData"
-
-            [options]="bottomCountryChartOptions"
-
-        />
-
-    </div>
-
-
-
+    <p-chart type="bar" [data]="bottomCountryChartData" [options]="bottomCountryChartOptions" />
+  </div>
 </div>

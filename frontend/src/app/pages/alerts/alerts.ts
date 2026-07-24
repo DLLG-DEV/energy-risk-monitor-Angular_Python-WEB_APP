@@ -6,12 +6,7 @@ import { DividerModule } from 'primeng/divider';
 
 @Component({
   selector: 'app-alerts',
-  imports: [
-    NewAlert,
-    ListAlerts,
-    Enviados,
-    DividerModule
-  ],
+  imports: [NewAlert, ListAlerts, Enviados, DividerModule],
   templateUrl: './alerts.html',
   styleUrl: './alerts.css',
 })

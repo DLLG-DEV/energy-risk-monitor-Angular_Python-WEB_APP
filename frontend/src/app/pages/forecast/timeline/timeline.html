@@ -1,373 +1,155 @@
 <div class="w-full">
+  <!-- HEADER -->
 
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h2 class="text-xl font-bold" style="color: var(--text)">Línea temporal del Forecast</h2>
 
-    <!-- HEADER -->
-
-    <div class="flex justify-between items-center mb-6">
-
-        <div>
-
-            <h2
-                class="text-xl font-bold"
-                style="color:var(--text)">
-                Línea temporal del Forecast
-            </h2>
-
-
-            <p
-                class="text-sm"
-                style="color:var(--text-secondary)">
-                Pronóstico de eventos para los próximos 3 meses
-            </p>
-
-
-        </div>
-
-
-
-        <!-- SWITCH -->
-        <div class="flex gap-3">
-
-            <button
-
-                pButton
-
-                type="button"
-
-                label="Mensual"
-
-                icon="pi pi-chart-line"
-
-                (click)="setView('monthly')"
-
-                [severity]="
-                    view==='monthly'
-                    ? 'primary'
-                    : 'secondary'
-                "
-
-            >
-            </button>
-
-           <button
-
-                pButton
-
-                type="button"
-
-                label="Semanal"
-
-                icon="pi pi-calendar"
-
-                (click)="setView('weekly')"
-
-                [severity]="
-                    view==='weekly'
-                    ? 'primary'
-                    : 'secondary'
-                "
-
-            >
-            </button>
-
-        </div>
-
+      <p class="text-sm" style="color: var(--text-secondary)">
+        Pronóstico de eventos para los próximos 3 meses
+      </p>
     </div>
 
-<!-- SEMANAL -->
+    <!-- SWITCH -->
+    <div class="flex gap-3">
+      <button
+        pButton
+        type="button"
+        label="Mensual"
+        icon="pi pi-chart-line"
+        (click)="setView('monthly')"
+        [severity]="view === 'monthly' ? 'primary' : 'secondary'"
+      ></button>
 
-<div
-    *ngIf="view==='weekly'">
-
-
-    <div
-        *ngFor="let group of weeklyGroups"
-        class="month-week-group">
-
-
-        <h3 class="group-title">
-
-            {{getMonthLabel(group[0].date)}}
-
-        </h3>
-
-
-
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
-
-
-            <div
-
-                *ngFor="let item of group"
-
-                class="forecast-card"
-
-                (click)="openWeek(item)"
-            >
-
-
-                <div class="forecast-title">
-
-                    Semana
-
-                </div>
-
-
-
-                <div class="forecast-date">
-
-                    {{item.date | date:'dd MMM yyyy'}}
-
-                </div>
-
-
-
-                <div class="forecast-value">
-
-                    {{item.total_events}}
-
-                </div>
-
-
-
-                <div class="forecast-description">
-
-                    eventos esperados
-
-                </div>
-
-
-
-                <div class="forecast-footer">
-
-
-                    <span>
-
-                        <i class="pi pi-chart-bar"></i>
-
-                        {{item.categories.length}}
-
-                        categorías
-
-                    </span>
-
-
-                </div>
-
-
-
-            </div>
-
-
-        </div>
-
-
+      <button
+        pButton
+        type="button"
+        label="Semanal"
+        icon="pi pi-calendar"
+        (click)="setView('weekly')"
+        [severity]="view === 'weekly' ? 'primary' : 'secondary'"
+      ></button>
     </div>
+  </div>
 
+  <!-- SEMANAL -->
 
-</div>
+  <div *ngIf="view === 'weekly'">
+    <div *ngFor="let group of weeklyGroups" class="month-week-group">
+      <h3 class="group-title">
+        {{ getMonthLabel(group[0].date) }}
+      </h3>
 
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+        <div *ngFor="let item of group" class="forecast-card" (click)="openWeek(item)">
+          <div class="forecast-title">Semana</div>
 
+          <div class="forecast-date">
+            {{ item.date | date: 'dd MMM yyyy' }}
+          </div>
 
+          <div class="forecast-value">
+            {{ item.total_events }}
+          </div>
 
+          <div class="forecast-description">eventos esperados</div>
 
-
-
-<!-- MENSUAL -->
-
-
-<div
-
-    *ngIf="view==='monthly'"
-
-    class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-
-
-    <div
-
-        *ngFor="let month of monthlyData"
-
-        class="forecast-card"
-
-        (click)="openMonth(month)"
-    >
-
-
-
-        <div class="forecast-title">
-
-            Periodo mensual
-
-        </div>
-
-
-
-        <div class="forecast-date">
-
-            {{month.month}}
-
-        </div>
-
-
-
-
-        <div class="forecast-value">
-
-            {{month.events}}
-
-        </div>
-
-
-
-        <div class="forecast-description">
-
-            eventos esperados
-
-        </div>
-
-
-
-
-        <div class="forecast-footer">
-
-
+          <div class="forecast-footer">
             <span>
+              <i class="pi pi-chart-bar"></i>
 
-                <i class="pi pi-calendar"></i>
+              {{ item.categories.length }}
 
-                {{month.weeks}}
-
-                semanas analizadas
-
+              categorías
             </span>
-
-
+          </div>
         </div>
-
-
-
+      </div>
     </div>
+  </div>
 
+  <!-- MENSUAL -->
 
-</div>
+  <div *ngIf="view === 'monthly'" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+    <div *ngFor="let month of monthlyData" class="forecast-card" (click)="openMonth(month)">
+      <div class="forecast-title">Periodo mensual</div>
 
+      <div class="forecast-date">
+        {{ month.month }}
+      </div>
+
+      <div class="forecast-value">
+        {{ month.events }}
+      </div>
+
+      <div class="forecast-description">eventos esperados</div>
+
+      <div class="forecast-footer">
+        <span>
+          <i class="pi pi-calendar"></i>
+
+          {{ month.weeks }}
+
+          semanas analizadas
+        </span>
+      </div>
+    </div>
+  </div>
 </div>
 
 <p-dialog
+  header="Detalle Forecast"
+  [(visible)]="showModal"
+  [modal]="true"
+  [style]="{ width: '600px' }"
+>
+  <!-- SEMANA -->
 
-    header="Detalle Forecast"
+  <div *ngIf="selectedWeek">
+    <h3>Semana {{ selectedWeek.date }}</h3>
 
-    [(visible)]="showModal"
+    <div *ngFor="let cat of selectedWeek.categories" class="detail-row">
+      <span>
+        {{ cat.category }}
+      </span>
 
-    [modal]="true"
+      <span>
+        {{ cat.country }}
+      </span>
 
-    [style]="{width:'600px'}">
-
-
-    <!-- SEMANA -->
-
-    <div *ngIf="selectedWeek">
-
-
-        <h3>
-
-            Semana {{selectedWeek.date}}
-
-        </h3>
-
-
-        <div
-
-        *ngFor="let cat of selectedWeek.categories"
-
-        class="detail-row">
-
-
-            <span>
-
-                {{cat.category}}
-
-            </span>
-
-
-            <span>
-
-                {{cat.country}}
-
-            </span>
-
-
-            <b>
-
-                {{cat.events}}
-
-            </b>
-
-
-        </div>
-
-
+      <b>
+        {{ cat.events }}
+      </b>
     </div>
+  </div>
 
+  <!-- MES -->
 
+  <div *ngIf="selectedMonth">
+    <h3>
+      {{ selectedMonth.month }}
+    </h3>
 
+    <p>
+      Total esperado:
 
+      <b>
+        {{ selectedMonth.events }}
+      </b>
 
-    <!-- MES -->
+      eventos
+    </p>
 
-    <div *ngIf="selectedMonth">
+    <p-divider></p-divider>
 
+    <div *ngFor="let week of selectedMonth.items" class="detail-row">
+      <span>
+        {{ week.date | date: 'dd MMM' }}
+      </span>
 
-        <h3>
-
-            {{selectedMonth.month}}
-
-        </h3>
-
-
-        <p>
-
-            Total esperado:
-
-            <b>
-                {{selectedMonth.events}}
-            </b>
-
-            eventos
-
-        </p>
-
-
-
-        <p-divider></p-divider>
-
-
-
-        <div
-
-        *ngFor="let week of selectedMonth.items"
-
-        class="detail-row">
-
-
-            <span>
-
-                {{week.date | date:'dd MMM'}}
-
-            </span>
-
-
-            <b>
-
-                {{week.total_events}}
-
-            </b>
-
-
-        </div>
-
-
+      <b>
+        {{ week.total_events }}
+      </b>
     </div>
-
-
+  </div>
 </p-dialog>

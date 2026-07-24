@@ -1,40 +1,16 @@
-from sqlalchemy import Column, Integer, String, Text
-
 from app.database.database import Base
+from sqlalchemy import Column, Integer, String, Text
 
 
 class Module(Base):
-
     __tablename__ = "modules"
 
+    id = Column(Integer, primary_key=True, index=True)
 
-    id = Column(
-        Integer,
-        primary_key=True,
-        index=True
-    )
+    name = Column(String(100), nullable=False, unique=True)
 
+    route = Column(String(150), nullable=False)
 
-    name = Column(
-        String(100),
-        nullable=False,
-        unique=True
-    )
+    icon = Column(String(100), nullable=False)
 
-
-    route = Column(
-        String(150),
-        nullable=False
-    )
-
-
-    icon = Column(
-        String(100),
-        nullable=False
-    )
-
-
-    description = Column(
-        Text,
-        nullable=True
-    )
+    description = Column(Text, nullable=True)

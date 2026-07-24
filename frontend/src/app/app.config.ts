@@ -10,23 +10,17 @@ import { MessageService } from 'primeng/api';
 import { routes } from './app.routes';
 import { jwtInterceptor } from './core/interceptors/jwt-interceptor';
 
-
-
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(
-      withInterceptors([
-        jwtInterceptor
-      ])
-    ),
+    provideHttpClient(withInterceptors([jwtInterceptor])),
     provideAnimationsAsync(),
     MessageService,
     providePrimeNG({
       theme: {
-        preset: Aura
-      }
-    })
-  ]
+        preset: Aura,
+      },
+    }),
+  ],
 };

@@ -1,89 +1,37 @@
-from sqlalchemy import (
-    Column,
-    Integer,
-    String,
-    Boolean,
-    DateTime,
-    ForeignKey
-)
-
-from sqlalchemy.orm import relationship
-
 from datetime import datetime
 
 from app.database.database import Base
-
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 
 
 class Alarm(Base):
-
     __tablename__ = "alarms"
 
-
-    id = Column(
-        Integer,
-        primary_key=True,
-        index=True
-    )
-
+    id = Column(Integer, primary_key=True, index=True)
 
     user_id = Column(
-        Integer,
-        ForeignKey("users.id", ondelete="CASCADE"),
-        nullable=False
+        Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
 
+    country = Column(String(100), nullable=True)
 
-    country = Column(
-        String(100),
-        nullable=True
-    )
+    category = Column(String(100), nullable=True)
 
+    active = Column(Boolean, default=True)
 
-    category = Column(
-        String(100),
-        nullable=True
-    )
+    created_at = Column(DateTime, default=datetime.utcnow)
 
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    active = Column(
-        Boolean,
-        default=True
-    )
+    is_deleted = Column(Boolean, default=False)
 
-
-    created_at = Column(
-        DateTime,
-        default=datetime.utcnow
-    )
-
-
-    updated_at = Column(
-        DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow
-    )
-
-    is_deleted = Column(
-        Boolean,
-        default=False
-    )
-    
     periodicity = Column(
         String(20),
     )
-    
-    
+
     # relaciones
 
-    user = relationship(
-        "User",
-        back_populates="alarms"
-    )
+    user = relationship("User", back_populates="alarms")
 
-
-    notifications = relationship(
-        "Notification",
-        back_populates="alarm"
-    )    
-    
+    notifications = relationship("Notification", back_populates="alarm")

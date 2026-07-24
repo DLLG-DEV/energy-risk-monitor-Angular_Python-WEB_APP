@@ -1,117 +1,45 @@
 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+  <!-- Total eventos -->
+  <div class="kpi-card">
+    <div class="kpi-title">Eventos analizados</div>
 
-
-    <!-- Total eventos -->
-    <div class="kpi-card">
-
-
-        <div class="kpi-title">
-            Eventos analizados
-        </div>
-
-
-        <div class="kpi-value">
-
-            {{kpis.total_events}}
-
-        </div>
-
-
-        <div class="kpi-description">
-
-            Eventos registrados
-
-        </div>
-
-
+    <div class="kpi-value">
+      {{ kpis.total_events }}
     </div>
 
+    <div class="kpi-description">Eventos registrados</div>
+  </div>
 
+  <!-- Paises -->
+  <div class="kpi-card">
+    <div class="kpi-title">Países afectados</div>
 
-    <!-- Paises -->
-    <div class="kpi-card">
-
-
-        <div class="kpi-title">
-
-            Países afectados
-
-        </div>
-
-
-        <div class="kpi-value">
-
-            {{kpis.affected_countries}}
-
-        </div>
-
-
-        <div class="kpi-description">
-
-            Regiones con actividad
-
-        </div>
-
-
+    <div class="kpi-value">
+      {{ kpis.affected_countries }}
     </div>
 
+    <div class="kpi-description">Regiones con actividad</div>
+  </div>
 
+  <!-- Categoria -->
+  <div class="kpi-card">
+    <div class="kpi-title">Categoría dominante</div>
 
-    <!-- Categoria -->
-    <div class="kpi-card">
-
-
-        <div class="kpi-title">
-
-            Categoría dominante
-
-        </div>
-
-
-        <div class="kpi-value text-xl">
-
-            {{kpis.top_category || 'N/A'}}
-
-        </div>
-
-
-        <div class="kpi-description">
-
-            Mayor frecuencia
-
-        </div>
-
-
+    <div class="kpi-value text-xl">
+      {{ kpis.top_category || 'N/A' }}
     </div>
 
+    <div class="kpi-description">Mayor frecuencia</div>
+  </div>
 
+  <!-- Pais -->
+  <div class="kpi-card">
+    <div class="kpi-title">Mayor actividad</div>
 
-    <!-- Pais -->
-    <div class="kpi-card">
-
-
-        <div class="kpi-title">
-
-            Mayor actividad
-
-        </div>
-
-
-        <div class="kpi-value text-xl">
-
-            {{kpis.top_country || 'N/A'}}
-
-        </div>
-
-
-        <div class="kpi-description">
-
-            País con más eventos
-
-        </div>
-
-
+    <div class="kpi-value text-xl">
+      {{ kpis.top_country || 'N/A' }}
     </div>
 
-
+    <div class="kpi-description">País con más eventos</div>
+  </div>
 </div>

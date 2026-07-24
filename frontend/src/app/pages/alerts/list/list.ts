@@ -19,396 +19,239 @@ import { SelectModule } from 'primeng/select';
     TableModule,
     ButtonModule,
     DialogModule,
-    FormsModule
+    FormsModule,
   ],
   templateUrl: './list.html',
   styleUrl: './list.css',
 })
 export class ListAlerts {
+  alarms: Alarm[] = [];
 
+  loading = true;
 
-  alarms:Alarm[]=[];
+  showModal = false;
 
+  editMode = false;
 
-  loading=true;
+  selectedId: number | null = null;
 
+  selectedAlarm!: Alarm;
 
-  showModal=false;
+  showDeleteDialog = false;
 
+  categories: string[] = [];
 
-  editMode=false;
+  states = [
+    {
+      label: 'Activa',
+      value: true,
+    },
 
-
-  selectedId:number|null=null;
-
-  selectedAlarm!:Alarm;
-
-
-  showDeleteDialog=false;
-
-  categories:string[]=[];
-
-
-  states=[
-
-      {
-          label:'Activa',
-          value:true
-      },
-
-      {
-          label:'Inactiva',
-          value:false
-      }
-
+    {
+      label: 'Inactiva',
+      value: false,
+    },
   ];
 
-  periodicities=[
-
+  periodicities = [
     {
-        label:'Diaria',
-        value:'DIARIA'
+      label: 'Diaria',
+      value: 'DIARIA',
     },
 
     {
-        label:'Semanal',
-        value:'SEMANAL'
+      label: 'Semanal',
+      value: 'SEMANAL',
     },
 
     {
-        label:'Mensual',
-        value:'MENSUAL'
+      label: 'Mensual',
+      value: 'MENSUAL',
     },
 
     {
-        label:'Anual',
-        value:'ANUAL'
-    }
+      label: 'Anual',
+      value: 'ANUAL',
+    },
+  ];
 
-];
+  form = {
+    country: null as string | null,
 
+    category: null as string | null,
 
-form={
+    periodicity: 'DIARIA',
 
-    country:null as string|null,
-
-    category:null as string|null,
-
-    periodicity:'DIARIA',
-
-    active:true
-
-};
-
+    active: true,
+  };
 
   constructor(
+    private alarmService: AlertService,
 
-    private alarmService:AlertService,
-
-    private messageService:MessageService,
+    private messageService: MessageService,
 
     private cdr: ChangeDetectorRef,
-  ){}
+  ) {}
 
-
-
-  ngOnInit(){
-
+  ngOnInit() {
     this.loadAlarms();
     this.loadCategories();
-
-
   }
 
-
-
-  loadAlarms(){
-
-
+  loadAlarms() {
     this.alarmService
-    .getAlarms()
+      .getAlarms()
 
-    .subscribe({
+      .subscribe({
+        next: (data) => {
+          this.alarms = data;
 
-      next:(data)=>{
+          this.loading = false;
 
-
-        this.alarms=data;
-
-        this.loading=false;
-
-        this.cdr.detectChanges();
-
-
-      },
-
-
-      error:(error)=>{
-
-
-        console.error(
-          "Error obteniendo alarmas",
-          error
-        );
-
-
-        this.messageService.add({
-
-          severity:'error',
-
-          summary:'Error obteniendo alarmas'
-
-        });
-
-
-        this.loading=false;
-
-
-      }
-
-    });
-
-
-  }
-
-
-loadCategories(){
-
-
-    this.alarmService
-    .getcat_categories()
-
-    .subscribe({
-
-        next:(data)=>{
-
-
-            this.categories = [
-                'Todas',
-                ...data
-            ];
-
-        this.cdr.detectChanges();
-
+          this.cdr.detectChanges();
         },
 
+        error: (error) => {
+          console.error('Error obteniendo alarmas', error);
 
-        error:(error)=>{
+          this.messageService.add({
+            severity: 'error',
 
+            summary: 'Error obteniendo alarmas',
+          });
 
-            console.error(
-                "Error obteniendo categorías",
-                error
-            );
-
-
-        }
-
-    });
-
-
-}
-
-editAlarm(alarm:Alarm){
-
-
-    this.editMode=true;
-
-
-    this.selectedId=alarm.id;
-
-this.form={
-
-    country:alarm.country,
-
-    category:alarm.category,
-
-    periodicity:alarm.periodicity,
-
-    active:alarm.active
-
-};
-
-
-    this.showModal=true;
-
-
-}
-
-confirmDelete(alarm:Alarm){
-
-
-    this.selectedAlarm=alarm;
-
-
-    this.showDeleteDialog=true;
-
-
-}
-
-deleteAlarm(){
-
-
-    this.alarmService
-    .deleteAlarm(
-        this.selectedAlarm.id
-    )
-
-    .subscribe({
-
-        next:(response)=>{
-
-
-            this.messageService.add({
-
-                severity:'success',
-
-                summary:'Alarma eliminada correctamente'
-
-            });
-
-
-            this.showDeleteDialog=false;
-
-
-            this.loadAlarms();
-
-
+          this.loading = false;
         },
-
-
-        error:(error)=>{
-
-
-            console.error(
-                "Error eliminando alarma",
-                error
-            );
-
-
-            this.messageService.add({
-
-                severity:'error',
-
-                summary:'Error eliminando alarma'
-
-            });
-
-
-        }
-
-    });
-
-
-}
-
-  closeModal(){
-
-
-    this.showModal=false;
-
-
-    this.editMode=false;
-
-
-    this.selectedId=null;
-
-
+      });
   }
 
+  loadCategories() {
+    this.alarmService
+      .getcat_categories()
 
-save(){
+      .subscribe({
+        next: (data) => {
+          this.categories = ['Todas', ...data];
 
+          this.cdr.detectChanges();
+        },
 
-    if(!this.selectedId){
+        error: (error) => {
+          console.error('Error obteniendo categorías', error);
+        },
+      });
+  }
 
-        return;
+  editAlarm(alarm: Alarm) {
+    this.editMode = true;
 
+    this.selectedId = alarm.id;
+
+    this.form = {
+      country: alarm.country,
+
+      category: alarm.category,
+
+      periodicity: alarm.periodicity,
+
+      active: alarm.active,
+    };
+
+    this.showModal = true;
+  }
+
+  confirmDelete(alarm: Alarm) {
+    this.selectedAlarm = alarm;
+
+    this.showDeleteDialog = true;
+  }
+
+  deleteAlarm() {
+    this.alarmService
+      .deleteAlarm(this.selectedAlarm.id)
+
+      .subscribe({
+        next: (response) => {
+          this.messageService.add({
+            severity: 'success',
+
+            summary: 'Alarma eliminada correctamente',
+          });
+
+          this.showDeleteDialog = false;
+
+          this.loadAlarms();
+        },
+
+        error: (error) => {
+          console.error('Error eliminando alarma', error);
+
+          this.messageService.add({
+            severity: 'error',
+
+            summary: 'Error eliminando alarma',
+          });
+        },
+      });
+  }
+
+  closeModal() {
+    this.showModal = false;
+
+    this.editMode = false;
+
+    this.selectedId = null;
+  }
+
+  save() {
+    if (!this.selectedId) {
+      return;
     }
 
+    const data = {
+      country: this.form.country,
 
+      category: this.form.category,
 
-const data={
+      periodicity: this.form.periodicity,
 
-    country:this.form.country,
-
-    category:this.form.category,
-
-    periodicity:this.form.periodicity,
-
-    active:this.form.active
-
-};
-
-
+      active: this.form.active,
+    };
 
     this.alarmService
 
-    .updateAlarm(
-
+      .updateAlarm(
         this.selectedId,
 
-        data
+        data,
+      )
 
-    )
+      .subscribe({
+        next: (response) => {
+          this.messageService.add({
+            severity: 'success',
 
-    .subscribe({
+            summary: 'Alarma actualizada correctamente',
+          });
 
+          this.showModal = false;
 
-        next:(response)=>{
-
-
-
-            this.messageService.add({
-
-                severity:'success',
-
-                summary:'Alarma actualizada correctamente'
-
-            });
-
-
-
-            this.showModal=false;
-
-
-            this.loadAlarms();
-
-
-
+          this.loadAlarms();
         },
 
+        error: (error) => {
+          console.error(
+            'Error actualizando alarma',
 
-        error:(error)=>{
+            error,
+          );
 
+          this.messageService.add({
+            severity: 'error',
 
-            console.error(
-
-                "Error actualizando alarma",
-
-                error
-
-            );
-
-
-
-            this.messageService.add({
-
-                severity:'error',
-
-                summary:'Error actualizando alarma'
-
-            });
-
-
-
-        }
-
-
-    });
-
-
-}
-
-
+            summary: 'Error actualizando alarma',
+          });
+        },
+      });
+  }
 }

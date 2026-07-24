@@ -9,7 +9,6 @@ export interface UserAdmin {
   created_at: string;
 }
 
-
 export interface RoleList {
   id: number;
   name: string;

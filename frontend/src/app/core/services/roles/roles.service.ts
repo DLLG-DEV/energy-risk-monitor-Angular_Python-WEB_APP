@@ -5,19 +5,14 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RolService {
-  private url_back= environment.apiUrl
+  private url_back = environment.apiUrl;
 
-  constructor(
-    private http: HttpClient
-  ){}
+  constructor(private http: HttpClient) {}
 
   get_rol(): Observable<any> {
-    return this.http.get<any>(
-        `${this.url_back}/rol/modules`
-  );
+    return this.http.get<any>(`${this.url_back}/rol/modules`);
   }
-
 }

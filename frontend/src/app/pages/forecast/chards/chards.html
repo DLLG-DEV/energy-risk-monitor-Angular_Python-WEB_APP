@@ -1,74 +1,29 @@
 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+  <!-- Evolución temporal -->
+  <div class="card-chart">
+    <h3>Tendencia semanal</h3>
 
+    <p-chart type="line" [data]="timelineChart" [style]="{ height: '220px' }"> </p-chart>
+  </div>
 
-    <!-- Evolución temporal -->
-    <div class="card-chart">
+  <!-- Riesgo -->
+  <div class="card-chart">
+    <h3>Nivel de riesgo</h3>
 
-        <h3>
-            Tendencia semanal
-        </h3>
+    <p-chart type="line" [data]="riskChart" [style]="{ height: '220px' }"> </p-chart>
+  </div>
 
-        <p-chart
-            type="line"
-            [data]="timelineChart"
-            [style]="{'height':'220px'}">
-        </p-chart>
+  <!-- Categorías -->
+  <div class="card-chart">
+    <h3>Categorías</h3>
 
-    </div>
+    <p-chart type="doughnut" [data]="categoryChart" [style]="{ height: '220px' }"> </p-chart>
+  </div>
 
+  <!-- Países -->
+  <div class="card-chart">
+    <h3>Países críticos</h3>
 
-
-
-    <!-- Riesgo -->
-    <div class="card-chart">
-
-        <h3>
-            Nivel de riesgo
-        </h3>
-
-        <p-chart
-            type="line"
-            [data]="riskChart"
-            [style]="{'height':'220px'}">
-        </p-chart>
-
-    </div>
-
-
-
-
-    <!-- Categorías -->
-    <div class="card-chart">
-
-        <h3>
-            Categorías
-        </h3>
-
-        <p-chart
-            type="doughnut"
-            [data]="categoryChart"
-            [style]="{'height':'220px'}">
-        </p-chart>
-
-    </div>
-
-
-
-
-    <!-- Países -->
-    <div class="card-chart">
-
-        <h3>
-            Países críticos
-        </h3>
-
-        <p-chart
-            type="bar"
-            [data]="countryChart"
-            [style]="{'height':'220px'}">
-        </p-chart>
-
-    </div>
-
-
+    <p-chart type="bar" [data]="countryChart" [style]="{ height: '220px' }"> </p-chart>
+  </div>
 </div>

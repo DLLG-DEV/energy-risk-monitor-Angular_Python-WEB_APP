@@ -1,36 +1,27 @@
 import logging
-
-from sqlalchemy.orm import Session
-from sqlalchemy import desc
-
-from app.models.alarm import Alarm
-from app.models.user import User
-from app.models.forecast import Forecast
-from app.models.notification import Notification
 from datetime import datetime
 
+from app.models.alarm import Alarm
+from app.models.forecast import Forecast
+from app.models.notification import Notification
+from app.models.user import User
 from app.services.email.email_service import send_email
-
+from sqlalchemy import desc
+from sqlalchemy.orm import Session
 
 logger = logging.getLogger(__name__)
 
-def get_active_alarms(
-    db: Session
-):
 
+def get_active_alarms(db: Session):
 
-    alarms = db.query(Alarm)\
-        .filter(
-            Alarm.active == True,
-            Alarm.is_deleted == False
-        )\
-        .all()
-        
+    alarms = (
+        db.query(Alarm).filter(Alarm.active == True, Alarm.is_deleted == False).all()
+    )
+
     return alarms
 
-def get_last_forecast(
-    db: Session
-):
+
+def get_last_forecast(db: Session):
 
     latest_forecast_date = (
         db.query(Forecast.forecast_date)
@@ -40,18 +31,14 @@ def get_last_forecast(
     )
 
     if not latest_forecast_date:
-
-        logger.warning(
-            "No existen forecasts disponibles."
-        )
+        logger.warning("No existen forecasts disponibles.")
 
         return None, []
 
     forecasts = (
         db.query(Forecast)
         .filter(
-            Forecast.active == True,
-            Forecast.forecast_date == latest_forecast_date[0]
+            Forecast.active == True, Forecast.forecast_date == latest_forecast_date[0]
         )
         .all()
     )
@@ -59,37 +46,25 @@ def get_last_forecast(
     logger.info(
         "Forecast activo obtenido. Fecha: %s | Registros: %s",
         latest_forecast_date[0],
-        len(forecasts)
+        len(forecasts),
     )
 
     return latest_forecast_date[0], forecasts
 
-def get_user_by_alarm(
-    db: Session,
-    alarm: Alarm
-):
 
-    return db.query(User)\
-        .filter(
-            User.id == alarm.user_id
-        )\
-        .first()
+def get_user_by_alarm(db: Session, alarm: Alarm):
 
-def filter_forecasts_by_alarm(
-    alarm: Alarm,
-    forecasts: list
-):
+    return db.query(User).filter(User.id == alarm.user_id).first()
+
+
+def filter_forecasts_by_alarm(alarm: Alarm, forecasts: list):
 
     matches = [
-
         forecast
-
         for forecast in forecasts
-
         if (
             (alarm.country is None or alarm.country == forecast.country)
-            and
-            (
+            and (
                 alarm.category is None
                 or alarm.category.upper() == "TODAS"
                 or alarm.category == forecast.category
@@ -98,12 +73,9 @@ def filter_forecasts_by_alarm(
     ]
 
     return matches
-        
-def generate_alert_email(
-    forecasts:list,
-    forecast_date
-):
 
+
+def generate_alert_email(forecasts: list, forecast_date):
 
     body = f"""
 
@@ -196,29 +168,10 @@ def generate_alert_email(
 
     """
 
-
-
     for forecast in forecasts:
+        probability = forecast.confidence * 100
 
-
-        probability = (
-            forecast.confidence * 100
-        )
-
-
-        risk_color = (
-
-            "#f87171"
-
-            if forecast.risk_level == "HIGH"
-
-            else
-
-            "#fbbf24"
-
-        )
-
-
+        risk_color = "#f87171" if forecast.risk_level == "HIGH" else "#fbbf24"
 
         body += f"""
 
@@ -310,8 +263,6 @@ def generate_alert_email(
 
         """
 
-
-
     body += """
 
     <br>
@@ -344,208 +295,82 @@ def generate_alert_email(
 
     """
 
-
-
     return body
 
-async def send_alert_email(
-    email:str,
-    body:str
-):
 
+async def send_alert_email(email: str, body: str):
 
     await send_email(
-
-        email=email,
-
-        subject="🚨 Alerta ERM - Nuevos riesgos detectados",
-
-        body=body
-
+        email=email, subject="🚨 Alerta ERM - Nuevos riesgos detectados", body=body
     )
-    
-def save_notification_logs(
-    db:Session,
-    alarm:Alarm,
-    user:User,
-    forecasts:list
-):
 
+
+def save_notification_logs(db: Session, alarm: Alarm, user: User, forecasts: list):
 
     for forecast in forecasts:
-
-
         notification = Notification(
-
             alarm_id=alarm.id,
-
             forecast_id=forecast.id,
-
             email=user.email,
-
             status="SENT",
-
-            sent_at=datetime.utcnow()
-
+            sent_at=datetime.utcnow(),
         )
 
-
-        db.add(
-            notification
-        )
-
-
+        db.add(notification)
 
     db.commit()
-    
-async def process_alerts(
-    db: Session
-):
 
 
-    alarms = get_active_alarms(
-        db
-    )
+async def process_alerts(db: Session):
 
+    alarms = get_active_alarms(db)
 
     if not alarms:
+        return {"status": "OK", "alarms_processed": 0, "alerts_sent": 0}
 
-        return {
-            "status": "OK",
-            "alarms_processed": 0,
-            "alerts_sent": 0
-        }
-
-
-
-    forecast_date, forecasts = get_last_forecast(
-        db
-    )
-
+    forecast_date, forecasts = get_last_forecast(db)
 
     if not forecasts:
-
-        return {
-            "status": "OK",
-            "alarms_processed": len(alarms),
-            "alerts_sent": 0
-        }
-
-
+        return {"status": "OK", "alarms_processed": len(alarms), "alerts_sent": 0}
 
     alerts_sent = 0
 
-
-
     for alarm in alarms:
-
-
-        user = get_user_by_alarm(
-            db,
-            alarm
-        )
-
+        user = get_user_by_alarm(db, alarm)
 
         if not user:
+            print("Usuario no encontrado para alarma %s", alarm.id)
 
-            print(
-                "Usuario no encontrado para alarma %s",
-                alarm.id
-            )
-
-            print(
-            "Alarma %s encontró %s coincidencias",
-            alarm.id,
-            len(matches)
-            )
+            print("Alarma %s encontró %s coincidencias", alarm.id, len(matches))
             continue
 
-
-
-        matches = filter_forecasts_by_alarm(
-            alarm,
-            forecasts
-        )
-
+        matches = filter_forecasts_by_alarm(alarm, forecasts)
 
         if not matches:
-
             continue
 
-
-
-        body = generate_alert_email(
-
-            forecasts=matches,
-
-            forecast_date=forecast_date
-
-        )
-
-
+        body = generate_alert_email(forecasts=matches, forecast_date=forecast_date)
 
         try:
+            await send_alert_email(email=user.email, body=body)
 
-            await send_alert_email(
-
-                email=user.email,
-
-                body=body
-
-            )
-
-
-            save_notification_logs(
-
-                db=db,
-
-                alarm=alarm,
-
-                user=user,
-
-                forecasts=matches
-
-            )
-
+            save_notification_logs(db=db, alarm=alarm, user=user, forecasts=matches)
 
             alerts_sent += 1
 
+            logger.info("Alerta enviada correctamente a %s", user.email)
 
-            logger.info(
-
-                "Alerta enviada correctamente a %s",
-
-                user.email
-
-            )
-            
             print("todo Corerect")
 
-
         except Exception:
-
             db.rollback()
 
-            logger.exception(
-
-                "Error enviando alerta a %s",
-
-                user.email
-
-            )
-
-
+            logger.exception("Error enviando alerta a %s", user.email)
 
     return {
-
         "status": "OK",
-
         "alarms_processed": len(alarms),
-
         "forecasts_used": len(forecasts),
-
         "alerts_sent": alerts_sent,
-
-        "forecast_date": str(forecast_date)
-
+        "forecast_date": str(forecast_date),
     }

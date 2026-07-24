@@ -18,11 +18,9 @@ import { EventDetails } from '../event-details/event-details';
     TagModule,
     ButtonModule,
     ProgressSpinnerModule,
-    EventDetails
+    EventDetails,
   ],
-  providers:[
-    MessageService
-  ],
+  providers: [MessageService],
   templateUrl: './table-events.html',
   styleUrl: './table-events.css',
 })
@@ -36,7 +34,7 @@ export class TableEvents {
     country: '',
     latitude: 0,
     longitude: 0,
-    event_date: ''
+    event_date: '',
   };
   showDetailDialog = false;
   loading = true;
@@ -44,7 +42,7 @@ export class TableEvents {
   constructor(
     private Events_Serv: EventsService,
     private Msg_Service: MessageService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -64,49 +62,50 @@ export class TableEvents {
         this.Msg_Service.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No fue posible obtener los eventos.'
+          detail: 'No fue posible obtener los eventos.',
         });
-      }
+      },
     });
   }
 
   viewDetail(event: EventList): void {
     this.loading = true;
-    this.Events_Serv.get_event_detail(event.id)
-    .subscribe({
-      next:(resp)=>{
+    this.Events_Serv.get_event_detail(event.id).subscribe({
+      next: (resp) => {
         this.selectedEvent = resp;
         this.showDetailDialog = true;
-        this.loading=false;
+        this.loading = false;
         this.cdr.detectChanges();
       },
-      error:()=>{
-        this.loading=false;
+      error: () => {
+        this.loading = false;
         this.Msg_Service.add({
-          severity:'error',
-          summary:'Error',
-          detail:'No fue posible obtener la información del evento.'
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No fue posible obtener la información del evento.',
         });
-      }
+      },
     });
-
-
   }
 
-  getCategorySeverity(category: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' {
-    switch(category){
+  getCategorySeverity(
+    category: string,
+  ): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' {
+    switch (category) {
+      case 'FIRE':
+        return 'danger';
 
-      case 'FIRE':  return 'danger';
+      case 'STORM':
+        return 'warn';
 
-      case 'STORM': return 'warn';
+      case 'VOLCANO':
+        return 'secondary';
 
-      case 'VOLCANO': return 'secondary';
+      case 'OTHER':
+        return 'info';
 
-      case 'OTHER': return 'info';
-
-      default:  return 'secondary';
+      default:
+        return 'secondary';
     }
   }
-
-
 }

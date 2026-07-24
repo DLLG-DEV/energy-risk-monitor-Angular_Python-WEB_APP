@@ -1,320 +1,163 @@
 import { Component, Input, OnChanges } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
-import { ForecastDashboard, ForecastCategory, ForecastMapItem } from '../../../core/interfaces/forecast';
+import {
+  ForecastDashboard,
+  ForecastCategory,
+  ForecastMapItem,
+} from '../../../core/interfaces/forecast';
 
 @Component({
   selector: 'app-chards',
-  imports: [
-    ChartModule
-  ],
+  imports: [ChartModule],
   templateUrl: './chards.html',
   styleUrl: './chards.css',
 })
 export class Chards implements OnChanges {
+  @Input()
+  dashboard!: ForecastDashboard;
 
+  @Input()
+  categories: ForecastCategory[] = [];
 
+  @Input()
+  mapData: ForecastMapItem[] = [];
 
-    @Input()
-    dashboard!:ForecastDashboard;
+  timelineChart: any;
 
+  riskChart: any;
 
-    @Input()
-    categories:ForecastCategory[]=[];
+  categoryChart: any;
 
+  countryChart: any;
 
-    @Input()
-    mapData:ForecastMapItem[]=[];
+  ngOnChanges(): void {
+    if (!this.dashboard) return;
 
+    this.createTimelineChart();
 
+    this.createRiskChart();
 
-    timelineChart:any;
+    this.createCategoryChart();
 
+    this.createCountryChart();
+  }
 
-    riskChart:any;
-
-
-    categoryChart:any;
-
-
-    countryChart:any;
-
-
-
-    ngOnChanges():void{
-
-        if(!this.dashboard)
-            return;
-
-
-        this.createTimelineChart();
-
-        this.createRiskChart();
-
-        this.createCategoryChart();
-
-        this.createCountryChart();
-
-    }
-
-
-
-
-
-    /*
+  /*
     ==================================
     EVENTOS POR SEMANA
     ==================================
     */
 
+  createTimelineChart() {
+    const timeline = this.dashboard.timeline;
 
-    createTimelineChart(){
+    this.timelineChart = {
+      labels: timeline.map((x) => this.formatDate(x.date)),
 
+      datasets: [
+        {
+          label: 'Eventos esperados',
 
-        const timeline=this.dashboard.timeline;
+          data: timeline.map((x) => x.total_events),
 
+          fill: true,
 
+          tension: 0.4,
+        },
+      ],
+    };
+  }
 
-        this.timelineChart={
-
-
-            labels:
-            timeline.map(
-                x=>this.formatDate(x.date)
-            ),
-
-
-
-            datasets:[
-
-                {
-
-                    label:'Eventos esperados',
-
-                    data:
-                    timeline.map(
-                        x=>x.total_events
-                    ),
-
-                    fill:true,
-
-                    tension:0.4
-
-                }
-
-            ]
-
-        };
-
-
-    }
-
-
-
-
-
-    /*
+  /*
     ==================================
     RIESGO SEMANAL
     ==================================
     */
 
+  createRiskChart() {
+    const timeline = this.dashboard.timeline;
 
-    createRiskChart(){
+    const riskValue: any = {
+      LOW: 1,
 
+      MEDIUM: 2,
 
-        const timeline=this.dashboard.timeline;
+      HIGH: 3,
 
+      CRITICAL: 4,
+    };
 
+    this.riskChart = {
+      labels: timeline.map((x) => this.formatDate(x.date)),
 
-        const riskValue:any={
+      datasets: [
+        {
+          label: 'Nivel de riesgo',
 
-            LOW:1,
+          data: timeline.map((item) => {
+            let max = 0;
 
-            MEDIUM:2,
+            item.risk_levels.forEach((risk) => {
+              if (riskValue[risk] > max) {
+                max = riskValue[risk];
+              }
+            });
 
-            HIGH:3,
+            return max;
+          }),
+        },
+      ],
+    };
+  }
 
-            CRITICAL:4
-
-        };
-
-
-
-        this.riskChart={
-
-
-            labels:
-            timeline.map(
-                x=>this.formatDate(x.date)
-            ),
-
-
-
-            datasets:[
-
-                {
-
-                    label:'Nivel de riesgo',
-
-                    data:
-                    timeline.map(item=>{
-
-
-                        let max=0;
-
-
-                        item.risk_levels.forEach(
-                            risk=>{
-
-
-                                if(
-                                    riskValue[risk]>max
-                                )
-                                {
-                                    max=
-                                    riskValue[risk];
-                                }
-
-
-                            }
-                        );
-
-
-                        return max;
-
-
-                    })
-
-                }
-
-            ]
-
-        };
-
-
-    }
-
-
-
-
-
-    /*
+  /*
     ==================================
     DISTRIBUCION CATEGORIAS
     ==================================
     */
 
+  createCategoryChart() {
+    this.categoryChart = {
+      labels: this.categories.map((x) => x.category),
 
-    createCategoryChart(){
+      datasets: [
+        {
+          data: this.categories.map((x) => x.expected_events),
+        },
+      ],
+    };
+  }
 
-
-        this.categoryChart={
-
-
-            labels:
-            this.categories.map(
-                x=>x.category
-            ),
-
-
-            datasets:[
-
-                {
-
-                    data:
-                    this.categories.map(
-                        x=>x.expected_events
-                    )
-
-                }
-
-            ]
-
-        };
-
-
-    }
-
-
-
-
-
-    /*
+  /*
     ==================================
     TOP PAISES DE RIESGO
     ==================================
     */
 
+  createCountryChart() {
+    const topCountries = [...this.mapData]
 
-    createCountryChart(){
+      .sort((a, b) => b.expected_events - a.expected_events)
 
+      .slice(0, 10);
 
+    this.countryChart = {
+      labels: topCountries.map((x) => x.country),
 
-        const topCountries =
-        [...this.mapData]
+      datasets: [
+        {
+          label: 'Eventos esperados',
 
-        .sort(
-            (a,b)=>
-            b.expected_events -
-            a.expected_events
-        )
+          data: topCountries.map((x) => x.expected_events),
+        },
+      ],
+    };
+  }
 
-        .slice(
-            0,
-            10
-        );
-
-
-
-        this.countryChart={
-
-
-            labels:
-            topCountries.map(
-                x=>x.country
-            ),
-
-
-            datasets:[
-
-                {
-
-                    label:
-                    'Eventos esperados',
-
-
-                    data:
-                    topCountries.map(
-                        x=>x.expected_events
-                    )
-
-                }
-
-            ]
-
-        };
-
-
-    }
-
-
-
-
-    formatDate(date:string){
-
-
-        return new Date(date)
-        .toLocaleDateString(
-            'es-MX',
-            {
-                day:'2-digit',
-                month:'short'
-            }
-        );
-
-
-    }
-
-
-
+  formatDate(date: string) {
+    return new Date(date).toLocaleDateString('es-MX', {
+      day: '2-digit',
+      month: 'short',
+    });
+  }
 }

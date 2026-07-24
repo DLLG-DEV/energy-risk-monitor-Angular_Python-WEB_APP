@@ -1,202 +1,107 @@
 <p-dialog
-
-    header="Detalle del evento"
-
-    [(visible)]="visible"
-
-    [modal]="true"
-
-    [style]="{ width:'750px' }"
-
-    [draggable]="false"
-
-    [resizable]="false"
-
-    (onShow)="onDialogShow()"
+  header="Detalle del evento"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '750px' }"
+  [draggable]="false"
+  [resizable]="false"
+  (onShow)="onDialogShow()"
 >
-
-<div class="grid grid-cols-2 gap-4">
-
+  <div class="grid grid-cols-2 gap-4">
     <!-- ID -->
 
     <div>
+      <label class="font-semibold"> ID </label>
 
-        <label class="font-semibold">
-            ID
-        </label>
-
-        <input
-            pInputText
-            class="w-full mt-2"
-            [value]="selectedEvent.id"
-            readonly
-        >
-
+      <input pInputText class="w-full mt-2" [value]="selectedEvent.id" readonly />
     </div>
 
     <!-- External ID -->
 
     <div>
+      <label class="font-semibold"> NASA ID </label>
 
-        <label class="font-semibold">
-            NASA ID
-        </label>
-
-        <input
-            pInputText
-            class="w-full mt-2"
-            [value]="selectedEvent.external_id"
-            readonly
-        >
-
+      <input pInputText class="w-full mt-2" [value]="selectedEvent.external_id" readonly />
     </div>
 
     <!-- Título -->
 
     <div class="col-span-2">
+      <label class="font-semibold"> Título </label>
 
-        <label class="font-semibold">
-            Título
-        </label>
-
-        <input
-            pInputText
-            class="w-full mt-2"
-            [value]="selectedEvent.title"
-            readonly
-        >
-
+      <input pInputText class="w-full mt-2" [value]="selectedEvent.title" readonly />
     </div>
 
     <!-- Categoría -->
 
     <div>
+      <label class="font-semibold"> Categoría </label>
 
-        <label class="font-semibold">
-            Categoría
-        </label>
-
-        <input
-            pInputText
-            class="w-full mt-2"
-            [value]="selectedEvent.category"
-            readonly
-        >
-
+      <input pInputText class="w-full mt-2" [value]="selectedEvent.category" readonly />
     </div>
 
     <!-- País -->
 
     <div>
+      <label class="font-semibold"> País </label>
 
-        <label class="font-semibold">
-            País
-        </label>
-
-        <input
-            pInputText
-            class="w-full mt-2"
-            [value]="selectedEvent.country || 'Sin país'"
-            readonly
-        >
-
+      <input
+        pInputText
+        class="w-full mt-2"
+        [value]="selectedEvent.country || 'Sin país'"
+        readonly
+      />
     </div>
 
     <!-- Fecha -->
 
     <div>
+      <label class="font-semibold"> Fecha del evento </label>
 
-        <label class="font-semibold">
-            Fecha del evento
-        </label>
-
-        <input
-            pInputText
-            class="w-full mt-2"
-            [value]="selectedEvent.event_date | date:'dd/MM/yyyy HH:mm'"
-            readonly
-        >
-
+      <input
+        pInputText
+        class="w-full mt-2"
+        [value]="selectedEvent.event_date | date: 'dd/MM/yyyy HH:mm'"
+        readonly
+      />
     </div>
 
     <!-- Latitud -->
 
     <div>
+      <label class="font-semibold"> Latitud </label>
 
-        <label class="font-semibold">
-            Latitud
-        </label>
-
-        <input
-            pInputText
-            class="w-full mt-2"
-            [value]="selectedEvent.latitude"
-            readonly
-        >
-
+      <input pInputText class="w-full mt-2" [value]="selectedEvent.latitude" readonly />
     </div>
 
     <!-- Longitud -->
 
     <div>
+      <label class="font-semibold"> Longitud </label>
 
-        <label class="font-semibold">
-            Longitud
-        </label>
-
-        <input
-            pInputText
-            class="w-full mt-2"
-            [value]="selectedEvent.longitude"
-            readonly
-        >
-
+      <input pInputText class="w-full mt-2" [value]="selectedEvent.longitude" readonly />
     </div>
 
     <!-- Mapa -->
 
     <div class="col-span-2">
-        <label class="font-semibold">
-            Ubicación
-        </label>
-        <div
-            class="mt-2 rounded-lg overflow-hidden border"
-            style="
-                height:350px;
-                border-color:var(--navbar-border);"
-        >
-
-            <div
-                [id]="mapId"
-                style="
-                    width:100%;
-                    height:100%;
-                "
-            ></div>
-
-        </div>
-
+      <label class="font-semibold"> Ubicación </label>
+      <div
+        class="mt-2 rounded-lg overflow-hidden border"
+        style="height: 350px; border-color: var(--navbar-border)"
+      >
+        <div [id]="mapId" style="width: 100%; height: 100%"></div>
+      </div>
     </div>
+  </div>
 
-</div>
-
-<ng-template pTemplate="footer">
-
+  <ng-template pTemplate="footer">
     <button
-
-        pButton
-
-        label="Cerrar"
-
-        icon="pi pi-times"
-
-        class="p-button-text"
-
-        (click)="close()"
-
-    >
-    </button>
-
-</ng-template>
-
+      pButton
+      label="Cerrar"
+      icon="pi pi-times"
+      class="p-button-text"
+      (click)="close()"
+    ></button>
+  </ng-template>
 </p-dialog>

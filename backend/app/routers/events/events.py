@@ -1,27 +1,22 @@
-from fastapi import APIRouter, Depends,Query, HTTPException
-from sqlalchemy.orm import Session
-from app.models.event import Event
-from app.database.database import get_db
-from app.core.dependencies import get_current_user, require_admin
-from app.services.eventos import get_events
 from datetime import datetime
-from typing import Optional
-from sqlalchemy import func
+
+from app.core.dependencies import require_admin
+from app.database.database import get_db
+from app.models.event import Event
+from app.services.eventos import get_events
 from app.services.nasa_service import (
-    save_events,
-    get_nasa_categories,
     convert_to_days,
     get_last_days_events,
-    save_nasa_categories
+    get_nasa_categories,
+    save_events,
+    save_nasa_categories,
 )
-from app.models.event_category import EventCategory
 from app.utils.dictionaries import CATEGORY_MAP
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import func
+from sqlalchemy.orm import Session
 
-
-router = APIRouter(
-    prefix="/api/events",
-    tags=["Events"]
-)
+router = APIRouter(prefix="/api/events", tags=["Events"])
 
 
 @router.get("/list")
@@ -35,113 +30,61 @@ def get_events(db: Session = Depends(get_db)):
             "category": event.category,
             "country": event.country,
             "event_date": event.event_date,
-            "latitude":event.latitude,
-            "longitude": event.longitude
+            "latitude": event.latitude,
+            "longitude": event.longitude,
         }
         for event in events
     ]
- 
+
+
 @router.get("/categories")
-def get_event_categories(
-    db: Session = Depends(get_db)
-):
+def get_event_categories(db: Session = Depends(get_db)):
 
-    categories = (
-        db.query(Event.category)
-        .distinct()
-        .order_by(Event.category)
-        .all()
-    )
-
+    categories = db.query(Event.category).distinct().order_by(Event.category).all()
 
     result = []
 
-
     for item in categories:
-
         category = item[0]
 
-
-        result.append({
-
-            "code": category,
-
-            "name": CATEGORY_MAP.get(
-                category,
-                category
-            )
-
-        })
-
+        result.append({"code": category, "name": CATEGORY_MAP.get(category, category)})
 
     return result
-    
+
 
 @router.get("/search")
 def search_events(
-    category: Optional[str] = Query(None),
-    country: Optional[str] = Query(None),
-    start_date: Optional[str] = Query(None),
-    end_date: Optional[str] = Query(None),
-    status: Optional[str] = Query(None),
-    page: int = Query(
-        1,
-        ge=1
-    ),
-    limit: int = Query(
-        20,
-        ge=1,
-        le=1000
-    ),
-    db: Session = Depends(get_db)
+    category: str | None = Query(None),
+    country: str | None = Query(None),
+    start_date: str | None = Query(None),
+    end_date: str | None = Query(None),
+    status: str | None = Query(None),
+    page: int = Query(1, ge=1),
+    limit: int = Query(20, ge=1, le=1000),
+    db: Session = Depends(get_db),
 ):
     query = db.query(Event)
 
     if category:
-        query = query.filter(
-            Event.category.ilike(
-                f"%{category}%"
-            )
-        )
+        query = query.filter(Event.category.ilike(f"%{category}%"))
 
     if country:
-        query = query.filter(
-            Event.country.ilike(
-                f"%{country}%"
-            )
-        )
+        query = query.filter(Event.country.ilike(f"%{country}%"))
 
     if start_date:
-        start_date_obj = datetime.strptime(
-            start_date,
-            "%Y-%m-%d"
-        )
-        query = query.filter(
-            Event.event_date >= start_date_obj
-        )
+        start_date_obj = datetime.strptime(start_date, "%Y-%m-%d")
+        query = query.filter(Event.event_date >= start_date_obj)
 
     if end_date:
-        end_date_obj = datetime.strptime(
-            end_date,
-            "%Y-%m-%d"
-        )
-        query = query.filter(
-            Event.event_date <= end_date_obj
-        )
+        end_date_obj = datetime.strptime(end_date, "%Y-%m-%d")
+        query = query.filter(Event.event_date <= end_date_obj)
 
     total = query.count()
 
     events = (
-        query
-        .order_by(
-            Event.event_date.desc()
-        )
-        .offset(
-            (page - 1) * limit
-        )
-        .limit(
-            limit
-        )
+        query.order_by(Event.event_date.desc())
+        .offset((page - 1) * limit)
+        .limit(limit)
         .all()
     )
 
@@ -149,131 +92,84 @@ def search_events(
         "total": total,
         "page": page,
         "limit": limit,
-        "results":[
+        "results": [
             {
                 "id": event.id,
                 "title": event.title,
                 "category": event.category,
                 "country": event.country,
                 "event_date": event.event_date,
-                "latitude":event.latitude,
-                "longitude": event.longitude
-
+                "latitude": event.latitude,
+                "longitude": event.longitude,
             }
             for event in events
-        ]
+        ],
     }
-                    
-                     
+
+
 @router.get("/statistics")
-def get_statistics(
-    db: Session = Depends(get_db)
-):
+def get_statistics(db: Session = Depends(get_db)):
 
     # Total de eventos
-    total = (
-        db.query(
-            func.count(Event.id)
-        )
-        .scalar()
-    )
-
+    total = db.query(func.count(Event.id)).scalar()
 
     # Total agrupado por categoría
     categories = (
-        db.query(
-            Event.category,
-            func.count(Event.id).label("total")
-        )
-        .group_by(
-            Event.category
-        )
-        .order_by(
-            func.count(Event.id).desc()
-        )
+        db.query(Event.category, func.count(Event.id).label("total"))
+        .group_by(Event.category)
+        .order_by(func.count(Event.id).desc())
         .all()
     )
 
-
     return {
         "total": total,
-
         "categories": [
             {
                 "code": category,
-                "name": category.replace(
-                    "_",
-                    " "
-                ).title(),
-                "total": total_category
+                "name": category.replace("_", " ").title(),
+                "total": total_category,
             }
-
             for category, total_category in categories
-        ]
+        ],
     }
-    
+
+
 @router.post("/import/{amount}/{unit}")
 def import_events(
-    amount:int,
-    unit:str,
-    db:Session = Depends(get_db),
-    current_user = Depends(require_admin)
+    amount: int,
+    unit: str,
+    db: Session = Depends(get_db),
+    current_user=Depends(require_admin),
 ):
 
     try:
-
-        days = convert_to_days(
-            amount,
-            unit
-        )
-
+        days = convert_to_days(amount, unit)
 
     except ValueError as e:
-
-        raise HTTPException(
-            status_code=400,
-            detail=str(e)
-        )
+        raise HTTPException(status_code=400, detail=str(e))
 
     categories = get_nasa_categories()
-    
-    new_categories = save_nasa_categories(
-        db,
-        categories
-    )
 
-    events = get_last_days_events(
-        days
-    )
+    new_categories = save_nasa_categories(db, categories)
 
-    result = save_events(
-        db,
-        events,
-        current_user
-    )
+    events = get_last_days_events(days)
+
+    result = save_events(db, events, current_user)
 
     return {
-        "message":"Import completed",
-        "period":{
-            "amount":amount,
-            "unit":unit,
-            "days":days
-        },
-        "events_received":len(events),
-        **result
-
+        "message": "Import completed",
+        "period": {"amount": amount, "unit": unit, "days": days},
+        "events_received": len(events),
+        **result,
     }
-    
-       
+
+
 @router.get("/{event_id}")
 def get_event(event_id: int, db: Session = Depends(get_db)):
     event = db.query(Event).filter(Event.id == event_id).first()
 
     if not event:
-        raise HTTPException(
-            status_code=404,
-            detail="Evento no encontrado"
-        )
+        raise HTTPException(status_code=404, detail="Evento no encontrado")
 
     return {
         "id": event.id,
@@ -283,6 +179,5 @@ def get_event(event_id: int, db: Session = Depends(get_db)):
         "country": event.country,
         "latitude": event.latitude,
         "longitude": event.longitude,
-        "event_date": event.event_date
+        "event_date": event.event_date,
     }
-    

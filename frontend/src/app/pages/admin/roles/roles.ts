@@ -22,57 +22,48 @@ import { LogRefreshService } from '../../../core/services/admin/logs/refresh.ser
     ButtonModule,
     DialogModule,
     FormsModule,
-    CheckboxModule
+    CheckboxModule,
   ],
   templateUrl: './roles.html',
   styleUrl: './roles.css',
 })
 export class Roles_by_admin {
-  role: RoleAdmin[]=[];
+  role: RoleAdmin[] = [];
   showRoleDialog = false;
   modulesPermission: ModulePermission[] = [];
   selectedRole: RoleAdmin = {
     id: 0,
     name: '',
-    modules: []
+    modules: [],
   };
   modeRole: 'N' | 'E' = 'N';
   loading: boolean = false;
 
   allModules: ModulePermission[] = [];
-  
+
   constructor(
     private Rol_SerAdm: Roles_AdmService,
     private cdr: ChangeDetectorRef,
     private messageService: MessageService,
     private logRefresh: LogRefreshService,
-  ){}
+  ) {}
 
   ngOnInit() {
     this.loadData();
   }
 
   loadData() {
-
     this.Rol_SerAdm.getRoles().subscribe({
       next: (data: RoleAdmin[]) => {
-
         this.role = data;
 
-        const allModules = data.flatMap(
-          role => role.modules
-        );
+        const allModules = data.flatMap((role) => role.modules);
 
         this.allModules = allModules
-          .filter(
-            (module, index, self) =>
-              index === self.findIndex(
-                m => m.id === module.id
-              )
-          )
-          .map(module => ({
+          .filter((module, index, self) => index === self.findIndex((m) => m.id === module.id))
+          .map((module) => ({
             ...module,
-            active: false
+            active: false,
           }));
 
         this.modulesPermission = [...this.allModules];
@@ -80,163 +71,102 @@ export class Roles_by_admin {
         this.cdr.detectChanges();
 
         this.logRefresh.refresh();
-
       },
       error: (err) => {
-        console.error("Error cargando roles:", err);
+        console.error('Error cargando roles:', err);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudieron cargar los roles del sistema'
+          detail: 'No se pudieron cargar los roles del sistema',
         });
-      }
+      },
     });
   }
-  openRole(mode:'N'|'E', role?:RoleAdmin){
-
+  openRole(mode: 'N' | 'E', role?: RoleAdmin) {
     this.modeRole = mode;
     // Siempre parto del catálogo completo
-    this.modulesPermission =
-    this.allModules.map(module => ({
-
-        ...module,
-        active:false
-
+    this.modulesPermission = this.allModules.map((module) => ({
+      ...module,
+      active: false,
     }));
 
-
-    if(mode === 'E' && role){
-
-
+    if (mode === 'E' && role) {
       this.selectedRole = {
-
         id: role.id,
         name: role.name,
-        modules: role.modules
-
+        modules: role.modules,
       };
-
 
       // Marco los que tiene acceso
-      this.modulesPermission =
-      this.modulesPermission.map(module => ({
+      this.modulesPermission = this.modulesPermission.map((module) => ({
+        ...module,
 
-          ...module,
-
-          active: role.modules.some(
-              m => m.id === module.id
-          )
-
+        active: role.modules.some((m) => m.id === module.id),
       }));
-
-
-    }
-    else {
-
-
+    } else {
       this.selectedRole = {
-
-        id:0,
-        name:'',
-        modules:[]
-
+        id: 0,
+        name: '',
+        modules: [],
       };
-
-
     }
-
 
     this.showRoleDialog = true;
-
   }
 
-  saveRole(){
-
-    const modulesSelected =
-    this.modulesPermission
-    .filter(module => module.active)
-    .map(module => module.id);
-
-
+  saveRole() {
+    const modulesSelected = this.modulesPermission
+      .filter((module) => module.active)
+      .map((module) => module.id);
 
     const request = {
-      name:this.selectedRole.name,
-      modules:modulesSelected
+      name: this.selectedRole.name,
+      modules: modulesSelected,
     };
 
-    if(this.modeRole === 'N'){
-
-      this.Rol_SerAdm.createRole(request)
-      .subscribe({
-
-        next:()=>{
-
+    if (this.modeRole === 'N') {
+      this.Rol_SerAdm.createRole(request).subscribe({
+        next: () => {
           this.messageService.add({
-            severity:'success',
-            summary:'Correcto',
-            detail:'Rol creado correctamente'
+            severity: 'success',
+            summary: 'Correcto',
+            detail: 'Rol creado correctamente',
           });
 
-          this.showRoleDialog=false;
+          this.showRoleDialog = false;
           this.loadData();
-
         },
 
-
-        error:(err)=>{
-
+        error: (err) => {
           this.messageService.add({
-            severity:'error',
-            summary:'Error',
-            detail:err.error.detail ?? 'No se pudo crear el rol'
+            severity: 'error',
+            summary: 'Error',
+            detail: err.error.detail ?? 'No se pudo crear el rol',
           });
-
-        }
-
+        },
       });
-
-
-    }
-    else{
-
-
-      this.Rol_SerAdm.updateRole(
-        this.selectedRole.id,
-        request
-      )
-      .subscribe({
-
-        next:()=>{
-
+    } else {
+      this.Rol_SerAdm.updateRole(this.selectedRole.id, request).subscribe({
+        next: () => {
           this.messageService.add({
-            severity:'success',
-            summary:'Correcto',
-            detail:'Rol actualizado correctamente'
+            severity: 'success',
+            summary: 'Correcto',
+            detail: 'Rol actualizado correctamente',
           });
 
-
-          this.showRoleDialog=false;
+          this.showRoleDialog = false;
 
           this.loadData();
-
         },
 
-
-        error:(err)=>{
-
+        error: (err) => {
           this.messageService.add({
-            severity:'error',
-            summary:'Error',
-            detail:err.error.detail ?? 'No se pudo actualizar el rol'
+            severity: 'error',
+            summary: 'Error',
+            detail: err.error.detail ?? 'No se pudo actualizar el rol',
           });
-
-        }
-
+        },
       });
-
-
     }
-
-
   }
 }

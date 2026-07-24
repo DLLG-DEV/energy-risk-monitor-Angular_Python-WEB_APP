@@ -1,133 +1,71 @@
 <nav class="navbar">
-
-    <div class="max-w-7xl mx-auto px-6">
-
-        <div class="h-16 flex items-center justify-between">
-
-            <!-- Logo -->
-            <div class="flex items-center gap-3">
-
-                <a
-                    routerLink="/"
-                    class="font-semibold text-lg cursor-pointer"
-                >
-                    ERM
-                </a>
-
-            </div>
-            <!-- Botón menú -->
-            <button
-                class="mobile-menu"
-                (click)="toggleMenu()">
-
-                <i
-                    class="pi"
-                    [class.pi-bars]="!menuOpen"
-                    [class.pi-times]="menuOpen">
-                </i>
-
-            </button>
-
-        </div>
-
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="h-16 flex items-center justify-between">
+      <!-- Logo -->
+      <div class="flex items-center gap-3">
+        <a routerLink="/" class="font-semibold text-lg cursor-pointer"> ERM </a>
+      </div>
+      <!-- Botón menú -->
+      <button class="mobile-menu" (click)="toggleMenu()">
+        <i class="pi" [class.pi-bars]="!menuOpen" [class.pi-times]="menuOpen"> </i>
+      </button>
     </div>
-
+  </div>
 </nav>
-
 
 <!-- Drawer -->
 <p-drawer
-    [(visible)]="menuOpen"
-    position="right"
-    [modal]="true"
-    [dismissible]="true"
-    [style]="{ width: '300px' }">
+  [(visible)]="menuOpen"
+  position="right"
+  [modal]="true"
+  [dismissible]="true"
+  [style]="{ width: '300px' }"
+>
+  <div class="flex flex-col h-full">
+    <!-- Acciones -->
+    <div class="flex flex-col gap-2 mb-6">
+      <button pButton text (click)="toggleDarkMode()">
+        <i class="pi mr-2" [class.pi-moon]="!darkMode" [class.pi-sun]="darkMode"> </i>
 
-    <div class="flex flex-col h-full">
+        {{ darkMode ? 'Modo claro' : 'Modo oscuro' }}
+      </button>
 
-        <!-- Acciones -->
-        <div class="flex flex-col gap-2 mb-6">
-
-            <button
-                pButton
-                text
-                (click)="toggleDarkMode()">
-
-                <i
-                    class="pi mr-2"
-                    [class.pi-moon]="!darkMode"
-                    [class.pi-sun]="darkMode">
-                </i>
-
-                {{ darkMode ? 'Modo claro' : 'Modo oscuro' }}
-
-            </button>
-
-            @if(!isLogged){
-
-                <button
-                    pButton
-                    text
-                    icon="pi pi-sign-in"
-                    label="Iniciar sesión"
-                    (click)="login()">
-                </button>
-
-            } @else {
-
-                <p-tag
-                    icon="pi pi-user"
-                    [value]="email">
-                </p-tag>
-            }
-
-        </div>
-
-        <p-divider></p-divider>
-
-        <!-- Navegación -->
-
-        @for(item of menuItems; track item.label){
-
-            @if(!item.adminOnly || isAdmin){
-
-                <a
-                    class="menu-link"
-                    [routerLink]="item.route"
-                    (click)="closeMenu()">
-
-                    <i
-                        class="pi"
-                        [class]="item.icon">
-                    </i>
-
-                    <span>
-                        {{ item.label }}
-                    </span>
-
-                </a>
-
-            }
-
-        }
-
-        <div class="mt-auto">
-
-            <p-divider></p-divider>
-
-            @if(isLogged){
-                <button
-                    pButton
-                    severity="danger"
-                    text
-                    icon="pi pi-sign-out"
-                    label="Cerrar sesión"
-                    (click)="logout()">
-                </button>
-            }
-
-        </div>
-
+      @if (!isLogged) {
+        <button pButton text icon="pi pi-sign-in" label="Iniciar sesión" (click)="login()"></button>
+      } @else {
+        <p-tag icon="pi pi-user" [value]="email"> </p-tag>
+      }
     </div>
 
+    <p-divider></p-divider>
+
+    <!-- Navegación -->
+
+    @for (item of menuItems; track item.label) {
+      @if (!item.adminOnly || isAdmin) {
+        <a class="menu-link" [routerLink]="item.route" (click)="closeMenu()">
+          <i class="pi" [class]="item.icon"> </i>
+
+          <span>
+            {{ item.label }}
+          </span>
+        </a>
+      }
+    }
+
+    <div class="mt-auto">
+      <p-divider></p-divider>
+
+      @if (isLogged) {
+        <button
+          pButton
+          severity="danger"
+          text
+          icon="pi pi-sign-out"
+          label="Cerrar sesión"
+          (click)="logout()"
+        ></button>
+      }
+    </div>
+  </div>
 </p-drawer>

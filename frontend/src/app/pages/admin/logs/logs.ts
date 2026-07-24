@@ -12,87 +12,77 @@ import { LogRefreshService } from '../../../core/services/admin/logs/refresh.ser
 @Component({
   standalone: true,
   selector: 'app-logs-by-admin',
-  imports: [
-    CommonModule,
-    TableModule,
-    TagModule,
-    DialogModule,
-    ButtonModule
-  ],
-  providers:[MessageService],
+  imports: [CommonModule, TableModule, TagModule, DialogModule, ButtonModule],
+  providers: [MessageService],
   templateUrl: './logs.html',
   styleUrl: './logs.css',
 })
 export class Logs_by_admin {
-  
-  logs:AuditLog[]=[];
-  showDetail=false;
-  selectedLog!:AuditLog;
+  logs: AuditLog[] = [];
+  showDetail = false;
+  selectedLog!: AuditLog;
   loading: boolean = false;
 
   constructor(
-    private logsService:Logs_AdmService,
-    private cdr: ChangeDetectorRef, 
+    private logsService: Logs_AdmService,
+    private cdr: ChangeDetectorRef,
     private messageService: MessageService,
     private logRefresh: LogRefreshService,
-  ){}
+  ) {}
 
-  ngOnInit():void{
+  ngOnInit(): void {
     this.loadLogs();
 
     this.logRefresh.refresh$.subscribe(() => {
       this.loadLogs();
     });
-
   }
 
-  loadLogs(){
-    this.loading=true;
+  loadLogs() {
+    this.loading = true;
 
-    this.logsService.getLogs()
-    .subscribe({
-      next:(data)=>{
-        this.logs=data;
-        this.loading=false;
+    this.logsService.getLogs().subscribe({
+      next: (data) => {
+        this.logs = data;
+        this.loading = false;
         this.cdr.detectChanges();
       },
-      error:(err)=>{
-        this.loading=false;
+      error: (err) => {
+        this.loading = false;
         this.messageService.add({
-          severity:'error',
-          summary:'Error',
-          detail:'No se pudieron cargar los logs'
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudieron cargar los logs',
         });
         console.error(err);
-      }
+      },
     });
   }
 
-  openDetail(log:AuditLog){
-    this.selectedLog=log;
-    this.showDetail=true;
+  openDetail(log: AuditLog) {
+    this.selectedLog = log;
+    this.showDetail = true;
   }
 
   getActionSeverity(action: string) {
     switch (action) {
       case 'CREATE':
-        return 'success';    // Verde
+        return 'success'; // Verde
 
       case 'ALTA':
-        return 'contrast';   // Azul/Turquesa (o el color disponible en tu tema)
+        return 'contrast'; // Azul/Turquesa (o el color disponible en tu tema)
 
       case 'UPDATE':
-        return 'info';       // Azul
+        return 'info'; // Azul
 
       case 'BAJA':
-        return 'warn';       // Amarillo/Naranja
+        return 'warn'; // Amarillo/Naranja
 
       case 'DELETE':
-        return 'danger';     // Rojo
+        return 'danger'; // Rojo
 
       default:
-        return 'secondary';  // Gris
+        return 'secondary'; // Gris
     }
   }
-
 }

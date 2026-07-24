@@ -1,99 +1,70 @@
 <p-toast></p-toast>
 <div class="min-h-screen flex items-center justify-center px-6">
+  <div class="w-full max-w-md">
+    <div class="rounded-2xl shadow-xl p-8 border surface-card">
+      <div class="flex flex-col items-center mb-8">
+        <a href="/" class="text-4xl font-bold">
+          <h1>ERM</h1>
+        </a>
+        <h1 class="text-xl font-bold">Energy Risk Monitor</h1>
 
-    <div class="w-full max-w-md">
+        <p class="text-center mt-2 text-color-secondary">
+          Inicia sesión para acceder a la plataforma.
+        </p>
+      </div>
 
-        <div class="rounded-2xl shadow-xl p-8 border surface-card">
-
-            <div class="flex flex-col items-center mb-8">
-                <a href="/" class="text-4xl font-bold">
-                    <h1>ERM</h1>
-                </a>
-                <h1 class="text-xl font-bold">
-                    Energy Risk Monitor
-                </h1>
-
-                <p class="text-center mt-2 text-color-secondary">
-                    Inicia sesión para acceder a la plataforma.
-                </p>
-
-            </div>
-
-            <form class="flex flex-col gap-5" [formGroup]="loginForm" (ngSubmit)="login()">
-
-                <div>
-                    <label
-                        for="email"
-                        class="block mb-2 font-medium">
-                        Correo electrónico
-                    </label>
-                    <span class="p-input-icon-left w-full">
-                        <input
-                            id="email"
-                            formControlName="email"
-                            type="email"
-                            pInputText
-                            class="w-full"
-                            placeholder="correo@empresa.com">
-                    </span>
-                </div>
-
-                <div>
-                    <label
-                        for="password"
-                        class="block mb-2 font-medium">
-                        Contraseña
-                    </label>
-                    <p-password
-                        inputId="password"
-                        formControlName="password"
-                        [toggleMask]="true"
-                        [feedback]="false"
-                        placeholder="********"
-                        styleClass="w-full"
-                        inputStyleClass="w-full">
-                    </p-password>
-                </div>
-
-                <button
-                    pButton
-                    type="submit"
-                    label="Iniciar sesión"
-                    icon="pi pi-sign-in"
-                    severity="primary"
-                    class="w-full"
-                    [loading]="loading"
-                    [disabled]="loginForm.invalid || loading">
-                </button>
-
-            </form>
-
-            <!-- Divider -->
-
-            <p-divider></p-divider>
-
-            <!-- Registro -->
-
-            <div class="text-center">
-
-                <span class="text-color-secondary">
-
-                    ¿No tienes una cuenta?
-
-                </span>
-
-                <a
-                    routerLink="/new-user"
-                    class="ml-2 text-primary font-semibold">
-
-                    Crear cuenta
-
-                </a>
-
-            </div>
-
+      <form class="flex flex-col gap-5" [formGroup]="loginForm" (ngSubmit)="login()">
+        <div>
+          <label for="email" class="block mb-2 font-medium"> Correo electrónico </label>
+          <span class="p-input-icon-left w-full">
+            <input
+              id="email"
+              formControlName="email"
+              type="email"
+              pInputText
+              class="w-full"
+              placeholder="correo@empresa.com"
+            />
+          </span>
         </div>
 
-    </div>
+        <div>
+          <label for="password" class="block mb-2 font-medium"> Contraseña </label>
+          <p-password
+            inputId="password"
+            formControlName="password"
+            [toggleMask]="true"
+            [feedback]="false"
+            placeholder="********"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+          >
+          </p-password>
+        </div>
 
+        <button
+          pButton
+          type="submit"
+          label="Iniciar sesión"
+          icon="pi pi-sign-in"
+          severity="primary"
+          class="w-full"
+          [loading]="loading"
+          [disabled]="loginForm.invalid || loading"
+        ></button>
+      </form>
+
+      <!-- Divider -->
+
+      <p-divider></p-divider>
+
+      <!-- Registro -->
+
+      <div class="text-center">
+        <span class="text-color-secondary"> ¿No tienes una cuenta? </span>
+
+        <a routerLink="/new-user" class="ml-2 text-primary font-semibold"> Crear cuenta </a>
+      </div>
+    </div>
+  </div>
 </div>

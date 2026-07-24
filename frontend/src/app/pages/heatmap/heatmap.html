@@ -1,35 +1,26 @@
 <div class="w-full">
+  <!-- Título principal -->
+  <div class="mb-8 text-center">
+    <h1 class="text-3xl font-bold" style="color: var(--text)">MAPA DE CALOR GLOBAL</h1>
 
-    <!-- Título principal -->
-    <div class="mb-8 text-center">
+    <p class="text-sm mt-2" style="color: var(--text-secondary)">
+      Visualización de la concentración de eventos naturales registrados en ERM para identificar
+      zonas de mayor riesgo y apoyar el análisis de infraestructura energética.
+    </p>
+  </div>
 
-        <h1
-            class="text-3xl font-bold"
-            style="color:var(--text)">
-            MAPA DE CALOR GLOBAL
-        </h1>
+  <p-divider></p-divider>
 
-        <p
-            class="text-sm mt-2"
-            style="color:var(--text-secondary)">
-            Visualización de la concentración de eventos naturales registrados en ERM para identificar zonas de mayor riesgo y apoyar el análisis de infraestructura energética.
-        </p>
+  <!-- KPIs -->
+  <app-kpis></app-kpis>
 
-    </div>
+  <p-divider></p-divider>
 
-    <p-divider></p-divider>
+  <!-- Mapa de calor -->
+  <app-mapacalor></app-mapacalor>
 
-    <!-- KPIs -->
-    <app-kpis></app-kpis>
+  <p-divider></p-divider>
 
-    <p-divider></p-divider>
-
-    <!-- Mapa de calor -->
-    <app-mapacalor></app-mapacalor>
-
-    <p-divider></p-divider>
-
-    <!-- Estadísticas -->
-    <app-graficas></app-graficas>
-
+  <!-- Estadísticas -->
+  <app-graficas></app-graficas>
 </div>

@@ -1,31 +1,28 @@
-from fastapi import HTTPException
-import requests
-
-from datetime import datetime, timedelta, timezone
-from sqlalchemy.orm import Session
-
-from app.models.event import Event
-from app.core.config import settings
-from app.models.event_category import EventCategory
-from app.utils.dictionaries import CATEGORY_MAP
-
 import time
+from datetime import datetime, timedelta, timezone
+
 import pycountry
+import requests
 import reverse_geocoder as rg
+from app.core.config import settings
+from app.models.event import Event
+from app.models.event_category import EventCategory
 from app.routers.admin.logs_by_admin import create_log
 from app.utils.dictionaries import CATEGORY_MAP
-geo = rg.RGeocoder()
+from fastapi import HTTPException
+from sqlalchemy.orm import Session
 
+geo = rg.RGeocoder()
 
 
 # cache de países
 country_cache = {}
 
 
-
 # =====================================================
 # OBTENER CATALOGO NASA
 # =====================================================
+
 
 def get_nasa_categories():
 
@@ -33,150 +30,77 @@ def get_nasa_categories():
     print("CONSULTANDO CATALOGO NASA")
     print("==============================")
 
-
     response = requests.get(
-        settings.API_NASA_EONET,
-        params={
-            "limit":50000
-        },
-        timeout=120
+        settings.API_NASA_EONET, params={"limit": 50000}, timeout=120
     )
-
 
     response.raise_for_status()
 
+    events = response.json().get("events", [])
 
-    events = response.json().get(
-        "events",
-        []
-    )
-
-
-    categories={}
-
+    categories = {}
 
     for event in events:
-
-        for category in event.get("categories",[]):
-
-            categories[
-                category["id"]
-            ] = category["title"]
-
-
+        for category in event.get("categories", []):
+            categories[category["id"]] = category["title"]
 
     print("\nCATEGORIAS ENCONTRADAS")
 
+    for key, value in categories.items():
+        print(f"{key} -> {value}")
 
-    for key,value in categories.items():
-
-        print(
-            f"{key} -> {value}"
-        )
-
-
-    print(
-        "TOTAL:",
-        len(categories)
-    )
-
+    print("TOTAL:", len(categories))
 
     return categories
 
 
-
-def save_nasa_categories(
-    db,
-    categories
-):
+def save_nasa_categories(db, categories):
 
     inserted = []
 
-
     for external_id, title in categories.items():
-
-
         exists = (
-            db.query(EventCategory)
-            .filter(
-                EventCategory.external_name == title
-            )
-            .first()
+            db.query(EventCategory).filter(EventCategory.external_name == title).first()
         )
-
 
         if exists:
             continue
 
+        normalized_name = CATEGORY_MAP.get(external_id, "OTHER")
 
-
-        normalized_name = CATEGORY_MAP.get(
-            external_id,
-            "OTHER"
-        )
-
-
-        category = EventCategory(
-
-            name=normalized_name,
-
-            external_name=title
-
-        )
-
+        category = EventCategory(name=normalized_name, external_name=title)
 
         db.add(category)
 
-
-        inserted.append(
-            {
-                "name": normalized_name,
-                "external_name": title
-            }
-        )
-
-
+        inserted.append({"name": normalized_name, "external_name": title})
 
     db.commit()
 
-
     return inserted
 
-#=====================================================
+
+# =====================================================
 # CONVERTIR UNIDAD DE TIEMPO
 # =====================================================
 
-def convert_to_days(
-    amount:int,
-    unit:str
-):
+
+def convert_to_days(amount: int, unit: str):
 
     unit = unit.lower()
 
-
     conversions = {
-
-        "day":1,
-        "days":1,
-
-        "month":30,
-        "months":30,
-
-        "year":365,
-        "years":365
-
+        "day": 1,
+        "days": 1,
+        "month": 30,
+        "months": 30,
+        "year": 365,
+        "years": 365,
     }
 
-
     if unit not in conversions:
-
-        raise ValueError(
-            "Unidad de tiempo no válida"
-        )
-
+        raise ValueError("Unidad de tiempo no válida")
 
     return amount * conversions[unit]
-
 
 
 # =====================================================
@@ -260,7 +184,6 @@ def convert_to_days(
 #             break
 
 
-
 #         nuevos=0
 
 
@@ -279,12 +202,10 @@ def convert_to_days(
 #                 nuevos+=1
 
 
-
 #         print(
 #             "Nuevos:",
 #             nuevos
 #         )
-
 
 
 #         next_page=data.get(
@@ -301,7 +222,6 @@ def convert_to_days(
 #             break
 
 
-
 #         url=next_page
 
 
@@ -309,7 +229,6 @@ def convert_to_days(
 
 
 #         page+=1
-
 
 
 #         # protección contra errores de API
@@ -321,7 +240,6 @@ def convert_to_days(
 #             )
 
 #             break
-
 
 
 #     print("\n==============================")
@@ -336,248 +254,132 @@ def convert_to_days(
 
 #     return all_events
 
-def get_last_days_events(days:int):
 
+def get_last_days_events(days: int):
 
     print("\n==============================")
-    print(
-        f"CONSULTANDO NASA EONET ULTIMOS {days} DIAS"
-    )
+    print(f"CONSULTANDO NASA EONET ULTIMOS {days} DIAS")
     print("==============================")
 
+    end = datetime.now(timezone.utc)
 
-    end = datetime.now(
-        timezone.utc
-    )
+    start = end - timedelta(days=days)
 
+    url = settings.API_NASA_EONET
 
-    start = end - timedelta(
-        days=days
-    )
-
-
-
-    url=settings.API_NASA_EONET
-
-
-
-    params={
-
-        "start":
-        start.strftime("%Y-%m-%d"),
-
-
-        "end":
-        end.strftime("%Y-%m-%d"),
-
-
-        "limit":50000
-
+    params = {
+        "start": start.strftime("%Y-%m-%d"),
+        "end": end.strftime("%Y-%m-%d"),
+        "limit": 50000,
     }
 
+    all_events = []
 
+    seen = set()
 
-    all_events=[]
-
-    seen=set()
-
-
-    page=1
-
-
+    page = 1
 
     while True:
+        print(f"Pagina {page}")
 
-
-
-        print(
-            f"Pagina {page}"
-        )
-
-
-
-        response=requests.get(
-            url,
-            params=params,
-            timeout=120
-        )
-
-
+        response = requests.get(url, params=params, timeout=120)
 
         response.raise_for_status()
 
+        data = response.json()
 
+        events = data.get("events", [])
 
-        data=response.json()
-
-
-
-        events=data.get(
-            "events",
-            []
-        )
-
-
-
-        print(
-            f"Eventos recibidos: {len(events)}"
-        )
-
-
+        print(f"Eventos recibidos: {len(events)}")
 
         if not events:
-
             break
 
-
-
-
         for event in events:
-
-
-            event_id=event.get("id")
-
-
+            event_id = event.get("id")
 
             if event_id not in seen:
-
                 seen.add(event_id)
 
                 all_events.append(event)
 
-
-
-
-        next_page=data.get(
-            "next"
-        )
-
-
+        next_page = data.get("next")
 
         if not next_page:
-
             break
 
+        url = next_page
 
+        params = {}
 
-        url=next_page
-
-        params={}
-
-
-
-        page+=1
-
-
+        page += 1
 
         if page > 500:
-
-            print(
-                "Protección paginación activada"
-            )
+            print("Protección paginación activada")
 
             break
 
-
-
-
-
     print("==============================")
-    print(
-        f"TOTAL EVENTOS: {len(all_events)}"
-    )
+    print(f"TOTAL EVENTOS: {len(all_events)}")
     print("==============================")
-
 
     return all_events
+
+
 # =====================================================
 # NORMALIZAR CATEGORIA
 # =====================================================
 
+
 def normalize_category(category_id):
 
-    return CATEGORY_MAP.get(
-        category_id,
-        "OTHER"
-    )
+    return CATEGORY_MAP.get(category_id, "OTHER")
+
 
 # =====================================================
 # NORMALIZAR COORDENADAS
 # =====================================================
 
+
 def normalize_geometry_points(geometry):
 
-    points=[]
+    points = []
 
-    seen_dates=set()
-
+    seen_dates = set()
 
     for point in geometry:
+        coordinates = point.get("coordinates", [])
 
-
-        coordinates=point.get(
-            "coordinates",
-            []
-        )
-
-
-        if len(coordinates)<2:
-
+        if len(coordinates) < 2:
             continue
 
-
-
-        event_date=None
-
+        event_date = None
 
         if point.get("date"):
+            event_date = datetime.fromisoformat(point["date"].replace("Z", "+00:00"))
 
-
-            event_date=datetime.fromisoformat(
-
-                point["date"]
-                .replace(
-                    "Z",
-                    "+00:00"
-                )
-
-            )
-
-
-
-        key=str(
-            event_date
-        )
-
+        key = str(event_date)
 
         if key in seen_dates:
-
             continue
-
-
 
         seen_dates.add(key)
 
-
-
-        points.append({
-
-            "latitude":coordinates[1],
-
-            "longitude":coordinates[0],
-
-            "event_date":event_date
-
-        })
-
+        points.append(
+            {
+                "latitude": coordinates[1],
+                "longitude": coordinates[0],
+                "event_date": event_date,
+            }
+        )
 
     return points
-
 
 
 # =====================================================
 # PAIS CON CACHE
 # =====================================================
+
 
 def build_country_cache(events):
 
@@ -588,26 +390,14 @@ def build_country_cache(events):
     unique_points = {}
 
     for item in events:
-
-        geometries = normalize_geometry_points(
-            item.get("geometry", [])
-        )
+        geometries = normalize_geometry_points(item.get("geometry", []))
 
         for geometry in geometries:
+            key = (round(geometry["latitude"], 5), round(geometry["longitude"], 5))
 
-            key = (
-                round(geometry["latitude"], 5),
-                round(geometry["longitude"], 5)
-            )
+            unique_points[key] = (geometry["latitude"], geometry["longitude"])
 
-            unique_points[key] = (
-                geometry["latitude"],
-                geometry["longitude"]
-            )
-
-    print(
-        f"Coordenadas únicas: {len(unique_points)}"
-    )
+    print(f"Coordenadas únicas: {len(unique_points)}")
 
     coordinates = list(unique_points.values())
 
@@ -615,47 +405,35 @@ def build_country_cache(events):
 
     results = geo.query(coordinates)
 
-    print(
-        f"Geocoder terminado en {time.time()-t0:.2f}s"
-    )
+    print(f"Geocoder terminado en {time.time() - t0:.2f}s")
 
     cache = {}
 
     for key, result in zip(unique_points.keys(), results):
-
         country = "UNKNOWN"
 
         try:
-
-            obj = pycountry.countries.get(
-                alpha_2=result["cc"]
-            )
+            obj = pycountry.countries.get(alpha_2=result["cc"])
 
             if obj:
-
                 country = obj.name
 
         except Exception:
-
             pass
 
         cache[key] = country
 
-    print(
-        f"Países cacheados: {len(cache)}"
-    )
+    print(f"Países cacheados: {len(cache)}")
 
     return cache
+
 
 # =====================================================
 # GUARDAR EVENTOS
 # =====================================================
 
-def save_events(
-    db: Session,
-    events: list,
-    current_user
-):
+
+def save_events(db: Session, events: list, current_user):
 
     imported = 0
     skipped = 0
@@ -667,10 +445,7 @@ def save_events(
 
     total_events = len(events)
 
-    existing_ids = {
-        x[0]
-        for x in db.query(Event.external_id).all()
-    }
+    existing_ids = {x[0] for x in db.query(Event.external_id).all()}
 
     # ------------------------------------
     # CACHE DE PAISES
@@ -687,9 +462,7 @@ def save_events(
     global_start = time.perf_counter()
 
     try:
-
         for event_number, item in enumerate(events, start=1):
-
             event_start = time.perf_counter()
 
             nasa_id = item["id"]
@@ -700,13 +473,9 @@ def save_events(
             # ------------------------------------
 
             if item.get("categories"):
-
-                category = normalize_category(
-                    item["categories"][0]["id"]
-                )
+                category = normalize_category(item["categories"][0]["id"])
 
             else:
-
                 category = "OTHER"
 
             # ------------------------------------
@@ -715,9 +484,7 @@ def save_events(
 
             t_geometry = time.perf_counter()
 
-            geometries = normalize_geometry_points(
-                item.get("geometry", [])
-            )
+            geometries = normalize_geometry_points(item.get("geometry", []))
 
             geometry_time = time.perf_counter() - t_geometry
 
@@ -731,62 +498,38 @@ def save_events(
             # ------------------------------------
 
             for index, geometry in enumerate(geometries):
-
                 if geometry["event_date"]:
-
-                    geometry_id = geometry["event_date"].strftime(
-                        "%Y%m%d%H%M%S"
-                    )
+                    geometry_id = geometry["event_date"].strftime("%Y%m%d%H%M%S")
 
                 else:
-
                     geometry_id = str(index)
 
                 external_id = f"{nasa_id}_{geometry_id}"
 
                 if external_id in existing_ids:
-
                     skipped += 1
                     event_skipped += 1
                     continue
 
-                key = (
-                    round(geometry["latitude"], 5),
-                    round(geometry["longitude"], 5)
-                )
+                key = (round(geometry["latitude"], 5), round(geometry["longitude"], 5))
 
-                country = country_cache.get(
-                    key,
-                    "UNKNOWN"
-                )
+                country = country_cache.get(key, "UNKNOWN")
 
                 t_object = time.perf_counter()
 
                 batch.append(
-
                     Event(
-
                         external_id=external_id,
-
                         title=title,
-
                         category=category,
-
                         country=country,
-
                         latitude=geometry["latitude"],
-
                         longitude=geometry["longitude"],
-
-                        event_date=geometry["event_date"]
-
+                        event_date=geometry["event_date"],
                     )
-
                 )
 
-                object_time += (
-                    time.perf_counter() - t_object
-                )
+                object_time += time.perf_counter() - t_object
 
                 existing_ids.add(external_id)
 
@@ -797,26 +540,16 @@ def save_events(
             # Estadísticas
             # ------------------------------------
 
-            event_elapsed = (
-                time.perf_counter() - event_start
-            )
+            event_elapsed = time.perf_counter() - event_start
 
-            total_elapsed = (
-                time.perf_counter() - global_start
-            ) + cache_time
+            total_elapsed = (time.perf_counter() - global_start) + cache_time
 
             average = total_elapsed / event_number
 
-            eta = average * (
-                total_events - event_number
-            )
+            eta = average * (total_events - event_number)
 
             # imprimir únicamente cada 100 eventos
-            if (
-                event_number % 100 == 0
-                or event_number == total_events
-            ):
-
+            if event_number % 100 == 0 or event_number == total_events:
                 print("\n====================================================")
                 print(f"EVENTO {event_number}/{total_events}")
                 print(f"NASA ID             : {nasa_id}")
@@ -838,27 +571,19 @@ def save_events(
         db.bulk_save_objects(batch)
 
         db.commit()
-        
+
         create_log(
             db,
             current_user,
             "EXECUTE",
             "EVENTS",
             "Importación de eventos NASA EONET ejecutada",
-            new_data={
-                "imported": imported,
-                "skipped": skipped,
-                "source": "NASA EONET"
-            }
+            new_data={"imported": imported, "skipped": skipped, "source": "NASA EONET"},
         )
 
-        insert_time = (
-            time.perf_counter() - t_insert
-        )
+        insert_time = time.perf_counter() - t_insert
 
-        total_time = (
-            time.perf_counter() - global_start
-        ) + cache_time
+        total_time = (time.perf_counter() - global_start) + cache_time
 
         print("\n==============================")
         print("FINALIZADO")
@@ -870,18 +595,14 @@ def save_events(
         print(f"Tiempo cache       : {cache_time:.2f} s")
         print(f"Tiempo INSERT SQL  : {insert_time:.2f} s")
         print(f"Tiempo total       : {total_time:.2f} s")
-        print(f"Promedio/evento    : {total_time/total_events:.6f} s")
+        print(f"Promedio/evento    : {total_time / total_events:.6f} s")
 
         return {
             "status": "OK",
             "message": "Events imported successfully.",
-            "data": {
-                "imported": imported,
-                "skipped": skipped
-            }
+            "data": {"imported": imported, "skipped": skipped},
         }
     except Exception as e:
-
         db.rollback()
 
         print("\n==============================")
@@ -895,6 +616,6 @@ def save_events(
             detail={
                 "status": "ERROR",
                 "message": "Error importing NASA EONET events.",
-                "error": str(e)
-            }
+                "error": str(e),
+            },
         )

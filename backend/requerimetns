@@ -18,7 +18,7 @@ pip install scikit-learn
 pip install numpy
 pip install apscheduler
 pip install fastapi-mail
-
+pip install ruff
 
 LEVANTAR BACKEND
 uvicorn app.main:app --reload

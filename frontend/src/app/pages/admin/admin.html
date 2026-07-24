@@ -1,49 +1,26 @@
 <div class="w-full">
+  <!-- Título principal -->
+  <div class="mb-8 text-center">
+    <h1 class="text-3xl font-bold" style="color: var(--text)">ADMIN</h1>
 
-    <!-- Título principal -->
-    <div class="mb-8 text-center">
+    <p class="text-sm mt-2" style="color: var(--text-secondary)">
+      Gestión de usuarios, roles y auditoría del sistema ERM
+    </p>
+  </div>
 
-        <h1
-            class="text-3xl font-bold"
-            style="color:var(--text)">
-            ADMIN
-        </h1>
+  <p-divider> </p-divider>
 
-        <p
-            class="text-sm mt-2"
-            style="color:var(--text-secondary)">
-            Gestión de usuarios, roles y auditoría del sistema ERM
-        </p>
+  <app-users-by-admin></app-users-by-admin>
 
-    </div>
+  <p-divider> </p-divider>
 
+  <app-roles-by-admin></app-roles-by-admin>
 
-    <p-divider>
-    </p-divider>
+  <p-divider> </p-divider>
 
+  <app-update-sistem-data></app-update-sistem-data>
 
-    <app-users-by-admin></app-users-by-admin>
+  <p-divider> </p-divider>
 
-
-
-    <p-divider>
-    </p-divider>
-
-
-    <app-roles-by-admin></app-roles-by-admin>
-
-
-
-    <p-divider>
-    </p-divider>
-
-    <app-update-sistem-data></app-update-sistem-data>
-    
-    <p-divider>
-    </p-divider>
-
-
-    <app-logs-by-admin></app-logs-by-admin>
-
-
+  <app-logs-by-admin></app-logs-by-admin>
 </div>

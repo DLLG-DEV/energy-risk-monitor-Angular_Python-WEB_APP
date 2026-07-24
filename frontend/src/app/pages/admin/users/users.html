@@ -1,291 +1,197 @@
 <div class="w-full">
+  <!-- Header -->
+  <div class="mb-6">
+    <h2 class="text-xl font-semibold" style="color: var(--text)">Usuarios del sistema</h2>
 
-    <!-- Header -->
-    <div class="mb-6">
-        <h2 
-            class="text-xl font-semibold"
-            style="color:var(--text)">
-            Usuarios del sistema
-        </h2>
+    <p class="text-sm mt-1" style="color: var(--text-secondary)">
+      Administración de usuarios registrados en ERM
+    </p>
+  </div>
 
-        <p
-            class="text-sm mt-1"
-            style="color:var(--text-secondary)">
-            Administración de usuarios registrados en ERM
-        </p>
-    </div>
-
-    <!-- Card -->
-    <div
-        class="rounded-xl p-4 shadow-sm border"
-        style="
-            background:var(--surface);
-            border-color:var(--navbar-border);
-        "
+  <!-- Card -->
+  <div
+    class="rounded-xl p-4 shadow-sm border"
+    style="background: var(--surface); border-color: var(--navbar-border)"
+  >
+    <p-table
+      [value]="users"
+      [loading]="loading"
+      [showLoader]="true"
+      responsiveLayout="scroll"
+      styleClass="w-full"
     >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Nombre</th>
 
-        <p-table
-            [value]="users"
-            [loading]="loading"
-            [showLoader]="true"
-            responsiveLayout="scroll"
-            styleClass="w-full"
-        >
-            <ng-template pTemplate="header">
-                <tr>
-                    <th>
-                        Nombre
-                    </th>
+          <th>Correo</th>
 
-                    <th>
-                        Correo
-                    </th>
+          <th>Rol</th>
 
-                    <th>
-                        Rol
-                    </th>
+          <th>Estado</th>
 
-                    <th>
-                        Estado
-                    </th>
+          <th>Creado</th>
 
-                    <th>
-                        Creado
-                    </th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </ng-template>
 
-                    <th class="text-center">
-                        Acciones
-                    </th>
+      <ng-template pTemplate="body" let-user>
+        <tr>
+          <td>
+            <div class="flex flex-col">
+              <span class="font-medium" style="color: var(--text)">
+                {{ user.first_name }}
+                {{ user.last_name }}
+              </span>
 
-                </tr>
-            </ng-template>
+              <span class="text-xs" style="color: var(--text-secondary)"> ID: {{ user.id }} </span>
+            </div>
+          </td>
 
-            <ng-template 
-                pTemplate="body"
-                let-user>
-                <tr>
-                    <td>
-                        <div class="flex flex-col">
-                            <span
-                                class="font-medium"
-                                style="color:var(--text)"
-                            >
-                                {{user.first_name}}
-                                {{user.last_name}}
-                            </span>
+          <td style="color: var(--text)">
+            {{ user.email }}
+          </td>
 
-                            <span
-                                class="text-xs"
-                                style="color:var(--text-secondary)"
-                            >
-                                ID: {{user.id}}
-                            </span>
-                        </div>
-                    </td>
+          <td>
+            <p-tag [value]="user.role" />
+          </td>
 
-                    <td
-                        style="color:var(--text)"
-                    >
-                        {{user.email}}
-                    </td>
+          <td>
+            <p-tag [value]="user.is_active ? 'Activo' : 'Inactivo'" />
+          </td>
 
-                    <td>
-                        <p-tag
-                            [value]="user.role"
-                        />
-                    </td>
+          <td style="color: var(--text-secondary)">
+            {{ user.created_at | date: 'dd/MM/yyyy' }}
+          </td>
 
-                    <td>
-                        <p-tag
-                            [value]="
-                                user.is_active 
-                                ? 'Activo'
-                                : 'Inactivo'
-                            "
-                        />
-                    </td>
+          <td class="text-center">
+            <button
+              pButton
+              type="button"
+              severity="info"
+              icon="pi pi-pencil"
+              class="p-button-rounded p-button-text"
+              (click)="openEditModal(user)"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
 
-                    <td
-                        style="color:var(--text-secondary)"
-                    >
-                        {{user.created_at | date:'dd/MM/yyyy'}}
-                    </td>
-
-                    <td class="text-center">
-                        <button
-                            pButton
-                            type="button"
-                            severity="info"
-                            icon="pi pi-pencil"
-                            class="p-button-rounded p-button-text"
-                            (click)="openEditModal(user)">
-                        </button>
-                    </td>
-                </tr>
-
-            </ng-template>
-
-            <ng-template pTemplate="emptymessage">
-                <tr>
-                    <td 
-                        colspan="5"
-                        class="text-center py-6"
-                    >
-                        No hay usuarios registrados
-                    </td>
-                </tr>
-            </ng-template>
-        </p-table>
-    </div>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5" class="text-center py-6">No hay usuarios registrados</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>
 
 <p-dialog
-    header="Editar usuario"
-    [(visible)]="showUserDialog"
-    [modal]="true"
-    [style]="{ width: '650px' }"
-    [draggable]="false"
-    [resizable]="false"
+  header="Editar usuario"
+  [(visible)]="showUserDialog"
+  [modal]="true"
+  [style]="{ width: '650px' }"
+  [draggable]="false"
+  [resizable]="false"
 >
-
-<form #userForm="ngForm">
-
+  <form #userForm="ngForm">
     <div class="grid grid-cols-2 gap-4">
+      <!-- Nombre -->
+      <div>
+        <label class="font-semibold"> Nombre </label>
 
-        <!-- Nombre -->
-        <div>
-            <label class="font-semibold">
-                Nombre
-            </label>
+        <input
+          pInputText
+          class="w-full mt-2"
+          [(ngModel)]="selectedUser.first_name"
+          name="first_name"
+        />
+      </div>
 
-            <input
-                pInputText
-                class="w-full mt-2"
-                [(ngModel)]="selectedUser.first_name"
-                name="first_name"
-            >
+      <!-- Apellido -->
+      <div>
+        <label class="font-semibold"> Apellido </label>
+
+        <input
+          pInputText
+          class="w-full mt-2"
+          [(ngModel)]="selectedUser.last_name"
+          name="last_name"
+        />
+      </div>
+
+      <!-- Email -->
+      <div class="col-span-2">
+        <label class="font-semibold"> Correo </label>
+
+        <input pInputText class="w-full mt-2" [(ngModel)]="selectedUser.email" name="email" />
+      </div>
+
+      <!-- Rol -->
+      <div>
+        <label class="font-semibold"> Rol </label>
+
+        <p-select
+          name="role_id"
+          [options]="roles"
+          optionLabel="name"
+          optionValue="id"
+          [(ngModel)]="selectedUser.role_id"
+        >
+        </p-select>
+      </div>
+
+      <!-- Estado -->
+      <div>
+        <label class="font-semibold"> Estado </label>
+
+        <div class="flex gap-5 mt-3">
+          <div class="flex items-center gap-2">
+            <p-radiobutton name="estado" [value]="true" [(ngModel)]="selectedUser.is_active">
+            </p-radiobutton>
+
+            <label>Activo</label>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <p-radiobutton name="estado" [value]="false" [(ngModel)]="selectedUser.is_active">
+            </p-radiobutton>
+
+            <label>Inactivo</label>
+          </div>
         </div>
+      </div>
 
-        <!-- Apellido -->
-        <div>
+      <!-- Fecha -->
+      <div class="col-span-2">
+        <label class="font-semibold"> Fecha de registro </label>
 
-            <label class="font-semibold">
-                Apellido
-            </label>
-
-            <input
-                pInputText
-                class="w-full mt-2"
-                [(ngModel)]="selectedUser.last_name"
-                name="last_name"
-            >
-
-        </div>
-
-        <!-- Email -->
-        <div class="col-span-2">
-
-            <label class="font-semibold">
-                Correo
-            </label>
-
-            <input
-                pInputText
-                class="w-full mt-2"
-                [(ngModel)]="selectedUser.email"
-                name="email"
-            >
-
-        </div>
-
-        <!-- Rol -->
-        <div>
-
-            <label class="font-semibold">
-                Rol
-            </label>
-
-            <p-select
-                name="role_id"
-                [options]="roles"
-                optionLabel="name"
-                optionValue="id"
-                [(ngModel)]="selectedUser.role_id">
-            </p-select>
-        </div>
-
-        <!-- Estado -->
-        <div>
-
-            <label class="font-semibold">
-                Estado
-            </label>
-
-<div class="flex gap-5 mt-3">
-
-    <div class="flex items-center gap-2">
-
-        <p-radiobutton
-            name="estado"
-            [value]="true"
-            [(ngModel)]="selectedUser.is_active">
-        </p-radiobutton>
-
-        <label>Activo</label>
-
+        <input
+          pInputText
+          class="w-full mt-2"
+          [value]="selectedUser.created_at | date: 'dd/MM/yyyy HH:mm'"
+          readonly
+        />
+      </div>
     </div>
+  </form>
 
-    <div class="flex items-center gap-2">
-
-        <p-radiobutton
-            name="estado"
-            [value]="false"
-            [(ngModel)]="selectedUser.is_active">
-        </p-radiobutton>
-
-        <label>Inactivo</label>
-
-    </div>
-
-</div>        </div>
-
-        <!-- Fecha -->
-        <div class="col-span-2">
-
-            <label class="font-semibold">
-                Fecha de registro
-            </label>
-
-            <input
-                pInputText
-                class="w-full mt-2"
-                [value]="selectedUser.created_at | date:'dd/MM/yyyy HH:mm'"
-                readonly>
-
-        </div>
-
-    </div>
-
-</form>
-
-<ng-template pTemplate="footer">
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      label="Cancelar"
+      icon="pi pi-times"
+      class="p-button-text"
+      (click)="showUserDialog = false"
+    ></button>
 
     <button
-        pButton
-        label="Cancelar"
-        icon="pi pi-times"
-        class="p-button-text"
-        (click)="showUserDialog=false">
-    </button>
-
-    <button
-        pButton
-        label="Guardar"
-        icon="pi pi-check"
-        [loading]="loading"
-        (click)="saveUser()">
-    </button>
-
-</ng-template>
-
+      pButton
+      label="Guardar"
+      icon="pi pi-check"
+      [loading]="loading"
+      (click)="saveUser()"
+    ></button>
+  </ng-template>
 </p-dialog>

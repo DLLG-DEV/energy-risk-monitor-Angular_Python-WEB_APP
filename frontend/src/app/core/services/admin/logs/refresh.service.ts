@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LogRefreshService {
-
   private refreshSource = new Subject<void>();
 
   refresh$ = this.refreshSource.asObservable();
@@ -13,5 +12,4 @@ export class LogRefreshService {
   refresh() {
     this.refreshSource.next();
   }
-
 }

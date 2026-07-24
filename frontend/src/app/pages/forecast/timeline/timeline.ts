@@ -1,119 +1,88 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
-import { ForecastTimeline,MonthForecast} from '../../../core/interfaces/forecast';
+import { ForecastTimeline, MonthForecast } from '../../../core/interfaces/forecast';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 
 @Component({
-    selector:'app-timeline',
-    imports:[
-      CommonModule,
-      ButtonModule,
-      DialogModule,
-      DividerModule
-    ],
-    templateUrl:'./timeline.html',
-    styleUrl:'./timeline.css',
+  selector: 'app-timeline',
+  imports: [CommonModule, ButtonModule, DialogModule, DividerModule],
+  templateUrl: './timeline.html',
+  styleUrl: './timeline.css',
 })
 export class ForecastTimelineComponent {
-
   @Input()
-  timeline:ForecastTimeline[]=[];
+  timeline: ForecastTimeline[] = [];
 
-  view: 'weekly'|'monthly' = 'monthly';
+  view: 'weekly' | 'monthly' = 'monthly';
 
-  selectedWeek?:ForecastTimeline;
+  selectedWeek?: ForecastTimeline;
 
-  selectedMonth?:MonthForecast;
+  selectedMonth?: MonthForecast;
 
-  showModal=false;
+  showModal = false;
 
-  setView(mode:'weekly'|'monthly'){this.view=mode;}
-
-  openWeek(
-    item:ForecastTimeline
-  ){
-    this.selectedWeek=item;
-
-    this.selectedMonth=undefined;
-
-    this.showModal=true;
+  setView(mode: 'weekly' | 'monthly') {
+    this.view = mode;
   }
 
-  openMonth(
-    item:MonthForecast
-  ){
-    this.selectedMonth=item;
+  openWeek(item: ForecastTimeline) {
+    this.selectedWeek = item;
 
-    this.selectedWeek=undefined;
+    this.selectedMonth = undefined;
 
-    this.showModal=true;
+    this.showModal = true;
   }
 
-  closeModal(){
-      this.showModal=false;
+  openMonth(item: MonthForecast) {
+    this.selectedMonth = item;
 
-      this.selectedWeek=undefined;
+    this.selectedWeek = undefined;
 
-      selectedMonth:undefined;
+    this.showModal = true;
   }
 
-  get weeklyGroups():ForecastTimeline[][]{
-      const groups:
-      ForecastTimeline[][] =[];
+  closeModal() {
+    this.showModal = false;
 
-      for(
-          let i=0;
-          i<this.timeline.length;
-          i+=4
-      ){
-          groups.push(
-              this.timeline.slice(
-                  i,
-                  i+4
-              )
-          );
-      }
-      return groups;
+    this.selectedWeek = undefined;
+
+    selectedMonth: undefined;
   }
 
-  getMonthLabel(
-      date:string
-  ){
-    return new Date(date)
-      .toLocaleDateString(
-        'es-MX',
-        {
-          month:'long',
-          year:'numeric'
-        }
-      );
+  get weeklyGroups(): ForecastTimeline[][] {
+    const groups: ForecastTimeline[][] = [];
+
+    for (let i = 0; i < this.timeline.length; i += 4) {
+      groups.push(this.timeline.slice(i, i + 4));
+    }
+    return groups;
   }
 
-  get monthlyData():MonthForecast[]{
-    const months:
-    Record<string,MonthForecast>={};
+  getMonthLabel(date: string) {
+    return new Date(date).toLocaleDateString('es-MX', {
+      month: 'long',
+      year: 'numeric',
+    });
+  }
 
-    this.timeline.forEach(item=>{
+  get monthlyData(): MonthForecast[] {
+    const months: Record<string, MonthForecast> = {};
 
-      const date =
-      new Date(item.date);
+    this.timeline.forEach((item) => {
+      const date = new Date(item.date);
 
-      const key =
-      date.toLocaleDateString(
-        'es-MX',
-        {
-          month:'long',
-          year:'numeric'
-        }
-      );
-      if(!months[key]){
-        months[key]={
-          month:key,
-          events:0,
-          weeks:0,
-          items:[]
+      const key = date.toLocaleDateString('es-MX', {
+        month: 'long',
+        year: 'numeric',
+      });
+      if (!months[key]) {
+        months[key] = {
+          month: key,
+          events: 0,
+          weeks: 0,
+          items: [],
         };
       }
 
@@ -124,8 +93,6 @@ export class ForecastTimelineComponent {
       months[key].items.push(item);
     });
 
-    return Object.values(
-      months
-    );
+    return Object.values(months);
   }
 }

@@ -1,235 +1,88 @@
 <div class="w-full">
+  <!-- Header -->
 
+  <div class="mb-6">
+    <h2 class="text-xl font-semibold" style="color: var(--text)">Alertas del sistema</h2>
 
-    <!-- Header -->
+    <p class="text-sm mt-1" style="color: var(--text-secondary)">
+      Configura alertas personalizadas para monitorear eventos de riesgo dentro de ERM
+    </p>
+  </div>
 
-    <div class="mb-6">
+  <!-- Acción principal -->
 
-
-        <h2
-            class="text-xl font-semibold"
-            style="color:var(--text)"
-        >
-            Alertas del sistema
-        </h2>
-
-
-
-        <p
-            class="text-sm mt-1"
-            style="color:var(--text-secondary)"
-        >
-            Configura alertas personalizadas para monitorear eventos de riesgo dentro de ERM
-        </p>
-
-
-    </div>
-
-
-
-
-
-    <!-- Acción principal -->
-
-
-    <div class="flex justify-center mb-1">
-
-
-        <button
-            pButton
-            type="button"
-            label="Agregar nueva alerta"
-            icon="pi pi-bell"
-            (click)="openCreate()"
-        >
-
-
-        </button>
-
-
-    </div>
-
+  <div class="flex justify-center mb-1">
+    <button
+      pButton
+      type="button"
+      label="Agregar nueva alerta"
+      icon="pi pi-bell"
+      (click)="openCreate()"
+    ></button>
+  </div>
 </div>
 
 <!-- MODAL -->
 
-<div
-*ngIf="showModal"
-class="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
-
-
-<div class="bg-white p-6 rounded-lg w-96">
-
-
-<h3 class="text-lg mb-4">
-
-{{editMode?'Editar':'Nueva'}} alarma
-
-</h3>
-
-
-
-
-<label>
-
-País
-
-</label>
-
-
-<label>
-País
-</label>
-
-
-<div class="relative">
-
-
-<input
-
-type="text"
-
-[(ngModel)]="countrySearch"
-
-(input)="searchCountry()"
-
-placeholder="Buscar país..."
-
-class="w-full border p-2 rounded"
-/>
-
-
-
-
-
-<div
-
-*ngIf="countries.length"
-
-class="absolute bg-white border w-full z-10 rounded shadow">
-
-
-<div
-
-*ngFor="let country of countries"
-
-(click)="selectCountry(country)"
-
-class="p-2 cursor-pointer hover:bg-gray-100">
-
-
-{{country}}
-
-
-</div>
-
-
-</div>
-
-
-</div>
-
-
-
-
-<label>
-
-Categoría
-
-</label>
-
-
-<select
-[(ngModel)]="form.category"
-class="w-full border p-2 mb-4">
-
-
-<option [ngValue]="null">
-</option>
-
-
-<option
-*ngFor="let c of categories"
-[value]="c">
-
-{{c}}
-
-</option>
-
-
-</select>
-
-
-<label>
-
-    Periodicidad
-
-</label>
-
-
-<select
-
-[(ngModel)]="form.periodicity"
-
-class="w-full border p-2 mb-4"
-
-
->
-
-
-<option
-
-*ngFor="let p of periodicities"
-
-[value]="p.value"
-
->
-
-{{p.label}}
-
-</option>
-
-
-</select>
-
-
-<div class="flex justify-end gap-3">
-
-
-<button
-(click)="showModal=false">
-
-Cancelar
-
-</button>
-
-
-<button
-
-    pButton
-
-    type="button"
-
-    label="Guardar"
-
-    icon="pi pi-save"
-
-    severity="info"
-
-    class="px-5"
-
-    [disabled]="!isFormValid()"
-
-    (click)="save()"
-
->
-
-</button>
-
-</div>
-
-
-</div>
-
-
+<div *ngIf="showModal" class="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
+  <div class="bg-white p-6 rounded-lg w-96">
+    <h3 class="text-lg mb-4">{{ editMode ? 'Editar' : 'Nueva' }} alarma</h3>
+
+    <label> País </label>
+
+    <label> País </label>
+
+    <div class="relative">
+      <input
+        type="text"
+        [(ngModel)]="countrySearch"
+        (input)="searchCountry()"
+        placeholder="Buscar país..."
+        class="w-full border p-2 rounded"
+      />
+
+      <div *ngIf="countries.length" class="absolute bg-white border w-full z-10 rounded shadow">
+        <div
+          *ngFor="let country of countries"
+          (click)="selectCountry(country)"
+          class="p-2 cursor-pointer hover:bg-gray-100"
+        >
+          {{ country }}
+        </div>
+      </div>
+    </div>
+
+    <label> Categoría </label>
+
+    <select [(ngModel)]="form.category" class="w-full border p-2 mb-4">
+      <option [ngValue]="null"></option>
+
+      <option *ngFor="let c of categories" [value]="c">
+        {{ c }}
+      </option>
+    </select>
+
+    <label> Periodicidad </label>
+
+    <select [(ngModel)]="form.periodicity" class="w-full border p-2 mb-4">
+      <option *ngFor="let p of periodicities" [value]="p.value">
+        {{ p.label }}
+      </option>
+    </select>
+
+    <div class="flex justify-end gap-3">
+      <button (click)="showModal = false">Cancelar</button>
+
+      <button
+        pButton
+        type="button"
+        label="Guardar"
+        icon="pi pi-save"
+        severity="info"
+        class="px-5"
+        [disabled]="!isFormValid()"
+        (click)="save()"
+      ></button>
+    </div>
+  </div>
 </div>

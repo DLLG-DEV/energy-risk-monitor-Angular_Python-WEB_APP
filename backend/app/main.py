@@ -1,40 +1,31 @@
-from contextlib import asynccontextmanager
 import logging
-
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 
 from app.core.config import settings
-
-from app.routers.users import auth, roles
-from app.routers.admin import users_by_admin, logs_by_admin, roles_by_admin
-from app.routers.events import events
-from app.routers.heatmap import heatmap
-from app.routers.forecast import forecast
+from app.routers.admin import logs_by_admin, roles_by_admin, users_by_admin
 from app.routers.alerts import alerts
-
+from app.routers.events import events
+from app.routers.forecast import forecast
+from app.routers.heatmap import heatmap
+from app.routers.users import auth, roles
 from app.services.automated.scheduler import scheduler
-from app.models.notification import Notification
-
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-
     logger.info("Starting Energy Risk Monitor API...")
 
     try:
-
         if not scheduler.running:
-
             scheduler.start()
 
             logger.info("Background scheduler started successfully.")
 
     except Exception:
-
         logger.exception("Failed to start background scheduler.")
 
         raise
@@ -44,23 +35,16 @@ async def lifespan(app: FastAPI):
     logger.info("Stopping Energy Risk Monitor API...")
 
     try:
-
         if scheduler.running:
-
             scheduler.shutdown(wait=False)
 
             logger.info("Background scheduler stopped successfully.")
 
     except Exception:
-
         logger.exception("Error while stopping background scheduler.")
 
 
-app = FastAPI(
-    title="Energy Risk Monitor API",
-    version="1.0.0",
-    lifespan=lifespan
-)
+app = FastAPI(title="Energy Risk Monitor API", version="1.0.0", lifespan=lifespan)
 
 
 # ==========================================================
@@ -96,10 +80,8 @@ app.add_middleware(
 # Health Check
 # ==========================================================
 
+
 @app.get("/", tags=["Health"])
 def health_check():
 
-    return {
-        "status": "OK",
-        "service": "Energy Risk Monitor API"
-    }
+    return {"status": "OK", "service": "Energy Risk Monitor API"}

@@ -6,7 +6,6 @@ export interface EventList {
   event_date: string | null;
   latitude: number;
   longitude: number;
-
 }
 
 export interface EventDetail {
@@ -27,25 +26,20 @@ export interface EventSearchResponse {
   results: EventList[];
 }
 export interface CategoriResponse {
-  code: string,
-  name: string
+  code: string;
+  name: string;
 }
 
 export interface CategoryStatistics {
+  code: string;
 
-  code:string;
+  name: string;
 
-  name:string;
-
-  total:number;
-
+  total: number;
 }
 
-
 export interface EventStatistics {
+  total: number;
 
-  total:number;
-
-  categories:CategoryStatistics[];
-
+  categories: CategoryStatistics[];
 }

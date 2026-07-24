@@ -27,13 +27,12 @@ import { LogRefreshService } from '../../../core/services/admin/logs/refresh.ser
     ButtonModule,
     SelectModule,
     ToggleSwitchModule,
-    RadioButtonModule
+    RadioButtonModule,
   ],
   templateUrl: './users.html',
   styleUrl: './users.css',
 })
-export class UsersByAdminComponent  {
-
+export class UsersByAdminComponent {
   users: UserAdmin[] = [];
   loading = true;
   showUserDialog = false;
@@ -46,7 +45,7 @@ export class UsersByAdminComponent  {
     email: '',
     role: '',
     is_active: false,
-    created_at: ''
+    created_at: '',
   };
 
   constructor(
@@ -54,91 +53,81 @@ export class UsersByAdminComponent  {
     private messageService: MessageService,
     private cdr: ChangeDetectorRef,
     private Rol_ServAdm: Roles_AdmService,
-    private logRefresh: LogRefreshService
-  ){
-  }
-  
-  ngOnInit(){
+    private logRefresh: LogRefreshService,
+  ) {}
+
+  ngOnInit() {
     this.loadRoles();
     this.loadUsers();
   }
 
-  loadUsers(){
-    this.Usr_ServAdm.getUsers()
-    .subscribe({
-      next:(data: UserAdmin[])=>{
+  loadUsers() {
+    this.Usr_ServAdm.getUsers().subscribe({
+      next: (data: UserAdmin[]) => {
         this.users = data;
         this.loading = false;
         this.cdr.detectChanges();
 
         this.logRefresh.refresh();
       },
-      error:(error)=>{
-        console.error(
-          "Error obteniendo usuarios",
-          error
-        );
+      error: (error) => {
+        console.error('Error obteniendo usuarios', error);
 
         this.messageService.add({
-            severity:'error',
-            summary:'Error obteniendo usuarios',
+          severity: 'error',
+          summary: 'Error obteniendo usuarios',
         });
 
         this.loading = false;
-      }
+      },
     });
   }
 
-  loadRoles(){
+  loadRoles() {
     this.Rol_ServAdm.getRolesList().subscribe({
-      next:(data: RoleList[]) =>{
-        this.roles = data
-            },
-      error:(error)=>{
-        console.error(
-          "Error obteniendo roles",
-          error
-        );
+      next: (data: RoleList[]) => {
+        this.roles = data;
+      },
+      error: (error) => {
+        console.error('Error obteniendo roles', error);
 
         this.messageService.add({
-            severity:'error',
-            summary:'Error obteniendo roles',
+          severity: 'error',
+          summary: 'Error obteniendo roles',
         });
 
         this.loading = false;
-      }
-    })
+      },
+    });
   }
 
-  openEditModal(user: UserAdmin){
+  openEditModal(user: UserAdmin) {
     this.selectedUser = {
-        ...user
+      ...user,
     };
     this.showUserDialog = true;
   }
 
-  saveUser(){
+  saveUser() {
     this.loading = true;
 
-    this.Usr_ServAdm.updateUser(this.selectedUser)
-    .subscribe({
+    this.Usr_ServAdm.updateUser(this.selectedUser).subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
-          summary: 'Usuario actualizado'
+          summary: 'Usuario actualizado',
         });
         this.showUserDialog = false;
         this.loadUsers();
       },
       error: (error) => {
         console.error(error);
-        this.loading=false;
+        this.loading = false;
         this.messageService.add({
           severity: 'error',
-          summary: 'No fue posible actualizar el usuario'
+          summary: 'No fue posible actualizar el usuario',
         });
-      }
+      },
     });
   }
 }
-

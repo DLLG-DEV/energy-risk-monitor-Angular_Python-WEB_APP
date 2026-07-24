@@ -1,86 +1,42 @@
+from app.database.database import Base
 from sqlalchemy import (
-    Column,
-    Integer,
-    String,
     Boolean,
+    Column,
     DateTime,
     ForeignKey,
+    Integer,
+    String,
     Text,
-    func
+    func,
 )
-
 from sqlalchemy.orm import relationship
-
-from app.database.database import Base
 
 
 class User(Base):
-
     __tablename__ = "users"
 
+    id = Column(Integer, primary_key=True, index=True)
 
-    id = Column(
-        Integer,
-        primary_key=True,
-        index=True
-    )
+    first_name = Column(String(100), nullable=False)
 
-    first_name = Column(
-        String(100),
-        nullable=False
-    )
+    last_name = Column(String(100), nullable=False)
 
-    last_name = Column(
-        String(100),
-        nullable=False
-    )
+    email = Column(String(255), unique=True, nullable=False, index=True)
 
-    email = Column(
-        String(255),
-        unique=True,
-        nullable=False,
-        index=True
-    )
+    password_hash = Column(Text, nullable=False)
 
-    password_hash = Column(
-        Text,
-        nullable=False
-    )
+    role_id = Column(Integer, ForeignKey("roles.id"), nullable=False)
 
-    role_id = Column(
-        Integer,
-        ForeignKey("roles.id"),
-        nullable=False
-    )
+    is_active = Column(Boolean, nullable=False, default=True)
 
-    is_active = Column(
-        Boolean,
-        nullable=False,
-        default=True
-    )
-
-    created_at = Column(
-        DateTime,
-        nullable=False,
-        server_default=func.now()
-    )
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
 
     updated_at = Column(
-        DateTime,
-        nullable=False,
-        server_default=func.now(),
-        onupdate=func.now()
+        DateTime, nullable=False, server_default=func.now(), onupdate=func.now()
     )
-
 
     # Relaciones
 
-    role = relationship(
-        "Role",
-        back_populates="users"
-    )
-    
-    alarms = relationship(
-        "Alarm",
-        back_populates="user"
-    )
+    role = relationship("Role", back_populates="users")
+
+    alarms = relationship("Alarm", back_populates="user")

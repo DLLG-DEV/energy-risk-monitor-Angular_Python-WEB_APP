@@ -12,8 +12,8 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { environment } from '../../../environments/environment';
 export interface RegisterResponse {
-    status_code: string;
-    detail: string;
+  status_code: string;
+  detail: string;
 }
 
 @Component({
@@ -26,13 +26,11 @@ export interface RegisterResponse {
     PasswordModule,
     DividerModule,
     SelectModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   templateUrl: './new-user.html',
   styleUrl: './new-user.css',
-  providers:[
-    MessageService
-  ]
+  providers: [MessageService],
 })
 export class NewUser {
   registerForm: FormGroup;
@@ -40,34 +38,25 @@ export class NewUser {
   roles: MenuItem[] = [];
 
   private USER_ROLE_ID = environment.USER_ROLE_ID;
-  
 
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
     private messageService: MessageService,
     private router: Router,
-  ){
+  ) {
     this.registerForm = this.fb.group({
+      first_name: ['', Validators.required],
 
-        first_name: ['', Validators.required],
+      last_name: ['', Validators.required],
 
-        last_name: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
 
-        email: ['', [
-            Validators.required,
-            Validators.email
-        ]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
 
-        password: ['', [
-            Validators.required,
-            Validators.minLength(8)
-        ]],
+      confirmPassword: ['', Validators.required],
 
-        confirmPassword: ['', Validators.required],
-
-        role_id: [this.USER_ROLE_ID]
-
+      role_id: [this.USER_ROLE_ID],
     });
   }
 
@@ -79,47 +68,45 @@ export class NewUser {
       return;
     }
 
-    if (
-      this.registerForm.value.password !==
-      this.registerForm.value.confirmPassword
-    ) {
+    if (this.registerForm.value.password !== this.registerForm.value.confirmPassword) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Contraseñas',
-        detail: 'Las contraseñas no coinciden'
+        detail: 'Las contraseñas no coinciden',
       });
       this.loading = false;
       return;
     }
 
-    this.auth.new_user({
-      first_name: this.registerForm.value.first_name,
-      last_name: this.registerForm.value.last_name,
-      email: this.registerForm.value.email,
-      password: this.registerForm.value.password,
-      role_id: this.registerForm.value.role_id
-    }).subscribe({
-      next: (response: RegisterResponse) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Registro exitoso',
-          detail: response.detail
-        });
+    this.auth
+      .new_user({
+        first_name: this.registerForm.value.first_name,
+        last_name: this.registerForm.value.last_name,
+        email: this.registerForm.value.email,
+        password: this.registerForm.value.password,
+        role_id: this.registerForm.value.role_id,
+      })
+      .subscribe({
+        next: (response: RegisterResponse) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Registro exitoso',
+            detail: response.detail,
+          });
 
-        setTimeout(() => {
-          this.router.navigate(['/login']);
-        }, 1500);
-      },
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 1500);
+        },
 
-      error: (error) => {
-        this.loading = false;
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.error.detail
-        });
-      }
-    });
-
+        error: (error) => {
+          this.loading = false;
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.detail,
+          });
+        },
+      });
   }
 }

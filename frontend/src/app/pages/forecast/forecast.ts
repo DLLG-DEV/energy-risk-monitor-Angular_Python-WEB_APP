@@ -1,4 +1,4 @@
-import {ChangeDetectorRef,Component,OnInit} from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { DividerModule } from 'primeng/divider';
 import { MessageService } from 'primeng/api';
@@ -7,22 +7,20 @@ import { RiskMap } from './risk-map/risk-map';
 import { KpiCards } from './kpi-cards/kpi-cards';
 import { Chards } from './chards/chards';
 import { ForecastService } from '../../core/services/forecast/forecast.service';
-import { ForecastDashboard, ForecastTimeline, ForecastCategory, ForecastMapItem } from '../../core/interfaces/forecast';
+import {
+  ForecastDashboard,
+  ForecastTimeline,
+  ForecastCategory,
+  ForecastMapItem,
+} from '../../core/interfaces/forecast';
 
 @Component({
   selector: 'app-forecast',
-  imports: [
-    DividerModule,
-    ForecastTimelineComponent,
-    RiskMap,
-    KpiCards,
-    Chards
-  ],
+  imports: [DividerModule, ForecastTimelineComponent, RiskMap, KpiCards, Chards],
   templateUrl: './forecast.html',
-  styleUrl: './forecast.css'
+  styleUrl: './forecast.css',
 })
 export class Forecast implements OnInit {
-
   dashboard!: ForecastDashboard;
   timeline: ForecastTimeline[] = [];
   categories: ForecastCategory[] = [];
@@ -32,8 +30,8 @@ export class Forecast implements OnInit {
   constructor(
     private forecastService: ForecastService,
     private Msg_Service: MessageService,
-    private cdr: ChangeDetectorRef
-  ) { }
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
     this.loadForecast();
@@ -45,7 +43,7 @@ export class Forecast implements OnInit {
       dashboard: this.forecastService.getDashboard(),
       timeline: this.forecastService.getTimeline(),
       categories: this.forecastService.getCategories(),
-      map: this.forecastService.getMap()
+      map: this.forecastService.getMap(),
     }).subscribe({
       next: (response) => {
         this.dashboard = response.dashboard;
@@ -64,10 +62,10 @@ export class Forecast implements OnInit {
         this.Msg_Service.add({
           severity: 'error',
           summary: 'Forecast',
-          detail: 'No fue posible cargar la información del pronóstico.'
+          detail: 'No fue posible cargar la información del pronóstico.',
         });
         this.cdr.detectChanges();
-      }
+      },
     });
   }
 }

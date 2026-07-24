@@ -23,13 +23,12 @@ import { EventDetails } from '../event-details/event-details';
     DatePickerModule,
     ButtonModule,
     TagModule,
-    EventDetails
+    EventDetails,
   ],
   templateUrl: './search-events.html',
   styleUrl: './search-events.css',
 })
 export class SearchEvents {
-
   events: EventList[] = [];
   loading = false;
   selectedEvent: EventDetail = {
@@ -40,7 +39,7 @@ export class SearchEvents {
     country: '',
     latitude: 0,
     longitude: 0,
-    event_date: ''
+    event_date: '',
   };
   showDetailDialog = false;
   filters = {
@@ -49,126 +48,109 @@ export class SearchEvents {
     start_date: null as Date | null,
     end_date: null as Date | null,
     page: 1,
-    limit: 20
+    limit: 20,
   };
 
   categories = [
     {
-      name:'Todos',
-      value:''
+      name: 'Todos',
+      value: '',
     },
     {
-      name:'Incendios',
-      value:'Fire'
+      name: 'Incendios',
+      value: 'Fire',
     },
     {
-      name:'Volcanes',
-      value:'Volcano'
+      name: 'Volcanes',
+      value: 'Volcano',
     },
     {
-      name:'Tormentas',
-      value:'Storm'
+      name: 'Tormentas',
+      value: 'Storm',
     },
     {
-      name:'Inundaciones',
-      value:'Flood'
-    }
+      name: 'Inundaciones',
+      value: 'Flood',
+    },
   ];
 
   constructor(
     private Events_Serv: EventsService,
     private Msg_Service: MessageService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {}
 
-  ngOnInit(){
+  ngOnInit() {
     this.searchEvents();
   }
 
-  searchEvents(){
+  searchEvents() {
     this.loading = true;
     this.Events_Serv.get_events_searchs({
-      category:this.filters.category,
+      category: this.filters.category,
 
-      country:this.filters.country,
+      country: this.filters.country,
 
-      start_date:
-        this.filters.start_date
-        ?
-        this.formatDate(this.filters.start_date)
-        :
-        undefined,
+      start_date: this.filters.start_date ? this.formatDate(this.filters.start_date) : undefined,
 
-      end_date:
-        this.filters.end_date
-        ?
-        this.formatDate(this.filters.end_date)
-        :
-        undefined,
+      end_date: this.filters.end_date ? this.formatDate(this.filters.end_date) : undefined,
 
-      page:this.filters.page,
+      page: this.filters.page,
 
-      limit:this.filters.limit
-    })
-    .subscribe({
-      next:(response)=>{
+      limit: this.filters.limit,
+    }).subscribe({
+      next: (response) => {
         this.events = response.results;
-        this.loading=false;
+        this.loading = false;
         this.cdr.detectChanges();
       },
-      error:(err)=>{
-        this.loading=false;
+      error: (err) => {
+        this.loading = false;
         console.error(err);
 
         this.Msg_Service.add({
-          severity:'error',
-          summary:'Error',
-          detail:'No se pudieron cargar los eventos'
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudieron cargar los eventos',
         });
-      }
+      },
     });
   }
 
-  clearFilters(){
+  clearFilters() {
     this.filters = {
-      category:'',
-      country:'',
-      start_date:null,
-      end_date:null,
-      page:1,
-      limit:20
+      category: '',
+      country: '',
+      start_date: null,
+      end_date: null,
+      page: 1,
+      limit: 20,
     };
 
     this.searchEvents();
   }
 
-  private formatDate(date:Date){
-    return date
-    .toISOString()
-    .split('T')[0];
+  private formatDate(date: Date) {
+    return date.toISOString().split('T')[0];
   }
 
   viewDetail(event: EventList): void {
     this.loading = true;
-    this.Events_Serv.get_event_detail(event.id)
-    .subscribe({
-      next:(resp)=>{
+    this.Events_Serv.get_event_detail(event.id).subscribe({
+      next: (resp) => {
         this.selectedEvent = resp;
         this.showDetailDialog = true;
-        this.loading=false;
+        this.loading = false;
         this.cdr.detectChanges();
       },
-      error:()=>{
-        this.loading=false;
+      error: () => {
+        this.loading = false;
         this.Msg_Service.add({
-          severity:'error',
-          summary:'Error',
-          detail:'No fue posible obtener la información del evento.'
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No fue posible obtener la información del evento.',
         });
-      }
+      },
     });
-
-
   }
-
 }

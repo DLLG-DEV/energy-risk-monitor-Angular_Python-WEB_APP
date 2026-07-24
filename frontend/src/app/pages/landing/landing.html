@@ -1,493 +1,185 @@
 <div class="landing">
+  <!-- HERO -->
 
+  <section class="hero">
+    <div class="hero-content">
+      <div class="badge">🌎 Energy Risk Monitor</div>
 
-    <!-- HERO -->
+      <h1>
+        Anticipa riesgos naturales
+        <span>antes de que impacten</span>
+        tu infraestructura energética
+      </h1>
 
-    <section class="hero">
+      <p>
+        Energy Risk Monitor utiliza datos satelitales de NASA EONET, inteligencia geoespacial y
+        modelos predictivos para proteger activos energéticos alrededor del mundo.
+      </p>
 
+      <div class="hero-buttons">
+        <button class="primary" routerLink="/login">Ingresar a la plataforma</button>
 
-        <div class="hero-content">
+        <button class="secondary" (click)="scrollFeatures()">Descubrir capacidades</button>
+      </div>
+    </div>
 
+    <div class="hero-visual">
+      <div class="earth">
+        <div class="pulse"></div>
+      </div>
 
-            <div class="badge">
-                🌎 Energy Risk Monitor
-            </div>
+      <div class="floating-card card1">
+        <strong> 4,900+ </strong>
 
+        <span> Eventos monitoreados </span>
+      </div>
 
-            <h1>
-                Anticipa riesgos naturales
-                <span>antes de que impacten</span>
-                tu infraestructura energética
-            </h1>
+      <div class="floating-card card2">
+        <strong> 95% </strong>
 
+        <span> Precisión predictiva </span>
+      </div>
+    </div>
+  </section>
 
-            <p>
-                Energy Risk Monitor utiliza datos satelitales de NASA EONET,
-                inteligencia geoespacial y modelos predictivos para proteger
-                activos energéticos alrededor del mundo.
-            </p>
+  <!-- KPIS -->
 
+  <section class="stats">
+    <div class="stat">
+      <h2>5 años</h2>
 
-            <div class="hero-buttons">
+      <p>Historial global NASA EONET</p>
+    </div>
 
-                <button 
-                    class="primary"
-                    routerLink="/login">
+    <div class="stat">
+      <h2>200+</h2>
 
-                    Ingresar a la plataforma
+      <p>Países analizados</p>
+    </div>
 
-                </button>
+    <div class="stat">
+      <h2>24/7</h2>
 
+      <p>Monitoreo continuo</p>
+    </div>
 
-                <button 
-                    class="secondary"
-                    (click)="scrollFeatures()">
+    <div class="stat">
+      <h2>3 meses</h2>
 
-                    Descubrir capacidades
+      <p>Forecast predictivo</p>
+    </div>
+  </section>
 
-                </button>
+  <!-- FEATURES -->
 
+  <section class="features">
+    <h2>Inteligencia completa para gestión de riesgos</h2>
 
-            </div>
+    <p class="subtitle">
+      Una plataforma diseñada para operadores energéticos, analistas y equipos de continuidad
+      operacional.
+    </p>
 
+    <div class="feature-grid">
+      <div class="feature">
+        <div class="icon">🌋</div>
 
-        </div>
-
-
-
-        <div class="hero-visual">
-
-
-            <div class="earth">
-
-                <div class="pulse"></div>
-
-            </div>
-
-
-            <div class="floating-card card1">
-
-                <strong>
-                    4,900+
-                </strong>
-
-                <span>
-                    Eventos monitoreados
-                </span>
-
-            </div>
-
-
-            <div class="floating-card card2">
-
-                <strong>
-                    95%
-                </strong>
-
-                <span>
-                    Precisión predictiva
-                </span>
-
-            </div>
-
-
-        </div>
-
-
-    </section>
-
-
-
-
-
-
-    <!-- KPIS -->
-
-    <section class="stats">
-
-
-        <div class="stat">
-
-            <h2>
-                5 años
-            </h2>
-
-            <p>
-                Historial global NASA EONET
-            </p>
-
-        </div>
-
-
-
-        <div class="stat">
-
-            <h2>
-                200+
-            </h2>
-
-            <p>
-                Países analizados
-            </p>
-
-        </div>
-
-
-
-
-        <div class="stat">
-
-            <h2>
-                24/7
-            </h2>
-
-            <p>
-                Monitoreo continuo
-            </p>
-
-        </div>
-
-
-
-        <div class="stat">
-
-            <h2>
-                3 meses
-            </h2>
-
-            <p>
-                Forecast predictivo
-            </p>
-
-        </div>
-
-
-    </section>
-
-
-
-
-
-
-
-    <!-- FEATURES -->
-
-    <section class="features">
-
-
-        <h2>
-            Inteligencia completa para gestión de riesgos
-        </h2>
-
-
-        <p class="subtitle">
-            Una plataforma diseñada para operadores energéticos,
-            analistas y equipos de continuidad operacional.
-        </p>
-
-
-
-        <div class="feature-grid">
-
-
-
-            <div class="feature">
-
-
-                <div class="icon">
-                    🌋
-                </div>
-
-
-                <h3>
-                    Monitoreo global
-                </h3>
-
-
-                <p>
-                    Integración con NASA EONET para detectar incendios,
-                    tormentas, volcanes e inundaciones.
-                </p>
-
-
-            </div>
-
-
-
-
-
-            <div class="feature">
-
-
-                <div class="icon">
-                    🗺️
-                </div>
-
-
-                <h3>
-                    Inteligencia geoespacial
-                </h3>
-
-
-                <p>
-                    Normalización de coordenadas y enriquecimiento
-                    automático con información regional.
-                </p>
-
-
-            </div>
-
-
-
-
-
-
-            <div class="feature">
-
-
-                <div class="icon">
-                    📈
-                </div>
-
-
-                <h3>
-                    Forecasting predictivo
-                </h3>
-
-
-                <p>
-                    Predicción de eventos futuros clasificados
-                    por categoría y región.
-                </p>
-
-
-            </div>
-
-
-
-
-
-
-
-            <div class="feature">
-
-
-                <div class="icon">
-                    🚨
-                </div>
-
-
-                <h3>
-                    Sistema de alarmas
-                </h3>
-
-
-                <p>
-                    Configura reglas por país o categoría
-                    y recibe alertas automáticamente.
-                </p>
-
-
-            </div>
-
-
-
-
-
-
-
-            <div class="feature">
-
-
-                <div class="icon">
-                    🔐
-                </div>
-
-
-                <h3>
-                    Control de acceso
-                </h3>
-
-
-                <p>
-                    Roles, permisos granulares y administración segura.
-                </p>
-
-
-            </div>
-
-
-
-
-
-
-
-            <div class="feature">
-
-
-                <div class="icon">
-                    🔥
-                </div>
-
-
-                <h3>
-                    Heatmaps operacionales
-                </h3>
-
-
-                <p>
-                    Visualización de zonas críticas mediante mapas
-                    interactivos.
-                </p>
-
-
-            </div>
-
-
-
-        </div>
-
-
-    </section>
-
-
-
-
-
-
-
-
-
-    <!-- PROCESS -->
-
-
-    <section class="process">
-
-
-        <h2>
-            Cómo funciona ERM
-        </h2>
-
-
-
-        <div class="steps">
-
-
-
-            <div>
-
-                <span>
-                    01
-                </span>
-
-                <h3>
-                    Captura
-                </h3>
-
-                <p>
-                    Datos globales provenientes de NASA EONET.
-                </p>
-
-            </div>
-
-
-
-            <div>
-
-                <span>
-                    02
-                </span>
-
-                <h3>
-                    Procesamiento
-                </h3>
-
-                <p>
-                    Limpieza, geocodificación y almacenamiento.
-                </p>
-
-            </div>
-
-
-
-
-            <div>
-
-                <span>
-                    03
-                </span>
-
-                <h3>
-                    Predicción
-                </h3>
-
-                <p>
-                    Modelos para anticipar escenarios futuros.
-                </p>
-
-            </div>
-
-
-
-
-
-            <div>
-
-                <span>
-                    04
-                </span>
-
-                <h3>
-                    Acción
-                </h3>
-
-                <p>
-                    Alertas tempranas para equipos operativos.
-                </p>
-
-            </div>
-
-
-
-        </div>
-
-
-    </section>
-
-
-
-
-
-
-
-
-    <!-- CTA -->
-
-
-    <section class="cta">
-
-
-        <h2>
-            Protege tus activos energéticos con inteligencia predictiva
-        </h2>
-
+        <h3>Monitoreo global</h3>
 
         <p>
-            Convierte datos ambientales en decisiones operativas.
+          Integración con NASA EONET para detectar incendios, tormentas, volcanes e inundaciones.
         </p>
+      </div>
 
+      <div class="feature">
+        <div class="icon">🗺️</div>
 
+        <h3>Inteligencia geoespacial</h3>
 
-        <button 
-            routerLink="/new-user">
+        <p>Normalización de coordenadas y enriquecimiento automático con información regional.</p>
+      </div>
 
-            Solicitar acceso a ERM
+      <div class="feature">
+        <div class="icon">📈</div>
 
-        </button>
+        <h3>Forecasting predictivo</h3>
 
+        <p>Predicción de eventos futuros clasificados por categoría y región.</p>
+      </div>
 
-    </section>
+      <div class="feature">
+        <div class="icon">🚨</div>
 
+        <h3>Sistema de alarmas</h3>
 
+        <p>Configura reglas por país o categoría y recibe alertas automáticamente.</p>
+      </div>
 
+      <div class="feature">
+        <div class="icon">🔐</div>
+
+        <h3>Control de acceso</h3>
+
+        <p>Roles, permisos granulares y administración segura.</p>
+      </div>
+
+      <div class="feature">
+        <div class="icon">🔥</div>
+
+        <h3>Heatmaps operacionales</h3>
+
+        <p>Visualización de zonas críticas mediante mapas interactivos.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+
+  <section class="process">
+    <h2>Cómo funciona ERM</h2>
+
+    <div class="steps">
+      <div>
+        <span> 01 </span>
+
+        <h3>Captura</h3>
+
+        <p>Datos globales provenientes de NASA EONET.</p>
+      </div>
+
+      <div>
+        <span> 02 </span>
+
+        <h3>Procesamiento</h3>
+
+        <p>Limpieza, geocodificación y almacenamiento.</p>
+      </div>
+
+      <div>
+        <span> 03 </span>
+
+        <h3>Predicción</h3>
+
+        <p>Modelos para anticipar escenarios futuros.</p>
+      </div>
+
+      <div>
+        <span> 04 </span>
+
+        <h3>Acción</h3>
+
+        <p>Alertas tempranas para equipos operativos.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+
+  <section class="cta">
+    <h2>Protege tus activos energéticos con inteligencia predictiva</h2>
+
+    <p>Convierte datos ambientales en decisiones operativas.</p>
+
+    <button routerLink="/new-user">Solicitar acceso a ERM</button>
+  </section>
 </div>

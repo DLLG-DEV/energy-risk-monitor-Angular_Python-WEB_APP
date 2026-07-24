@@ -90,7 +90,6 @@
 #             break
 
 
-
 #         new_events = []
 
 
@@ -106,11 +105,9 @@
 #                 new_events.append(event)
 
 
-
 #         print(
 #             f"Nuevos eventos: {len(new_events)}"
 #         )
-
 
 
 #         if not new_events:
@@ -120,7 +117,6 @@
 #             )
 
 #             break
-
 
 
 #         all_events.extend(
@@ -140,11 +136,9 @@
 #             break
 
 
-
 #         offset += limit
 
 #         page += 1
-
 
 
 #     print("\n==============================")
@@ -188,12 +182,10 @@
 #     counter = Counter(categories)
 
 
-
 #     print("\nTOTAL CATEGORIAS ENCONTRADAS:")
 #     print(
 #         len(counter)
 #     )
-
 
 
 #     print("\n==============================")
@@ -206,7 +198,6 @@
 #         print(
 #             f"{name}: {total}"
 #         )
-
 
 
 # def analyze_examples(events):
@@ -235,7 +226,6 @@
 #         )
 
 
-
 # def main():
 
 
@@ -255,7 +245,6 @@
 #     analyze_examples(
 #         events
 #     )
-
 
 
 # if __name__ == "__main__":

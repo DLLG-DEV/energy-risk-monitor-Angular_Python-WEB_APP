@@ -7,12 +7,7 @@ import { DividerModule } from 'primeng/divider';
 @Component({
   selector: 'app-events',
   standalone: true,
-  imports: [
-    TableEvents,
-    SearchEvents,
-    InteractiveMap,
-    DividerModule
-  ],
+  imports: [TableEvents, SearchEvents, InteractiveMap, DividerModule],
   templateUrl: './events.html',
   styleUrl: './events.css',
 })

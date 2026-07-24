@@ -13,9 +13,9 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AuthService } from '../../core/auth/auth.service';
 
 export interface LoginResponse {
-  access_token: string,
-  status: string,
-  token_type: string,
+  access_token: string;
+  status: string;
+  token_type: string;
 }
 
 @Component({
@@ -28,11 +28,9 @@ export interface LoginResponse {
     CheckboxModule,
     DividerModule,
     ReactiveFormsModule,
-    ToastModule
+    ToastModule,
   ],
-  providers:[
-    MessageService
-  ],
+  providers: [MessageService],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -44,18 +42,17 @@ export class Login {
     private fb: FormBuilder,
     private auth: AuthService,
     private messageService: MessageService,
-    private router: Router
-  ){
-
+    private router: Router,
+  ) {
     this.loginForm = this.fb.group({
       email: ['', Validators.required, Validators.email],
-      password: ['',Validators.required]
+      password: ['', Validators.required],
     });
 
     this.auth.logout();
   }
 
-  login(){
+  login() {
     this.loading = true;
     const email = this.loginForm.value.email;
     const password = this.loginForm.value.password;
@@ -63,40 +60,30 @@ export class Login {
     this.auth.login(email, password).subscribe({
       next: (response: LoginResponse) => {
         this.messageService.add({
-            severity:'success',
-            summary:'Login correcto',
-            detail:'Bienvenido a ERM'
+          severity: 'success',
+          summary: 'Login correcto',
+          detail: 'Bienvenido a ERM',
         });
 
-        localStorage.setItem(
-          'token',
-          response.access_token
-        );
+        localStorage.setItem('token', response.access_token);
 
-        const data = this.auth.decodeToken()
+        const data = this.auth.decodeToken();
 
-        localStorage.setItem(
-          "modulos",
-          data.modulos
-        )
-        localStorage.setItem(
-          "username",
-          data.userName
-        )
+        localStorage.setItem('modulos', data.modulos);
+        localStorage.setItem('username', data.userName);
 
         setTimeout(() => {
           this.router.navigate(['/']);
         }, 1500);
-
       },
       error: (error) => {
         this.loading = false;
         this.messageService.add({
-            severity:'error',
-            summary:'Login incorrecto',
-            detail:'Correo o contraseña inválidos'
+          severity: 'error',
+          summary: 'Login incorrecto',
+          detail: 'Correo o contraseña inválidos',
         });
-      }
+      },
     });
   }
 }

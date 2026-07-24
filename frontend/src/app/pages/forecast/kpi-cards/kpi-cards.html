@@ -1,154 +1,68 @@
 <!-- Leyenda de amenazas -->
 <div class="event-legend">
+  <h3>Tipos de eventos monitoreados</h3>
 
+  <div class="legend-grid">
+    <div class="legend-item" *ngFor="let category of cat_categories">
+      <span class="icon" [ngClass]="category.name.toLowerCase()">
+        <i class="pi" [ngClass]="category.icon"></i>
+      </span>
 
-    <h3>
-        Tipos de eventos monitoreados
-    </h3>
+      <div>
+        <strong>
+          {{ category.name }}
+        </strong>
 
-
-
-<div class="legend-grid">
-
-
-    <div 
-        class="legend-item"
-        *ngFor="let category of cat_categories"
-    >
-
-
-        <span 
-            class="icon"
-            [ngClass]="category.name.toLowerCase()"
-        >
-
-            <i 
-                class="pi"
-                [ngClass]="category.icon"
-            ></i>
-
-        </span>
-
-
-
-        <div>
-
-            <strong>
-                {{ category.name }}
-            </strong>
-
-
-            <p>
-                {{ category.description }}
-            </p>
-
-
-        </div>
-
-
+        <p>
+          {{ category.description }}
+        </p>
+      </div>
     </div>
-
-</div>
+  </div>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5  mt-6">
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mt-6">
+  <!-- Eventos -->
+  <div class="kpi-card">
+    <div class="kpi-title">Eventos esperados</div>
 
-    <!-- Eventos -->
-    <div class="kpi-card">
-
-        <div class="kpi-title">
-
-            Eventos esperados
-
-        </div>
-
-        <div class="kpi-value">
-
-            {{ dashboard?.summary?.total_expected_events || 0 }}
-
-        </div>
-
-        <div class="kpi-description">
-
-            Pronóstico próximos 3 meses
-
-        </div>
-
+    <div class="kpi-value">
+      {{ dashboard?.summary?.total_expected_events || 0 }}
     </div>
 
+    <div class="kpi-description">Pronóstico próximos 3 meses</div>
+  </div>
 
+  <!-- Riesgos -->
+  <div class="kpi-card">
+    <div class="kpi-title">Regiones críticas</div>
 
-    <!-- Riesgos -->
-    <div class="kpi-card">
-
-        <div class="kpi-title">
-
-            Regiones críticas
-
-        </div>
-
-        <div class="kpi-value">
-
-            {{ dashboard?.summary?.critical_regions || 0 }}
-
-        </div>
-
-        <div class="kpi-description">
-
-            Riesgo alto detectado
-
-        </div>
-
+    <div class="kpi-value">
+      {{ dashboard?.summary?.critical_regions || 0 }}
     </div>
 
+    <div class="kpi-description">Riesgo alto detectado</div>
+  </div>
 
+  <!-- Categoría -->
+  <div class="kpi-card">
+    <div class="kpi-title">Categoría dominante</div>
 
-    <!-- Categoría -->
-    <div class="kpi-card">
-
-        <div class="kpi-title">
-
-            Categoría dominante
-
-        </div>
-
-        <div class="kpi-value text-xl">
-
-            {{ dominantCategory?.category || 'N/A' }}
-
-        </div>
-
-        <div class="kpi-description">
-
-            {{ dominantCategory?.percentage || 0 }}% de los eventos
-
-        </div>
-
+    <div class="kpi-value text-xl">
+      {{ dominantCategory?.category || 'N/A' }}
     </div>
 
+    <div class="kpi-description">{{ dominantCategory?.percentage || 0 }}% de los eventos</div>
+  </div>
 
+  <!-- Modelos -->
+  <div class="kpi-card">
+    <div class="kpi-title">Categorías activas</div>
 
-    <!-- Modelos -->
-    <div class="kpi-card">
-
-        <div class="kpi-title">
-
-            Categorías activas
-
-        </div>
-
-        <div class="kpi-value">
-
-            {{ dashboard?.summary?.categories || 0 }}
-
-        </div>
-
-        <div class="kpi-description">
-
-            Tipos con pronóstico
-
-        </div>
-
+    <div class="kpi-value">
+      {{ dashboard?.summary?.categories || 0 }}
     </div>
 
+    <div class="kpi-description">Tipos con pronóstico</div>
+  </div>
 </div>

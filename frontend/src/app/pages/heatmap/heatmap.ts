@@ -6,12 +6,7 @@ import { DividerModule } from 'primeng/divider';
 
 @Component({
   selector: 'app-heatmap',
-  imports: [
-    Mapacalor,
-    Kpis,
-    Graficas,
-    DividerModule
-  ],
+  imports: [Mapacalor, Kpis, Graficas, DividerModule],
   templateUrl: './heatmap.html',
   styleUrl: './heatmap.css',
 })

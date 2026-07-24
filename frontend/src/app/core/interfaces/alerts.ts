@@ -1,50 +1,37 @@
 export interface Alarm {
+  id: number;
 
-    id:number;
+  user_id: number;
 
-    user_id:number;
+  country: string | null;
 
-    country:string | null;
+  category: string | null;
 
-    category:string | null;
+  periodicity: string;
 
-    periodicity:string;
+  active: boolean;
 
-    active:boolean;
-
-    created_at:string;
-
+  created_at: string;
 }
-
-
 
 export interface AlarmCreate {
+  country: string | null;
 
-    country:string | null;
+  category: string | null;
 
-    category:string | null;
-
-    periodicity:string;
-
+  periodicity: string;
 }
-
-
 
 export interface AlarmUpdate {
+  country?: string | null;
 
-    country?:string | null;
+  category?: string | null;
 
-    category?:string | null;
+  periodicity?: string;
 
-    periodicity?:string;
-
-    active?:boolean;
-
+  active?: boolean;
 }
 
-
 export interface CountryResponse {
-
-    country:string;
-
+  country: string;
 }

@@ -1,69 +1,51 @@
 import asyncio
 import logging
-from apscheduler.schedulers.background import BackgroundScheduler
-from sqlalchemy.orm import Session
+
 from app.database.database import SessionLocal
+from app.services.automated.alert_service import process_alerts
 from app.services.automated.import_service import import_daily_events
 from app.services.automated.trining_forecast import train_forecast
-from app.services.automated.alert_service import process_alerts
+from apscheduler.schedulers.background import BackgroundScheduler
+from sqlalchemy.orm import Session
 
 logger = logging.getLogger(__name__)
 
 scheduler = BackgroundScheduler()
 
-def run_daily_pipeline(
-    db: Session
-):
-    import_result = import_daily_events(
-        db=db,
-        current_user=None
-    )
-    
-    forecast_result = train_forecast(
-        db=db,
-        current_user=None
-    )
-    alert_result = asyncio.run(
-        process_alerts(
-            db=db
-        )
-    )    
+
+def run_daily_pipeline(db: Session):
+    import_result = import_daily_events(db=db, current_user=None)
+
+    forecast_result = train_forecast(db=db, current_user=None)
+    alert_result = asyncio.run(process_alerts(db=db))
     return {
         "status": "OK",
         "message": "Daily pipeline completed successfully.",
         "data": {
             "import": import_result,
             "forecast": forecast_result,
-            "alarms":alert_result
-        }
+            "alarms": alert_result,
+        },
     }
+
 
 def daily_job():
     db = SessionLocal()
 
     try:
-        logger.info(
-            "Starting daily pipeline..."
-        )
+        logger.info("Starting daily pipeline...")
 
-        result = run_daily_pipeline(
-            db
-        )
+        result = run_daily_pipeline(db)
 
-        logger.info(
-            "Daily pipeline completed: %s",
-            result
-        )
+        logger.info("Daily pipeline completed: %s", result)
 
-    except Exception as e:
-
+    except Exception:
         db.rollback()
-        logger.exception(
-            "Daily pipeline failed."
-        )
+        logger.exception("Daily pipeline failed.")
 
     finally:
         db.close()
+
 
 scheduler.add_job(
     daily_job,
@@ -71,5 +53,5 @@ scheduler.add_job(
     hour=1,
     minute=0,
     id="daily_pipeline",
-    replace_existing=True
+    replace_existing=True,
 )
